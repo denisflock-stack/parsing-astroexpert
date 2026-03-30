@@ -1,3 +1,4 @@
+
 // Парсинг таблицы планет + координат планет из SVG (южный стиль).
 // Скрипт рассчитан на страницу Astro.Expert, где:
 // - D1 карта имеет viewBox 600x600
@@ -6,6 +7,7 @@
 
 // Планеты/точки, которые сохраняем в итоговый результат.
 const validPlanets = ['Asc', 'Su', 'Mo', 'Ma', 'Me', 'Jp', 'Ve', 'Sa', 'Ra', 'Ke'];
+
 
 // Соответствие русских названий знаков их порядковому номеру.
 // Нужно для вычисления дома относительно Asc.
@@ -59,17 +61,20 @@ const data = Array.from(rows)
   })
   .filter(x => validPlanets.includes(x.planet));
 
+
 // Нормализация подписей из SVG:
 // "(Sa)" -> "Sa", пробелы и лишние символы убираются.
 function normalizePlanetName(name = '') {
   return name.replace(/[()]/g, '').trim();
 }
 
+
 // Признак ретроградности в подписи SVG:
 // "(Sa)" -> true, "Sa" -> false
 function isRetrogradeToken(name = '') {
   return /^\s*\(.+\)\s*$/.test(name);
 }
+
 
 // Человекочитаемое имя карты для parsedCharts:
 // 1) пытаемся взять ближайший заголовок (h5/h4/h3) перед SVG
@@ -93,6 +98,7 @@ function getChartName(svg, index) {
 
   return `Карта #${index + 1}`;
 }
+
 
 // Парсинг одной SVG-карты в формате:
 // [{ planet, x, y, row, col, cell }, ...]
@@ -126,6 +132,7 @@ function parseChartPlanets(svg) {
     const cell = row * 4 + col + 1; // 1..16
 
     const planetTokens = Array.from(textEl.querySelectorAll('tspan[dx="-4"]'))
+
       .map(t => (t.textContent || '').trim())
       .map(raw => ({
         raw,
@@ -138,6 +145,7 @@ function parseChartPlanets(svg) {
       placements.push({
         planet,
         retrograde,
+
         x,
         y,
         row,
@@ -155,7 +163,9 @@ const chartSvgs = Array.from(document.querySelectorAll('svg.render'));
 const parsedCharts = chartSvgs
   .map((svg, index) => ({
     chartIndex: index,
+
     chartName: getChartName(svg, index),
+
     viewBox: svg.getAttribute('viewBox') || '',
     planets: parseChartPlanets(svg)
   }))
@@ -171,7 +181,9 @@ const ascSignNumber = signToNumber[ascSign] || null;
 // 4) Обогащение табличного результата:
 // - house (дом от Asc)
 // - d1Cell/d1Row/d1Col/d1X/d1Y (координаты планеты в D1-SVG)
+
 // - retrograde (ретроградность из подписи вида "(Sa)")
+
 const dataWithHouses = data.map(item => {
   const signNumber = signToNumber[item.sign] || null;
   const house = (ascSignNumber && signNumber)
@@ -183,7 +195,9 @@ const dataWithHouses = data.map(item => {
   return {
     ...item,
     house,
+
     retrograde: placement?.retrograde ?? false,
+
     d1Cell: placement?.cell ?? null,
     d1Row: placement?.row ?? null,
     d1Col: placement?.col ?? null,
@@ -192,8 +206,10 @@ const dataWithHouses = data.map(item => {
   };
 });
 
+
 // 5) Вывод:
 // - D1 + таблица (основной итог)
 // - все найденные карты (для отладки/проверки)
+
 console.log('D1 + таблица:', dataWithHouses);
 console.log('Все найденные карты (D1/Dx 500x500):', parsedCharts);
