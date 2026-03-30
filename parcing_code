@@ -68,6 +68,14 @@ function normalizePlanetName(name = '') {
   return name.replace(/[()]/g, '').trim();
 }
 
+
+// Признак ретроградности в подписи SVG:
+// "(Sa)" -> true, "Sa" -> false
+function isRetrogradeToken(name = '') {
+  return /^\s*\(.+\)\s*$/.test(name);
+}
+
+
 // Парсинг одной SVG-карты в формате:
 // [{ planet, x, y, row, col, cell }, ...]
 // row/col/cell считаются по сетке 4x4.
@@ -100,13 +108,20 @@ function parseChartPlanets(svg) {
     const cell = row * 4 + col + 1; // 1..16
 
     const planetTokens = Array.from(textEl.querySelectorAll('tspan[dx="-4"]'))
-      .map(t => normalizePlanetName(t.textContent || ''))
-      .filter(Boolean)
-      .filter(token => validPlanets.includes(token));
 
-    planetTokens.forEach(planet => {
+      .map(t => (t.textContent || '').trim())
+      .map(raw => ({
+        raw,
+        planet: normalizePlanetName(raw),
+        retrograde: isRetrogradeToken(raw)
+      }))
+      .filter(x => x.planet && validPlanets.includes(x.planet));
+
+    planetTokens.forEach(({ planet, retrograde }) => {
       placements.push({
         planet,
+        retrograde,
+
         x,
         y,
         row,
@@ -139,6 +154,9 @@ const ascSignNumber = signToNumber[ascSign] || null;
 // 4) Обогащение табличного результата:
 // - house (дом от Asc)
 // - d1Cell/d1Row/d1Col/d1X/d1Y (координаты планеты в D1-SVG)
+
+// - retrograde (ретроградность из подписи вида "(Sa)")
+
 const dataWithHouses = data.map(item => {
   const signNumber = signToNumber[item.sign] || null;
   const house = (ascSignNumber && signNumber)
@@ -150,6 +168,9 @@ const dataWithHouses = data.map(item => {
   return {
     ...item,
     house,
+
+    retrograde: placement?.retrograde ?? false,
+
     d1Cell: placement?.cell ?? null,
     d1Row: placement?.row ?? null,
     d1Col: placement?.col ?? null,
@@ -157,6 +178,7 @@ const dataWithHouses = data.map(item => {
     d1Y: placement?.y ?? null
   };
 });
+
 
 // 5) Вывод:
 // - D1 + таблица (основной итог)
