@@ -1,0 +1,38 @@
+// парсинг таблицы 
+
+const validPlanets = ['Asc','Su','Mo','Ma','Me','Jp','Ve','Sa','Ra','Ke'];
+
+const rows = document.querySelectorAll('table.planets tbody tr');
+
+const data = Array.from(rows)
+  .map(row => {
+    const cells = row.querySelectorAll('td');
+
+    const [planetRaw, signRaw, nakRaw, extraRaw] = [
+      cells[0]?.innerText.trim(),
+      cells[1]?.innerText.trim(),
+      cells[2]?.innerText.trim(),
+      cells[3]?.innerText.trim()
+    ];
+
+    const [planet, karaka] = planetRaw.split('\n');
+    const [sign, degree] = signRaw.split('\n');
+    const [nakshatra, pada] = nakRaw.split('\n');
+
+    const extra = extraRaw
+      ? extraRaw.split(/\s+/).filter(Boolean)
+      : [];
+
+    return {
+      planet,
+      karaka: karaka || null,
+      sign,
+      degree,
+      nakshatra,
+      pada,
+      extra
+    };
+  })
+  .filter(x => validPlanets.includes(x.planet)); // 💥 КЛЮЧ
+
+console.log(data);
