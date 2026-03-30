@@ -1,18 +1,42 @@
-// парсинг таблицы 
+// Парсинг таблицы планет + координат планет из SVG (южный стиль).
+// Скрипт рассчитан на страницу Astro.Expert, где:
+// - D1 карта имеет viewBox 600x600
+// - дробные карты имеют viewBox 500x500
+// - сетка визуально 4x4 (16 ячеек)
 
-const validPlanets = ['Asc','Su','Mo','Ma','Me','Jp','Ve','Sa','Ra','Ke'];
+// Планеты/точки, которые сохраняем в итоговый результат.
+const validPlanets = ['Asc', 'Su', 'Mo', 'Ma', 'Me', 'Jp', 'Ve', 'Sa', 'Ra', 'Ke'];
 
+// Соответствие русских названий знаков их порядковому номеру.
+// Нужно для вычисления дома относительно Asc.
+const signToNumber = {
+  'Овен': 1,
+  'Телец': 2,
+  'Близнецы': 3,
+  'Рак': 4,
+  'Лев': 5,
+  'Дева': 6,
+  'Весы': 7,
+  'Скорпион': 8,
+  'Стрелец': 9,
+  'Козерог': 10,
+  'Водолей': 11,
+  'Рыбы': 12
+};
+
+// Строки основной таблицы планет (D1-таблица справа/снизу от карты).
 const rows = document.querySelectorAll('table.planets tbody tr');
 
+// 1) Базовый парсинг таблицы: planet, karaka, sign, degree, nakshatra, pada, extra.
 const data = Array.from(rows)
   .map(row => {
     const cells = row.querySelectorAll('td');
 
     const [planetRaw, signRaw, nakRaw, extraRaw] = [
-      cells[0]?.innerText.trim(),
-      cells[1]?.innerText.trim(),
-      cells[2]?.innerText.trim(),
-      cells[3]?.innerText.trim()
+      cells[0]?.innerText.trim() || '',
+      cells[1]?.innerText.trim() || '',
+      cells[2]?.innerText.trim() || '',
+      cells[3]?.innerText.trim() || ''
     ];
 
     const [planet, karaka] = planetRaw.split('\n');
@@ -33,6 +57,218 @@ const data = Array.from(rows)
       extra
     };
   })
-  .filter(x => validPlanets.includes(x.planet)); // 💥 КЛЮЧ
+  .filter(x => validPlanets.includes(x.planet));
 
-console.log(data);
+// Нормализация подписей из SVG:
+// "(Sa)" -> "Sa", "Me↑" -> "Me", "Me↓" -> "Me"
+// пробелы и служебные символы убираются.
+function normalizePlanetName(name = '') {
+  return name
+    .replace(/[()↑↓]/g, '')
+    .replace(/\s+/g, '')
+    .trim();
+}
+
+// Признак ретроградности в подписи SVG:
+// "(Sa)" -> true, "Sa" -> false
+function isRetrogradeToken(name = '') {
+  return /^\s*\(.+\)\s*$/.test(name);
+}
+
+// Человекочитаемое имя карты для parsedCharts:
+// 1) пытаемся взять ближайший заголовок (h5/h4/h3) перед SVG
+// 2) если не нашли — используем fallback по размеру/индексу
+function getChartName(svg, index) {
+  const directPrevHeading = svg.previousElementSibling?.matches?.('h5, h4, h3')
+    ? svg.previousElementSibling
+    : null;
+
+  const containerHeading = svg.parentElement?.querySelector?.('h5, h4, h3');
+  const headingText = (directPrevHeading?.innerText || containerHeading?.innerText || '').trim();
+  if (headingText) return headingText;
+
+  const viewBox = svg.getAttribute('viewBox') || '';
+  if (/0 0 600 600/.test(viewBox)) return 'тест (D1)';
+  if (/0 0 500 500/.test(viewBox)) {
+    if (index === 1) return 'Навамша (D9)';
+    if (index === 2) return 'Навамша (D9)';
+    if (index === 3) return 'Дашамша (D10)';
+  }
+
+  return `Карта #${index + 1}`;
+}
+
+// Порядок внешних ячеек (по часовой стрелке) для южной сетки 4x4.
+// Используется для вычисления номера дома от Asc.
+const perimeterCellsClockwise = [1, 2, 3, 4, 8, 12, 16, 15, 14, 13, 9, 5];
+
+// Фиксированные знаки по ячейкам в южном стиле (для внешнего кольца 12 домов).
+// Центровые ячейки (6,7,10,11) не используются для знаков.
+const zodiacByCell = {
+  1: 'Рыбы',
+  2: 'Овен',
+  3: 'Телец',
+  4: 'Близнецы',
+  5: 'Водолей',
+  8: 'Рак',
+  9: 'Козерог',
+  12: 'Лев',
+  13: 'Стрелец',
+  14: 'Скорпион',
+  15: 'Весы',
+  16: 'Дева'
+};
+
+// Извлекаем ячейку Asc из стрелки в SVG (последний path со stroke-width="2"):
+// берем первую координату "M x y" и переводим в cell 1..16.
+function getAscCellFromSvg(svg, width, height) {
+  const paths = Array.from(svg.querySelectorAll('path[stroke-width="2"]'));
+  const arrowPath = paths.at(-1);
+  if (!arrowPath) return null;
+
+  const d = arrowPath.getAttribute('d') || '';
+  const match = d.match(/M\s*([0-9.]+)\s+([0-9.]+)/i);
+  if (!match) return null;
+
+  const x = Number(match[1]);
+  const y = Number(match[2]);
+  if (Number.isNaN(x) || Number.isNaN(y)) return null;
+
+  const cellW = width / 4;
+  const cellH = height / 4;
+  const col = Math.max(0, Math.min(3, Math.floor(x / cellW)));
+  const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
+  return row * 4 + col + 1;
+}
+
+// Номер дома для ячейки относительно Asc-ячейки.
+function getHouseByCell(cell, ascCell) {
+  if (!ascCell) return null;
+
+  const ascIndex = perimeterCellsClockwise.indexOf(ascCell);
+  const cellIndex = perimeterCellsClockwise.indexOf(cell);
+  if (ascIndex === -1 || cellIndex === -1) return null;
+
+  return ((cellIndex - ascIndex + 12) % 12) + 1;
+}
+
+// Парсинг одной SVG-карты в формате:
+// [{ planet, x, y, row, col, cell }, ...]
+// row/col/cell считаются по сетке 4x4.
+function parseChartPlanets(svg) {
+  const viewBox = svg.getAttribute('viewBox') || '';
+  const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
+  const width = Number(widthRaw);
+  const height = Number(heightRaw);
+
+  // Защита от неожиданных SVG.
+  if (!width || !height) return [];
+  if (![500, 600].includes(width) || ![500, 600].includes(height)) return [];
+
+  const cellW = width / 4;
+  const cellH = height / 4;
+
+  const placements = [];
+  // Берем только "натальные" (темные) подписи планет.
+  // Серые (транзиты/доп.слои) здесь игнорируются.
+  const natalTexts = svg.querySelectorAll('text.chart-planet.text-gray-900');
+
+  natalTexts.forEach(textEl => {
+    const x = Number(textEl.getAttribute('x'));
+    const y = Number(textEl.getAttribute('y'));
+    if (Number.isNaN(x) || Number.isNaN(y)) return;
+
+    // Перевод абсолютных SVG-координат в индекс ячейки 4x4.
+    const col = Math.max(0, Math.min(3, Math.floor(x / cellW)));
+    const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
+    const cell = row * 4 + col + 1; // 1..16
+
+    const planetTokens = Array.from(textEl.querySelectorAll('tspan[dx="-4"]'))
+      .map(t => (t.textContent || '').trim())
+      .map(raw => ({
+        raw,
+        planet: normalizePlanetName(raw),
+        retrograde: isRetrogradeToken(raw)
+      }))
+      .filter(x => x.planet && validPlanets.includes(x.planet));
+
+    planetTokens.forEach(({ planet, retrograde }) => {
+      placements.push({
+        planet,
+        retrograde,
+        x,
+        y,
+        row,
+        col,
+        cell
+      });
+    });
+  });
+
+  return placements;
+}
+
+// 2) Парсинг всех карт на странице: D1 + дробные.
+const chartSvgs = Array.from(document.querySelectorAll('svg.render'));
+const parsedCharts = chartSvgs
+  .map((svg, index) => {
+    const viewBox = svg.getAttribute('viewBox') || '';
+    const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
+    const width = Number(widthRaw);
+    const height = Number(heightRaw);
+    const ascCell = (!Number.isNaN(width) && !Number.isNaN(height))
+      ? getAscCellFromSvg(svg, width, height)
+      : null;
+
+    const planets = parseChartPlanets(svg).map(planet => ({
+      ...planet,
+      sign: zodiacByCell[planet.cell] || null,
+      house: getHouseByCell(planet.cell, ascCell)
+    }));
+
+    return {
+      chartIndex: index,
+      chartName: getChartName(svg, index),
+      viewBox,
+      ascCell,
+      planets
+    };
+  })
+  .filter(chart => chart.planets.length > 0);
+
+// 3) Из всех карт выбираем D1 (600x600), чтобы связать с табличными планетами.
+const d1Chart = parsedCharts.find(chart => /0 0 600 600/.test(chart.viewBox));
+const d1ByPlanet = new Map((d1Chart?.planets || []).map(item => [item.planet, item]));
+
+const ascSign = data.find(x => x.planet === 'Asc')?.sign;
+const ascSignNumber = signToNumber[ascSign] || null;
+
+// 4) Обогащение табличного результата:
+// - house (дом от Asc)
+// - d1Cell/d1Row/d1Col/d1X/d1Y (координаты планеты в D1-SVG)
+// - retrograde (ретроградность из подписи вида "(Sa)")
+const dataWithHouses = data.map(item => {
+  const signNumber = signToNumber[item.sign] || null;
+  const house = (ascSignNumber && signNumber)
+    ? ((signNumber - ascSignNumber + 12) % 12) + 1
+    : null;
+
+  const placement = d1ByPlanet.get(item.planet);
+
+  return {
+    ...item,
+    house,
+    retrograde: placement?.retrograde ?? false,
+    d1Cell: placement?.cell ?? null,
+    d1Row: placement?.row ?? null,
+    d1Col: placement?.col ?? null,
+    d1X: placement?.x ?? null,
+    d1Y: placement?.y ?? null
+  };
+});
+
+// 5) Вывод:
+// - D1 + таблица (основной итог)
+// - все найденные карты (для отладки/проверки)
+console.log('D1 + таблица:', dataWithHouses);
+console.log('Все найденные карты (D1/Dx 500x500):', parsedCharts);
