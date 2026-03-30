@@ -1,6 +1,20 @@
-// парсинг таблицы 
+// парсинг таблицы + координат планет в домах (ячейках) южного стиля
 
-const validPlanets = ['Asc','Su','Mo','Ma','Me','Jp','Ve','Sa','Ra','Ke'];
+const validPlanets = ['Asc', 'Su', 'Mo', 'Ma', 'Me', 'Jp', 'Ve', 'Sa', 'Ra', 'Ke'];
+const signToNumber = {
+  'Овен': 1,
+  'Телец': 2,
+  'Близнецы': 3,
+  'Рак': 4,
+  'Лев': 5,
+  'Дева': 6,
+  'Весы': 7,
+  'Скорпион': 8,
+  'Стрелец': 9,
+  'Козерог': 10,
+  'Водолей': 11,
+  'Рыбы': 12
+};
 
 const rows = document.querySelectorAll('table.planets tbody tr');
 
@@ -9,10 +23,10 @@ const data = Array.from(rows)
     const cells = row.querySelectorAll('td');
 
     const [planetRaw, signRaw, nakRaw, extraRaw] = [
-      cells[0]?.innerText.trim(),
-      cells[1]?.innerText.trim(),
-      cells[2]?.innerText.trim(),
-      cells[3]?.innerText.trim()
+      cells[0]?.innerText.trim() || '',
+      cells[1]?.innerText.trim() || '',
+      cells[2]?.innerText.trim() || '',
+      cells[3]?.innerText.trim() || ''
     ];
 
     const [planet, karaka] = planetRaw.split('\n');
@@ -33,6 +47,89 @@ const data = Array.from(rows)
       extra
     };
   })
-  .filter(x => validPlanets.includes(x.planet)); // 💥 КЛЮЧ
+  .filter(x => validPlanets.includes(x.planet));
 
-console.log(data);
+function normalizePlanetName(name = '') {
+  return name.replace(/[()]/g, '').trim();
+}
+
+function parseChartPlanets(svg) {
+  const viewBox = svg.getAttribute('viewBox') || '';
+  const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
+  const width = Number(widthRaw);
+  const height = Number(heightRaw);
+
+  if (!width || !height) return [];
+  if (![500, 600].includes(width) || ![500, 600].includes(height)) return [];
+
+  const cellW = width / 4;
+  const cellH = height / 4;
+
+  const placements = [];
+  const natalTexts = svg.querySelectorAll('text.chart-planet.text-gray-900');
+
+  natalTexts.forEach(textEl => {
+    const x = Number(textEl.getAttribute('x'));
+    const y = Number(textEl.getAttribute('y'));
+    if (Number.isNaN(x) || Number.isNaN(y)) return;
+
+    const col = Math.max(0, Math.min(3, Math.floor(x / cellW)));
+    const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
+    const cell = row * 4 + col + 1; // 1..16
+
+    const planetTokens = Array.from(textEl.querySelectorAll('tspan[dx="-4"]'))
+      .map(t => normalizePlanetName(t.textContent || ''))
+      .filter(Boolean)
+      .filter(token => validPlanets.includes(token));
+
+    planetTokens.forEach(planet => {
+      placements.push({
+        planet,
+        x,
+        y,
+        row,
+        col,
+        cell
+      });
+    });
+  });
+
+  return placements;
+}
+
+const chartSvgs = Array.from(document.querySelectorAll('svg.render'));
+const parsedCharts = chartSvgs
+  .map((svg, index) => ({
+    chartIndex: index,
+    viewBox: svg.getAttribute('viewBox') || '',
+    planets: parseChartPlanets(svg)
+  }))
+  .filter(chart => chart.planets.length > 0);
+
+const d1Chart = parsedCharts.find(chart => /0 0 600 600/.test(chart.viewBox));
+const d1ByPlanet = new Map((d1Chart?.planets || []).map(item => [item.planet, item]));
+
+const ascSign = data.find(x => x.planet === 'Asc')?.sign;
+const ascSignNumber = signToNumber[ascSign] || null;
+
+const dataWithHouses = data.map(item => {
+  const signNumber = signToNumber[item.sign] || null;
+  const house = (ascSignNumber && signNumber)
+    ? ((signNumber - ascSignNumber + 12) % 12) + 1
+    : null;
+
+  const placement = d1ByPlanet.get(item.planet);
+
+  return {
+    ...item,
+    house,
+    d1Cell: placement?.cell ?? null,
+    d1Row: placement?.row ?? null,
+    d1Col: placement?.col ?? null,
+    d1X: placement?.x ?? null,
+    d1Y: placement?.y ?? null
+  };
+});
+
+console.log('D1 + таблица:', dataWithHouses);
+console.log('Все найденные карты (D1/Dx 500x500):', parsedCharts);
