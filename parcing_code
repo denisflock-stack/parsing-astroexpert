@@ -104,6 +104,44 @@ function getChartName(svg, index) {
 }
 
 
+// Порядок внешних ячеек (по часовой стрелке) для южной сетки 4x4.
+// Используется для вычисления номера дома от Asc.
+const perimeterCellsClockwise = [1, 2, 3, 4, 8, 12, 16, 15, 14, 13, 9, 5];
+
+// Извлекаем ячейку Asc из стрелки в SVG (последний path со stroke-width="2"):
+// берем первую координату "M x y" и переводим в cell 1..16.
+function getAscCellFromSvg(svg, width, height) {
+  const paths = Array.from(svg.querySelectorAll('path[stroke-width="2"]'));
+  const arrowPath = paths.at(-1);
+  if (!arrowPath) return null;
+
+  const d = arrowPath.getAttribute('d') || '';
+  const match = d.match(/M\s*([0-9.]+)\s+([0-9.]+)/i);
+  if (!match) return null;
+
+  const x = Number(match[1]);
+  const y = Number(match[2]);
+  if (Number.isNaN(x) || Number.isNaN(y)) return null;
+
+  const cellW = width / 4;
+  const cellH = height / 4;
+  const col = Math.max(0, Math.min(3, Math.floor(x / cellW)));
+  const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
+  return row * 4 + col + 1;
+}
+
+// Номер дома для ячейки относительно Asc-ячейки.
+function getHouseByCell(cell, ascCell) {
+  if (!ascCell) return null;
+
+  const ascIndex = perimeterCellsClockwise.indexOf(ascCell);
+  const cellIndex = perimeterCellsClockwise.indexOf(cell);
+  if (ascIndex === -1 || cellIndex === -1) return null;
+
+  return ((cellIndex - ascIndex + 12) % 12) + 1;
+}
+
+
 // Парсинг одной SVG-карты в формате:
 // [{ planet, x, y, row, col, cell }, ...]
 // row/col/cell считаются по сетке 4x4.
@@ -165,14 +203,30 @@ function parseChartPlanets(svg) {
 // 2) Парсинг всех карт на странице: D1 + дробные.
 const chartSvgs = Array.from(document.querySelectorAll('svg.render'));
 const parsedCharts = chartSvgs
-  .map((svg, index) => ({
-    chartIndex: index,
 
-    chartName: getChartName(svg, index),
+  .map((svg, index) => {
+    const viewBox = svg.getAttribute('viewBox') || '';
+    const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
+    const width = Number(widthRaw);
+    const height = Number(heightRaw);
+    const ascCell = (!Number.isNaN(width) && !Number.isNaN(height))
+      ? getAscCellFromSvg(svg, width, height)
+      : null;
 
-    viewBox: svg.getAttribute('viewBox') || '',
-    planets: parseChartPlanets(svg)
-  }))
+    const planets = parseChartPlanets(svg).map(planet => ({
+      ...planet,
+      house: getHouseByCell(planet.cell, ascCell)
+    }));
+
+    return {
+      chartIndex: index,
+      chartName: getChartName(svg, index),
+      viewBox,
+      ascCell,
+      planets
+    };
+  })
+
   .filter(chart => chart.planets.length > 0);
 
 // 3) Из всех карт выбираем D1 (600x600), чтобы связать с табличными планетами.
