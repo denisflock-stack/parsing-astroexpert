@@ -76,6 +76,30 @@ function isRetrogradeToken(name = '') {
 }
 
 
+// Человекочитаемое имя карты для parsedCharts:
+// 1) пытаемся взять ближайший заголовок (h5/h4/h3) перед SVG
+// 2) если не нашли — используем fallback по размеру/индексу
+function getChartName(svg, index) {
+  const directPrevHeading = svg.previousElementSibling?.matches?.('h5, h4, h3')
+    ? svg.previousElementSibling
+    : null;
+
+  const containerHeading = svg.parentElement?.querySelector?.('h5, h4, h3');
+  const headingText = (directPrevHeading?.innerText || containerHeading?.innerText || '').trim();
+  if (headingText) return headingText;
+
+  const viewBox = svg.getAttribute('viewBox') || '';
+  if (/0 0 600 600/.test(viewBox)) return 'тест (D1)';
+  if (/0 0 500 500/.test(viewBox)) {
+    if (index === 1) return 'Навамша (D9)';
+    if (index === 2) return 'Навамша (D9)';
+    if (index === 3) return 'Дашамша (D10)';
+  }
+
+  return `Карта #${index + 1}`;
+}
+
+
 // Парсинг одной SVG-карты в формате:
 // [{ planet, x, y, row, col, cell }, ...]
 // row/col/cell считаются по сетке 4x4.
@@ -139,6 +163,9 @@ const chartSvgs = Array.from(document.querySelectorAll('svg.render'));
 const parsedCharts = chartSvgs
   .map((svg, index) => ({
     chartIndex: index,
+
+    chartName: getChartName(svg, index),
+
     viewBox: svg.getAttribute('viewBox') || '',
     planets: parseChartPlanets(svg)
   }))
