@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127707774-1"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="DOnDwmYla7x3XPPkbSDsmvMODaMDguNzCO2vYwgB">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=3">
+    <link rel="icon" type="image/png" sizes="194x194" href="/favicon-194x194.png?v=3">
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png?v=3">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=3">
+    <link rel="manifest" href="/site.webmanifest?v=3">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg?v=3" color="#628eca">
+    <link rel="shortcut icon" href="/favicon.ico?v=3">
+    <meta name="apple-mobile-web-app-title" content="ASTRO.EXPERT">
+    <meta name="application-name" content="ASTRO.EXPERT">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png?v=3">
+    <meta name="theme-color" content="#ffffff">
+    <meta property="og:image:width" content="279">
+    <meta property="og:image:height" content="279">
+    <meta property="og:url" content="https://ru.astro.expert">
+    <meta property="og:image" content="https://ru.astro.expert/images/og-image.jpg">
+    <meta property="og:description" content="Ваш личный помощник в мире астрологии">
+    <meta property="og:title" content="Лучшая астропрограмма для ведической астрологии">
+
+    <title>ASTRO.EXPERT</title>
+
+    <link rel="stylesheet" type="text/css" href="https://ru.astro.expert/css/app.20250725012042.css">
+    <style >[wire\:loading], [wire\:loading\.delay], [wire\:loading\.inline-block], [wire\:loading\.inline], [wire\:loading\.block], [wire\:loading\.flex], [wire\:loading\.table], [wire\:loading\.grid], [wire\:loading\.inline-flex] {display: none;}[wire\:loading\.delay\.shortest], [wire\:loading\.delay\.shorter], [wire\:loading\.delay\.short], [wire\:loading\.delay\.long], [wire\:loading\.delay\.longer], [wire\:loading\.delay\.longest] {display:none;}[wire\:offline] {display: none;}[wire\:dirty]:not(textarea):not(input):not(select) {display: none;}input:-webkit-autofill, select:-webkit-autofill, textarea:-webkit-autofill {animation-duration: 50000s;animation-name: livewireautofill;}@keyframes livewireautofill { from {} }</style>
+</head>
+
+<body class="overscroll-none">
+    <div class="min-h-screen h-screen w-full flex flex-col">
+        <div class="flex-1 flex flex-col w-full max-w-6xl sm:px-2 mx-auto">
+            <!-- блок большого меню -->
+            <div class="flex-shrink-0 flex pt-4">
+                <div class="md:pr-4 overflow-hidden">
+                    <a href="/"><img alt="ASTRO.EXPERT" src="/images/logo.png" class="w-16 md:w-32 rounded-r-lg md:rounded-l-lg shadow" /></a>
+                </div>
+                <div class="flex-1 md:hidden">
+                </div>
+                <div class="md:hidden" x-data="">
+    <div class="fixed top-0 right-0 pt-4 z-30">
+        <button class="bg-blue-500 text-blue-50 px-4 py-2 rounded-l-lg shadow" x-on:click="$dispatch('menuopen')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+        </button>
+    </div>
+    <div
+        class="hidden"
+        x-on:menuopen.window="$el.classList.remove('hidden')"
+        x-on:menuclose.window="$el.classList.add('hidden')"
+    >
+        <div class="fixed inset-0 z-40 bg-gray-900 opacity-30" x-on:click="$dispatch('menuclose')"></div>
+        <div class="fixed inset-y-0 right-0 bg-white z-40 w-64 px-2 py-8 divide-y divide-gray-300 font-medium text-gray-600 overflow-y-scroll overscroll-y-none">
+                            <a href="/" class="block p-4 "
+                    >
+                            Главная                    </a>
+                    <a href="/f" class="block p-4 "
+                    >
+                            Мои карты                    </a>
+                                            <div class="py-4 px-6 -mx-2 bg-gradient-to-r from-blue-200 to-white text-blue-900">
+                    тест
+                <div class="pt-2 text-sm text-blue-800">
+                            <button
+                                            @click="$dispatch('menuclose');Livewire.emit('open-tab', 'useful');document.getElementById('tab-view').scrollIntoView()"
+                        class="block px-4 py-2"
+                                    >
+                                        Под рукой                                    </button>
+                            <button
+                                            @click="$dispatch('menuclose');Livewire.emit('open-tab', 'notes');document.getElementById('tab-view').scrollIntoView()"
+                        class="block px-4 py-2"
+                                    >
+                                        Заметки                                            (<span
+                            x-data="{ count: 0 }"
+                            x-text="count"
+                            @notes-updated.window="count = $event.detail.count"
+                        ></span>)
+                                    </button>
+                    </div>
+    </div>
+    <div class="py-4 px-6 -mx-2 bg-gradient-to-r from-blue-200 to-white text-blue-900">
+                    Анализ                <div class="pt-2 text-sm text-blue-800">
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Транзиты                                    </button>
+                            <button
+                                            @click="$dispatch('menuclose');Livewire.emit('open-tab', 'description');document.getElementById('tab-view').scrollIntoView()"
+                        class="block px-4 py-2"
+                                    >
+                                        Прочтение положений                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Анализ арудх                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Инду Лагна                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Анализ карак                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Панчанга рождения                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Титхи Правеш                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Совместимости                                    </button>
+                    </div>
+    </div>
+    <div class="py-4 px-6 -mx-2 bg-gradient-to-r from-blue-200 to-white text-blue-900">
+                    Варги                <div class="pt-2 text-sm text-blue-800">
+                            <button
+                                            @click="$dispatch('menuclose');Livewire.emit('open-tab', 'fractional');document.getElementById('tab-view').scrollIntoView()"
+                        class="block px-4 py-2"
+                                    >
+                                        Дробные карты                                    </button>
+                            <button
+                                            @click="$dispatch('menuclose');Livewire.emit('open-tab', 'ashtakavarga');document.getElementById('tab-view').scrollIntoView()"
+                        class="block px-4 py-2"
+                                    >
+                                        Аштакаварга                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Какшья Аштакаварга                                    </button>
+                    </div>
+    </div>
+    <div class="py-4 px-6 -mx-2 bg-gradient-to-r from-blue-200 to-white text-blue-900">
+                    Периоды                <div class="pt-2 text-sm text-blue-800">
+                            <button
+                                            @click="$dispatch('menuclose');Livewire.emit('open-tab', 'vimshottari');document.getElementById('tab-view').scrollIntoView()"
+                        class="block px-4 py-2"
+                                    >
+                                        Вимшоттари Даша                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Навамша Даша                                    </button>
+                            <button
+                                            @click="$dispatch('menuclose');Livewire.emit('open-tab', 'ashtottari');document.getElementById('tab-view').scrollIntoView()"
+                        class="block px-4 py-2"
+                                    >
+                                        Аштоттари Даша                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Йогини Даша                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Чара Даша                                    </button>
+                            <button
+                                            class="block px-4 py-2 text-gray-500"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-400 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Саде Сати                                    </button>
+                    </div>
+    </div>
+                                                <a href="/panchanga/day" class="block p-4 "
+                    >
+                            Панчанга                    </a>
+                        <div class="p-4">
+            Прогнозы            <div class="pt-2 text-sm text-gray-500">
+                                                            <div class="pl-2 pr-4 py-2 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                            </svg>
+                            Панчанга на месяц                        </div>
+                                                                                <div class="pl-2 pr-4 py-2 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                            </svg>
+                            Транзиты на год                        </div>
+                                                                                <div class="pl-2 pr-4 py-2 text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                            </svg>
+                            Лунный прогноз                        </div>
+                                                </div>
+        </div>
+                <a href="https://help.astro.expert/" class="block p-4 "
+             target="_blank"         >
+                            Справка                    </a>
+                        <a href="/support#read" class="block p-4  flex "
+                    >
+                            <div class="flex-1">Сообщения</div>
+                                    </a>
+                        <div class="p-4">
+            Профиль            <div class="pt-2 text-sm text-gray-500">
+                                                            <a
+                             href="/profile"                             class="block px-4 py-2"
+                        >Личные данные</a>
+                                                                                <a
+                             href="/profile/billing"                             class="block px-4 py-2"
+                        >Подписка</a>
+                                                                                <a
+                             href="/profile/settings"                             class="block px-4 py-2"
+                        >Настройки</a>
+                                                                                <a
+                             @click.prevent="document.getElementById(&#039;logout-form&#039;).submit()"                             class="block px-4 py-2"
+                        >Выйти</a>
+                                                </div>
+        </div>
+                        </div>
+    </div>
+</div>
+                <div class="flex-1 hidden md:block">
+                    <div class="flex p-px justify-between bg-blue-500 rounded-lg text-sm text-blue-50 font-medium shadow">
+    <div class="flex flex-1">
+                    <a href="/"
+                        class="block rounded-lg py-2 hover:bg-blue-600  px-4 "
+        >
+                            Главная                    </a>
+                    <a href="/f"
+                        class="block rounded-lg py-2 hover:bg-blue-600  px-4 "
+        >
+                            Мои карты                    </a>
+                    <a href="/panchanga/day"
+                        class="block rounded-lg py-2 hover:bg-blue-600  px-4 "
+        >
+                            Панчанга                    </a>
+                        <div class="relative" x-data="{ open: false }" @mouseover="open = true" @mouseout="open = false" @click.away="open = false">
+            <button @click="open = true" :class="{'bg-blue-600': open}" class="rounded-lg py-2 hover:bg-blue-600 text-sm font-medium  px-4 ">
+                                    Прогнозы                            </button>
+            <div
+                :class="{'md:block': open}"
+                class="hidden absolute z-50 mt-px rounded-lg bg-white text-gray-500 shadow-lg focus:outline-none
+                     origin-top-left left-0                      w-48 ">
+                                                            <div class="rounded-lg pl-2 pr-4 py-2 text-gray-400 hover:bg-gray-50 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+    </svg>                            Панчанга на месяц                        </div>
+                                                                                <div class="rounded-lg pl-2 pr-4 py-2 text-gray-400 hover:bg-gray-50 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+    </svg>                            Транзиты на год                        </div>
+                                                                                <div class="rounded-lg pl-2 pr-4 py-2 text-gray-400 hover:bg-gray-50 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+    </svg>                            Лунный прогноз                        </div>
+                                                </div>
+        </div>
+                <a href="https://help.astro.expert/"
+             target="_blank"             class="block rounded-lg py-2 hover:bg-blue-600  px-4 "
+        >
+                            Справка                    </a>
+                    </div>
+    <div class="flex-shrink-0 flex pr-2">
+                    <a href="/support#read"
+                        class="block rounded-lg py-2 hover:bg-blue-600  px-2 "
+        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>                    </a>
+                        <div class="relative" x-data="{ open: false }" @mouseover="open = true" @mouseout="open = false" @click.away="open = false">
+            <button @click="open = true" :class="{'bg-blue-600': open}" class="rounded-lg py-2 hover:bg-blue-600 text-sm font-medium  px-2 ">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>                                        </button>
+            <div
+                :class="{'md:block': open}"
+                class="hidden absolute z-50 mt-px rounded-lg bg-white text-gray-500 shadow-lg focus:outline-none
+                     origin-top-right right-0                      w-36 ">
+                                                            <a
+                             href="/profile"                             class="block rounded-lg px-4 py-2 hover:bg-gray-200"
+                        >Личные данные</a>
+                                                                                <a
+                             href="/profile/billing"                             class="block rounded-lg px-4 py-2 hover:bg-gray-200"
+                        >Подписка</a>
+                                                                                <a
+                             href="/profile/settings"                             class="block rounded-lg px-4 py-2 hover:bg-gray-200"
+                        >Настройки</a>
+                                                                                <a
+                             @click.prevent="document.getElementById(&#039;logout-form&#039;).submit()"                             class="block rounded-lg px-4 py-2 hover:bg-gray-200"
+                        >Выйти</a>
+                                                </div>
+        </div>
+                </div>
+</div>
+                    <div class="px-3 pt-4">
+                        <nav class="flex" aria-label="Breadcrumb">
+  <ol class="flex items-center space-x-2">
+    <li>
+      <div>
+        <a href="/" class="text-gray-400 hover:text-gray-500">
+          <svg class="flex-shrink-0 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+          </svg>
+          <span class="sr-only">Главная</span>
+        </a>
+      </div>
+    </li>
+
+          <li>
+        <div class="flex items-center">
+          <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+                      <a href="/f/436499" class="ml-2 text-sm font-medium text-gray-500 hover:text-gray-700">Мои карты</a>
+                  </div>
+      </li>
+          <li>
+        <div class="flex items-center">
+          <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+                      <span class="ml-2 text-sm font-bold text-gray-700">тест</span>
+                  </div>
+      </li>
+    
+  </ol>
+</nav>
+                    </div>
+                </div>
+            </div>
+
+            <main class="flex-1">
+                <div wire:id="Rk8vTXL3n0IvH7xkjHo2" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;Rk8vTXL3n0IvH7xkjHo2&quot;,&quot;name&quot;:&quot;nativity.show&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;itemsUpdated&quot;,&quot;deleteNativity&quot;,&quot;updated&quot;],&quot;path&quot;:&quot;https:\/\/ru.astro.expert\/h\/5400593?t=useful&quot;},&quot;serverMemo&quot;:{&quot;children&quot;:{&quot;l3828227893-0&quot;:{&quot;id&quot;:&quot;azC8E3ytFqIikviPODzM&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-1&quot;:{&quot;id&quot;:&quot;MWHNQOYndEmn38u5VhN1&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-2&quot;:{&quot;id&quot;:&quot;RZr5B72wphnndUGVukjn&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-3&quot;:{&quot;id&quot;:&quot;1gvSMoW5P93wNlKUWD7Y&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-4&quot;:{&quot;id&quot;:&quot;9o0333Ci4ga4VZk1mAyT&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-5&quot;:{&quot;id&quot;:&quot;jyjAT5cyITD3vf9zUMhJ&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-6&quot;:{&quot;id&quot;:&quot;cZlpvAPrC47qOue41Zkj&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-7&quot;:{&quot;id&quot;:&quot;Z5DG2uKU1WAjwByCiJrI&quot;,&quot;tag&quot;:&quot;div&quot;},&quot;l3828227893-8&quot;:{&quot;id&quot;:&quot;0BkROP3o1fUuhE3KPFxQ&quot;,&quot;tag&quot;:&quot;div&quot;}},&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;84b0cc93&quot;,&quot;data&quot;:{&quot;nativity&quot;:[],&quot;remind&quot;:false,&quot;tab&quot;:&quot;useful&quot;,&quot;showAspects&quot;:true,&quot;showTransits&quot;:false},&quot;dataMeta&quot;:{&quot;models&quot;:{&quot;nativity&quot;:{&quot;class&quot;:&quot;App\\AstroExpert\\Nativities\\Nativity&quot;,&quot;id&quot;:5400593,&quot;relations&quot;:[&quot;folder&quot;,&quot;folder.parentFolder&quot;],&quot;connection&quot;:&quot;mysql&quot;}}},&quot;checksum&quot;:&quot;08a26343a9b439ca5744693ddd534a44a57c13f6a808c7749635a6666a200e4e&quot;}}">
+    <div class="md:flex py-6 items-center">
+        <div class="w-full md:w-1/2 lg:w-2/3 lg:flex">
+            <div class="w-full lg:w-1/2 text-gray-700 font-bold text-xl leading-tight px-2 md:px-0">
+                тест
+            </div>
+            <div class="w-full lg:w-1/2 text-gray-500 text-sm pl-2 mt-2 md:pl-0 md:mt-0">
+                <div class="">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="align-text-bottom h-4 w-4 inline-block text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>                    14.08.1987 08:30:00
+                </div>
+                <div class="">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="align-text-bottom h-4 w-4 inline-block text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>                    Александровское, Ставропольский край, Россия +4:00
+                </div>
+            </div>
+        </div>
+        <div class="w-full md:w-1/2 lg:w-1/3 mt-4 md:mt-0 flex flex-wrap items-center gap-1 justify-center md:justify-end">
+            <button wire:click="toggleRemind" class=" bg-gray-200 hover:bg-gray-300 text-gray-500  rounded-lg px-2 py-1 align-middle shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
+    </svg>            </button>
+            <button wire:click="editNativity" class="bg-blue-500 text-blue-50 py-1 px-2 text-xs font-medium rounded-lg shadow hover:bg-blue-600">
+                Изменить            </button>
+            <button wire:click="$emit('moveNativity', 5400593)" class="bg-blue-500 text-blue-50 py-1 px-2 text-xs font-medium rounded-lg shadow hover:bg-blue-600">
+                Переместить            </button>
+            <button wire:click="$emit('confirmDeleteNativity', 5400593)" class="bg-red-500 text-red-50 py-1 px-2 text-xs font-medium rounded-lg shadow hover:bg-red-600">
+                Удалить            </button>
+            <button wire:click="$emit('shareNativity', 5400593)" class="bg-blue-500 hover:bg-blue-600 text-blue-50 rounded-lg px-2 py-1 align-middle shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+    </svg>            </button>
+            <button wire:click="$emit('mainSettings')" class="inline-block bg-blue-500 hover:bg-blue-600 text-blue-50 rounded-lg px-2 py-1 align-middle shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-6">
+        <div class="lg:col-span-3 mx-2 md:mx-0">
+            <svg class="render"
+    viewBox="0 0 600 600"
+    xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .chart-planet {font-family:'Helvetica Neue',Helvetica,sans-serif;text-anchor:middle;}
+        .chart-sign {font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:14px;text-anchor:middle;dominant-baseline:middle;}
+        rect.tipped:hover+g.tip {opacity:1;}
+    </style>
+    <rect class="fill-current text-white" x="0" y="0" width="600" height="600" rx="23" />
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="2" d="M21,1h558a20,20 0 0 1 20,20v558a20,20 0 0 1 -20,20h-558a20,20 0 0 1 -20,-20v-558a20,20 0 0 1 20,-20"></path>
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="1" d="M1,150L599,150M1,450L599,450M150,1L150,599M450,1L450,599M1,300L150,300M450,300L599,300M300,1L300,150M300,450L300,599"></path>
+
+    <path class="text-gray-300" stroke="currentColor" stroke-width="2" d="M 450 413 L 488 450M 450 419 L 482 450"></path>
+
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="229" y="20">
+            <tspan dy="28" x="229">
+                            <tspan class=""
+                    dx="-4">Mo<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Jp<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="379" y="34">
+            <tspan dy="28" x="379">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="529" y="34">
+            <tspan dy="28" x="529">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="529" y="170">
+            <tspan dy="28" x="529">
+                            <tspan class=""
+                    dx="-4">Me<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Ve<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Su<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="529" y="320">
+            <tspan dy="28" x="529">
+                            <tspan class=""
+                    dx="-4">Ma<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="529" y="470">
+            <tspan dy="28" x="529">
+                            <tspan class=""
+                    dx="-4">Ke<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="379" y="484">
+            <tspan dy="28" x="379">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="229" y="470">
+            <tspan dy="28" x="229">
+                            <tspan class=""
+                    dx="-4">(Sa)<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="79" y="484">
+            <tspan dy="28" x="79">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="79" y="334">
+            <tspan dy="28" x="79">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="79" y="184">
+            <tspan dy="28" x="79">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="79" y="20">
+            <tspan dy="28" x="79">
+                            <tspan class=""
+                    dx="-4">Ra<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+    
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="229" y="109">
+            <tspan dy="28" x="229">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="379" y="95">
+            <tspan dy="28" x="379">
+                            <tspan class=""
+                    dx="-4">Sa<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="529" y="109">
+            <tspan dy="28" x="529">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="529" y="245">
+            <tspan dy="28" x="529">
+                            <tspan class=""
+                    dx="-4">Ra<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="529" y="395">
+            <tspan dy="28" x="529">
+                            <tspan class=""
+                    dx="-4">Jp<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Sa<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="529" y="545">
+            <tspan dy="28" x="529">
+                            <tspan class=""
+                    dx="-4">Ra<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="379" y="545">
+            <tspan dy="28" x="379">
+                            <tspan class=""
+                    dx="-4">Mo<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Jp<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="229" y="545">
+            <tspan dy="28" x="229">
+                            <tspan class=""
+                    dx="-4">Ma<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Ra<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="79" y="545">
+            <tspan dy="28" x="79">
+                            <tspan class=""
+                    dx="-4">Jp<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="79" y="381">
+            <tspan dy="28" x="79">
+                            <tspan class=""
+                    dx="-4">Me<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Sa<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Ve<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+            <tspan dy="28" x="79">
+                            <tspan class=""
+                    dx="-4">Su<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="79" y="245">
+            <tspan dy="28" x="79">
+                            <tspan class=""
+                    dx="-4">Ma<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-400 text-2xl fill-current"
+    x="79" y="95">
+            <tspan dy="28" x="79">
+                            <tspan class=""
+                    dx="-4">Ma<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+    
+</svg>
+            <div class="flex justify-between mx-2 mt-1 text-sm text-gray-500">
+                <div wire:click="toggleAspects" class="flex items-center cursor-pointer">
+                    <button type="button" class=" bg-blue-500  relative inline-flex flex-shrink-0 h-4 w-7 border-2 border-transparent rounded-full transition-colors ease-in-out duration-200 focus:outline-none" role="switch" aria-checked="false">
+                        <span aria-hidden="true" class=" translate-x-3  pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"></span>
+                    </button>
+                    <span class="ml-2">
+                        Аспекты планет                    </span>
+                </div>
+                <div wire:click="toggleTransits" class="flex items-center cursor-pointer">
+                    <button type="button" class=" bg-gray-200  relative inline-flex flex-shrink-0 h-4 w-7 border-2 border-transparent rounded-full transition-colors ease-in-out duration-200 focus:outline-none" role="switch" aria-checked="false">
+                        <span aria-hidden="true" class=" translate-x-0  pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 mt-0.5 mx-auto text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                    </span>
+                    </button>
+                    <span class="ml-2  text-gray-400 ">
+                        Транзиты                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="lg:col-span-7 lg:flex">
+            <div class="w-full lg:w-2/3 lg:pr-6">
+                <table class="table-auto border-collapse w-full planets text-gray-700 text-sm">
+	<tbody>
+					                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Asc
+                        
+                                <span class="float-right"></span>
+
+                                            </td>
+                    <td>
+                        Лев                        <span class="float-right">23˚02&#039;06&quot;</span>
+                    </td>
+                    <td>
+                        Пурва Пхалгуни                        <span class="float-right">3</span>
+                    </td>
+                    
+                        <td>
+                            ПН
+                            
+                            МБ1
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Su
+                        
+                                <span class="float-right">АК</span>
+
+                                            </td>
+                    <td>
+                        Рак                        <span class="float-right">27˚11&#039;43&quot;</span>
+                    </td>
+                    <td>
+                        Ашлеша                        <span class="float-right">4</span>
+                    </td>
+                    
+                        <td>
+                            
+                            
+                            
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Mo
+                        
+                                <span class="float-right">ГК</span>
+
+                                            </td>
+                    <td>
+                        Овен                        <span class="float-right">1˚15&#039;05&quot;</span>
+                    </td>
+                    <td>
+                        Ашвини                        <span class="float-right">1</span>
+                    </td>
+                    
+                        <td>
+                            
+                            
+                            
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Ma
+                        
+                                <span class="float-right">ДК</span>
+
+                                            </td>
+                    <td>
+                        Лев                        <span class="float-right">0˚49&#039;51&quot;</span>
+                    </td>
+                    <td>
+                        Магха                        <span class="float-right">1</span>
+                    </td>
+                    
+                        <td>
+                            
+                            
+                            
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Me
+                        
+                                <span class="float-right">МК</span>
+
+                                            </td>
+                    <td>
+                        Рак                        <span class="float-right">20˚44&#039;40&quot;</span>
+                    </td>
+                    <td>
+                        Ашлеша                        <span class="float-right">2</span>
+                    </td>
+                    
+                        <td>
+                            
+                            
+                            
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Jp
+                        
+                                <span class="float-right">ПК</span>
+
+                                            </td>
+                    <td>
+                        Овен                        <span class="float-right">5˚59&#039;36&quot;</span>
+                    </td>
+                    <td>
+                        Ашвини                        <span class="float-right">2</span>
+                    </td>
+                    
+                        <td>
+                            
+                            
+                            
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Ve
+                        
+                                <span class="float-right">АмК</span>
+
+                                            </td>
+                    <td>
+                        Рак                        <span class="float-right">24˚42&#039;18&quot;</span>
+                    </td>
+                    <td>
+                        Ашлеша                        <span class="float-right">3</span>
+                    </td>
+                    
+                        <td>
+                            
+                            
+                            
+                            Аш
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Sa
+                        
+                                <span class="float-right">БК</span>
+
+                                            </td>
+                    <td>
+                        Скорпион                        <span class="float-right">20˚52&#039;15&quot;</span>
+                    </td>
+                    <td>
+                        Джиештха                        <span class="float-right">2</span>
+                    </td>
+                    
+                        <td>
+                            
+                            
+                            
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Ra
+                        
+                                <span class="float-right"></span>
+
+                                            </td>
+                    <td>
+                        Рыбы                        <span class="float-right">9˚27&#039;52&quot;</span>
+                    </td>
+                    <td>
+                        Уттара Бхадрапада                        <span class="float-right">2</span>
+                    </td>
+                    
+                        <td>
+                            ПН
+                            ПБ
+                            МБ1
+                            
+                        </td>
+
+                                    </tr>
+								                <tr class="border-b border-gray-200 last:border-0">
+                    <td>Ke
+                        
+                                <span class="float-right"></span>
+
+                                            </td>
+                    <td>
+                        Дева                        <span class="float-right">9˚27&#039;52&quot;</span>
+                    </td>
+                    <td>
+                        Уттара Пхалгуни                        <span class="float-right">4</span>
+                    </td>
+                    
+                        <td>
+                            ПН
+                            ПБ
+                            
+                            
+                        </td>
+
+                                    </tr>
+																																																																																											</tbody>
+</table>
+            </div>
+            <div class="hidden lg:block lg:w-1/3">
+                <h4 class="text-gray-700 font-bold mb-2">Навамша</h4>
+                <svg class="render"
+    viewBox="0 0 500 500"
+    xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .chart-planet {font-family:'Helvetica Neue',Helvetica,sans-serif;text-anchor:middle;}
+        .chart-sign {font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:14px;text-anchor:middle;dominant-baseline:middle;}
+        rect.tipped:hover+g.tip {opacity:1;}
+    </style>
+    <rect class="fill-current text-white" x="0" y="0" width="500" height="500" rx="23" />
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="2" d="M21,1h458a20,20 0 0 1 20,20v458a20,20 0 0 1 -20,20h-458a20,20 0 0 1 -20,-20v-458a20,20 0 0 1 20,-20"></path>
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="1" d="M1,125L499,125M1,375L499,375M125,1L125,499M375,1L375,499M1,250L125,250M375,250L499,250M250,1L250,125M250,375L250,499"></path>
+
+    <path class="text-gray-300" stroke="currentColor" stroke-width="2" d="M 250 469 L 281 500M 250 475 L 275 500"></path>
+
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="192" y="45">
+            <tspan dy="28" x="192">
+                            <tspan class="underline"
+                    dx="-4">Ma<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Mo<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="317" y="45">
+            <tspan dy="28" x="317">
+                            <tspan class=""
+                    dx="-4">Jp<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="59">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="184">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="309">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="420">
+            <tspan dy="28" x="442">
+                            <tspan class=""
+                    dx="-4">Ra<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="317" y="434">
+            <tspan dy="28" x="317">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="192" y="434">
+            <tspan dy="28" x="192">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="434">
+            <tspan dy="28" x="67">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="295">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Me<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">(Sa)<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="170">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Ve<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="45">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Su<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Ke<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+    
+    
+</svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="hidden md:flex justify-center my-6 px-4 text-sm text-gray-700 font-medium"
+     x-data="{active: 'useful', section: ''}"
+     @tab-updated.window="active = $event.detail.tab; section = $event.detail.section"
+>
+                        <div >
+                <button
+                                            class="rounded-lg py-2 px-4 hover:bg-gray-200"
+                        :class="{'bg-gray-100': active == 'useful'}"
+                        @click="active = 'useful';section='';Livewire.emit('open-tab', 'useful')"
+                                    >
+                                        Под рукой
+                                    </button>
+            </div>
+                    <div >
+                <button
+                                            class="rounded-lg py-2 px-4 hover:bg-gray-200"
+                        :class="{'bg-gray-100': active == 'notes'}"
+                        @click="active = 'notes';section='';Livewire.emit('open-tab', 'notes')"
+                                    >
+                                        Заметки
+                                            (<span
+                            x-data="{ count: 0 }"
+                            x-text="count"
+                            @notes-updated.window="count = $event.detail.count"
+                        ></span>)
+                                    </button>
+            </div>
+                                        <div class="hidden lg:block">
+                <button
+                                            class="rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                    >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                                        Транзиты
+                                    </button>
+            </div>
+                            <div class="relative" x-data="{ open: false }" @mouseover="open = true" @mouseout="open = false" @click.away="open = false">
+                <button @click="open = true" :class="{'bg-gray-100': open || section == 'analytics'}" class="rounded-lg py-2 px-4 hover:bg-gray-200">
+                    Анализ                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mb-px -mr-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+    </svg>                </button>
+                <div
+                    :class="{'md:block': open}"
+                    class="hidden absolute z-10 mt-px w-48 rounded-lg bg-white text-gray-500 shadow-lg focus:outline-none
+                         origin-top-left left-0 ">
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Транзиты                        </button>
+                                            <button
+                                                            @click="active = 'description';section = 'analytics';Livewire.emit('open-tab', 'description')"
+                                class="w-full text-left rounded-lg px-4 py-2 hover:bg-gray-200
+                                                                        "
+                                :class="{'bg-gray-100': active == 'description'}"
+                                                    >
+                                                        Прочтение положений                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Анализ арудх                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Инду Лагна                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Анализ карак                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Панчанга рождения                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Титхи Правеш                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Совместимости                        </button>
+                                    </div>
+            </div>
+                                <div >
+                <button
+                                            class="rounded-lg py-2 px-4 hover:bg-gray-200"
+                        :class="{'bg-gray-100': active == 'fractional'}"
+                        @click="active = 'fractional';section='';Livewire.emit('open-tab', 'fractional')"
+                                    >
+                                        Дробные карты
+                                    </button>
+            </div>
+                            <div class="relative" x-data="{ open: false }" @mouseover="open = true" @mouseout="open = false" @click.away="open = false">
+                <button @click="open = true" :class="{'bg-gray-100': open || section == 'vargas'}" class="rounded-lg py-2 px-4 hover:bg-gray-200">
+                    Варги                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mb-px -mr-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+    </svg>                </button>
+                <div
+                    :class="{'md:block': open}"
+                    class="hidden absolute z-10 mt-px w-48 rounded-lg bg-white text-gray-500 shadow-lg focus:outline-none
+                         origin-top-left left-0 ">
+                                            <button
+                                                            @click="active = 'fractional';section = 'vargas';Livewire.emit('open-tab', 'fractional')"
+                                class="w-full text-left rounded-lg px-4 py-2 hover:bg-gray-200
+                                     hidden                                      lg:hidden "
+                                :class="{'bg-gray-100': active == 'fractional'}"
+                                                    >
+                                                        Дробные карты                        </button>
+                                            <button
+                                                            @click="active = 'ashtakavarga';section = 'vargas';Livewire.emit('open-tab', 'ashtakavarga')"
+                                class="w-full text-left rounded-lg px-4 py-2 hover:bg-gray-200
+                                                                        "
+                                :class="{'bg-gray-100': active == 'ashtakavarga'}"
+                                                    >
+                                                        Аштакаварга                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Какшья Аштакаварга                        </button>
+                                    </div>
+            </div>
+                                <div class="hidden lg:block">
+                <button
+                                            class="rounded-lg py-2 px-4 hover:bg-gray-200"
+                        :class="{'bg-gray-100': active == 'vimshottari'}"
+                        @click="active = 'vimshottari';section='';Livewire.emit('open-tab', 'vimshottari')"
+                                    >
+                                        Вимшоттари Даша
+                                    </button>
+            </div>
+                            <div class="relative" x-data="{ open: false }" @mouseover="open = true" @mouseout="open = false" @click.away="open = false">
+                <button @click="open = true" :class="{'bg-gray-100': open || section == 'dashas'}" class="rounded-lg py-2 px-4 hover:bg-gray-200">
+                    Периоды                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mb-px -mr-1 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+    </svg>                </button>
+                <div
+                    :class="{'md:block': open}"
+                    class="hidden absolute z-10 mt-px w-48 rounded-lg bg-white text-gray-500 shadow-lg focus:outline-none
+                         origin-top-right right-0 ">
+                                            <button
+                                                            @click="active = 'vimshottari';section = 'dashas';Livewire.emit('open-tab', 'vimshottari')"
+                                class="w-full text-left rounded-lg px-4 py-2 hover:bg-gray-200
+                                                                         lg:hidden "
+                                :class="{'bg-gray-100': active == 'vimshottari'}"
+                                                    >
+                                                        Вимшоттари Даша                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Навамша Даша                        </button>
+                                            <button
+                                                            @click="active = 'ashtottari';section = 'dashas';Livewire.emit('open-tab', 'ashtottari')"
+                                class="w-full text-left rounded-lg px-4 py-2 hover:bg-gray-200
+                                                                        "
+                                :class="{'bg-gray-100': active == 'ashtottari'}"
+                                                    >
+                                                        Аштоттари Даша                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Йогини Даша                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Чара Даша                        </button>
+                                            <button
+                                                            class="w-full text-left rounded-lg py-2 pl-2 pr-4 text-gray-400 hover:bg-gray-50"
+                                                    >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block text-gray-300 -mt-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                                </svg>
+                                                        Саде Сати                        </button>
+                                    </div>
+            </div>
+            </div>
+    <div id="tab-view"></div>
+    <div wire:id="azC8E3ytFqIikviPODzM" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;azC8E3ytFqIikviPODzM&quot;,&quot;name&quot;:&quot;nativity.nativity-tabs&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;dispatches&quot;:[{&quot;event&quot;:&quot;tab-updated&quot;,&quot;data&quot;:{&quot;tab&quot;:&quot;useful&quot;,&quot;section&quot;:&quot;&quot;}}],&quot;listeners&quot;:[&quot;open-tab&quot;,&quot;updated&quot;],&quot;path&quot;:&quot;https:\/\/ru.astro.expert\/h\/5400593?t=useful&quot;},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;838f250e&quot;,&quot;data&quot;:{&quot;nativity&quot;:[],&quot;currentTab&quot;:{&quot;component&quot;:&quot;classic-nativity-tab-useful&quot;,&quot;livewire&quot;:false},&quot;tabName&quot;:&quot;useful&quot;},&quot;dataMeta&quot;:{&quot;models&quot;:{&quot;nativity&quot;:{&quot;class&quot;:&quot;App\\AstroExpert\\Nativities\\Nativity&quot;,&quot;id&quot;:5400593,&quot;relations&quot;:[&quot;folder&quot;,&quot;folder.parentFolder&quot;],&quot;connection&quot;:&quot;mysql&quot;}}},&quot;checksum&quot;:&quot;ea0a7a53b116755b214a6afb2a5049ac5e554021d0a17d11b0de94b8622c3f4b&quot;}}" class="mt-10 md:mt-6 mb-6 relative">
+            <h3 class="px-2 text-lg font-bold text-gray-700 leading-tight md:hidden">
+    Карты «под рукой»</h3>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-gray-700 mt-4">
+        <div class="px-2 md:px-0">
+        <h5 class="font-medium px-1 mb-1">Навамша (D9)</h5>
+        <svg class="render"
+    viewBox="0 0 500 500"
+    xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .chart-planet {font-family:'Helvetica Neue',Helvetica,sans-serif;text-anchor:middle;}
+        .chart-sign {font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:14px;text-anchor:middle;dominant-baseline:middle;}
+        rect.tipped:hover+g.tip {opacity:1;}
+    </style>
+    <rect class="fill-current text-white" x="0" y="0" width="500" height="500" rx="23" />
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="2" d="M21,1h458a20,20 0 0 1 20,20v458a20,20 0 0 1 -20,20h-458a20,20 0 0 1 -20,-20v-458a20,20 0 0 1 20,-20"></path>
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="1" d="M1,125L499,125M1,375L499,375M125,1L125,499M375,1L375,499M1,250L125,250M375,250L499,250M250,1L250,125M250,375L250,499"></path>
+
+    <path class="text-gray-300" stroke="currentColor" stroke-width="2" d="M 250 469 L 281 500M 250 475 L 275 500"></path>
+
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="192" y="45">
+            <tspan dy="28" x="192">
+                            <tspan class="underline"
+                    dx="-4">Ma<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Mo<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="317" y="45">
+            <tspan dy="28" x="317">
+                            <tspan class=""
+                    dx="-4">Jp<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="59">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="184">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="309">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="420">
+            <tspan dy="28" x="442">
+                            <tspan class=""
+                    dx="-4">Ra<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="317" y="434">
+            <tspan dy="28" x="317">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="192" y="434">
+            <tspan dy="28" x="192">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="434">
+            <tspan dy="28" x="67">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="295">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Me<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">(Sa)<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="170">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Ve<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="45">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Su<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Ke<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+    
+    
+</svg>
+    </div>
+    <div class="px-2 md:px-0">
+        <h5 class="font-medium px-1 mb-1">Дашамша (D10)</h5>
+        <svg class="render"
+    viewBox="0 0 500 500"
+    xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .chart-planet {font-family:'Helvetica Neue',Helvetica,sans-serif;text-anchor:middle;}
+        .chart-sign {font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:14px;text-anchor:middle;dominant-baseline:middle;}
+        rect.tipped:hover+g.tip {opacity:1;}
+    </style>
+    <rect class="fill-current text-white" x="0" y="0" width="500" height="500" rx="23" />
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="2" d="M21,1h458a20,20 0 0 1 20,20v458a20,20 0 0 1 -20,20h-458a20,20 0 0 1 -20,-20v-458a20,20 0 0 1 20,-20"></path>
+    <path class="text-gray-300" fill="none" stroke="currentColor" stroke-width="1" d="M1,125L499,125M1,375L499,375M125,1L125,499M375,1L375,499M1,250L125,250M375,250L499,250M250,1L250,125M250,375L250,499"></path>
+
+    <path class="text-gray-300" stroke="currentColor" stroke-width="2" d="M 0 94 L 31 125M 0 100 L 25 125"></path>
+
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="192" y="45">
+            <tspan dy="28" x="192">
+                            <tspan class=""
+                    dx="-4">Mo<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="317" y="45">
+            <tspan dy="28" x="317">
+                            <tspan class=""
+                    dx="-4">Jp<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="59">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="184">
+            <tspan dy="28" x="442">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="295">
+            <tspan dy="28" x="442">
+                            <tspan class=""
+                    dx="-4">Ke<tspan dx="-3"></tspan></tspan>
+                            <tspan class=""
+                    dx="-4">Ma<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="442" y="420">
+            <tspan dy="28" x="442">
+                            <tspan class=""
+                    dx="-4">Me<tspan dx="-3">↑</tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="317" y="434">
+            <tspan dy="28" x="317">
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="192" y="420">
+            <tspan dy="28" x="192">
+                            <tspan class=""
+                    dx="-4">Ve<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="420">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Su<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="295">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">(Sa)<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="170">
+            <tspan dy="28" x="67">
+                            <tspan class=""
+                    dx="-4">Ra<tspan dx="-3"></tspan></tspan>
+                    </tspan>
+    </text>
+            <text class="chart-planet text-gray-900 text-2xl fill-current"
+    x="67" y="59">
+            <tspan dy="28" x="67">
+                    </tspan>
+    </text>
+    
+    
+</svg>
+    </div>
+    <div class="">
+        <h5 class="font-medium px-1 mb-1">Планеты на чакрах</h5>
+        <table class="table-auto border-collapse w-full planets text-gray-700 text-sm">
+	<thead><tr class="border-b border-gray-200 last:border-0">
+		<th>Знаки</th>
+		<th>Чакра</th>
+		<th>Планеты</th>
+	</tr></thead>
+	<tbody>
+					<tr class="border-b border-gray-200 last:border-0">
+				<td class="text-center">5, 4</td>
+				<td class="text-center">6</td>
+				<td class="">
+											Ma
+											Me
+											
+											Ve
+											Su
+									</td>
+			</tr>
+					<tr class="border-b border-gray-200 last:border-0">
+				<td class="text-center">6, 3</td>
+				<td class="text-center">5</td>
+				<td class="">
+											Ke
+									</td>
+			</tr>
+					<tr class="border-b border-gray-200 last:border-0">
+				<td class="text-center">7, 2</td>
+				<td class="text-center">4</td>
+				<td class="">
+									</td>
+			</tr>
+					<tr class="border-b border-gray-200 last:border-0">
+				<td class="text-center">8, 1</td>
+				<td class="text-center">3</td>
+				<td class="">
+											Mo
+											Jp
+											(Sa)
+									</td>
+			</tr>
+					<tr class="border-b border-gray-200 last:border-0">
+				<td class="text-center">9, 12</td>
+				<td class="text-center">2</td>
+				<td class="">
+											Ra
+									</td>
+			</tr>
+					<tr class="border-b border-gray-200 last:border-0">
+				<td class="text-center">10, 11</td>
+				<td class="text-center">1</td>
+				<td class="">
+									</td>
+			</tr>
+			</tbody>
+</table>
+    </div>
+</div>
+    
+    </div>
+
+<!-- Livewire Component wire-end:azC8E3ytFqIikviPODzM -->
+    <div wire:id="MWHNQOYndEmn38u5VhN1" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;MWHNQOYndEmn38u5VhN1&quot;,&quot;name&quot;:&quot;nativity.modals.share&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;shareNativity&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;49b3cb58&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.nativities.modals.share&quot;,&quot;titleKey&quot;:&quot;nativity\/actions.modals.share.title&quot;,&quot;messageKey&quot;:&quot;nativity\/actions.modals.share.message&quot;,&quot;okButtonKey&quot;:&quot;modals.share&quot;,&quot;cancelButtonKey&quot;:&quot;nativity\/actions.close-window&quot;,&quot;doneEvent&quot;:&quot;itemsUpdated&quot;,&quot;title&quot;:&quot;\u041f\u043e\u0434\u0435\u043b\u0438\u0442\u044c\u0441\u044f \u043a\u0430\u0440\u0442\u043e\u0439 \u00ab\u00bb&quot;,&quot;nativity&quot;:null,&quot;shared&quot;:null,&quot;visibleName&quot;:&quot;&quot;,&quot;secured&quot;:false,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;071eb4d2196c8341d00300b1bb9c89fa43751974d00dd0225144403aaa46611a&quot;}}">
+    </div>
+
+<!-- Livewire Component wire-end:MWHNQOYndEmn38u5VhN1 -->    <div wire:id="RZr5B72wphnndUGVukjn" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;RZr5B72wphnndUGVukjn&quot;,&quot;name&quot;:&quot;nativity.modals.move&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;moveNativity&quot;,&quot;itemsUpdated&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;49b3cb58&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.nativities.modals.move&quot;,&quot;titleKey&quot;:&quot;nativity\/actions.modals.move.title&quot;,&quot;messageKey&quot;:&quot;nativity\/actions.modals.move.message&quot;,&quot;okButtonKey&quot;:&quot;modals.move&quot;,&quot;cancelButtonKey&quot;:&quot;modals.cancel&quot;,&quot;doneEvent&quot;:&quot;itemsUpdated&quot;,&quot;title&quot;:&quot;&quot;,&quot;nativity&quot;:null,&quot;folders&quot;:[],&quot;selectedFolder&quot;:null,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;b8c1902cda4c5cb698380c911ed3952de35b5fccc1400b7e157cdc225cf0cae1&quot;}}">
+    </div>
+
+<!-- Livewire Component wire-end:RZr5B72wphnndUGVukjn -->    <div wire:id="1gvSMoW5P93wNlKUWD7Y" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;1gvSMoW5P93wNlKUWD7Y&quot;,&quot;name&quot;:&quot;nativity.modals.confirm-delete&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;confirmDeleteNativity&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;49b3cb58&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.components.modals.confirm-with-alert&quot;,&quot;titleKey&quot;:&quot;nativity\/actions.modals.delete.title&quot;,&quot;messageKey&quot;:&quot;nativity\/actions.modals.delete.message&quot;,&quot;okButtonKey&quot;:&quot;modals.delete&quot;,&quot;cancelButtonKey&quot;:&quot;modals.cancel&quot;,&quot;doneEvent&quot;:&quot;deleteNativity&quot;,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;590f73a2e760b7b8835d1c3694adb6eaf3c21e3e3d6cc714fa51fce869b644ef&quot;}}">
+    </div>
+
+<!-- Livewire Component wire-end:1gvSMoW5P93wNlKUWD7Y -->    <div wire:id="9o0333Ci4ga4VZk1mAyT" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;9o0333Ci4ga4VZk1mAyT&quot;,&quot;name&quot;:&quot;nativity.modals.astro-settings&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;mainSettings&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;fb35db33&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.nativities.modals.settings.main&quot;,&quot;titleKey&quot;:&quot;nativity\/settings.title&quot;,&quot;okButtonKey&quot;:&quot;modals.save&quot;,&quot;cancelButtonKey&quot;:&quot;modals.cancel&quot;,&quot;doneEvent&quot;:&quot;updated&quot;,&quot;chartType&quot;:&quot;square&quot;,&quot;squareAsc&quot;:&quot;line&quot;,&quot;oldEphemerisTime&quot;:true,&quot;trueNodes&quot;:true,&quot;planetsUpa&quot;:false,&quot;messageKey&quot;:&quot;&quot;,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;0327f67d0fabe9c2f5f30ae2b29581b7c1a8701dceee3d7aac2d5371fbc26273&quot;}}" x-data="{ trueNodesInfo: false, oldEphemerisTimeInfo: false }">
+    </div>
+
+<!-- Livewire Component wire-end:9o0333Ci4ga4VZk1mAyT -->    <div wire:id="jyjAT5cyITD3vf9zUMhJ" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;jyjAT5cyITD3vf9zUMhJ&quot;,&quot;name&quot;:&quot;nativity.modals.navamsha-dasha-settings&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;navamshaDashaSettings&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;fb35db33&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.nativities.modals.settings.navamsha-dasha&quot;,&quot;titleKey&quot;:&quot;nativity\/settings.navamsha-dasha.title&quot;,&quot;okButtonKey&quot;:&quot;modals.save&quot;,&quot;cancelButtonKey&quot;:&quot;modals.cancel&quot;,&quot;doneEvent&quot;:&quot;updated&quot;,&quot;method&quot;:&quot;jaymini&quot;,&quot;messageKey&quot;:&quot;&quot;,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;94635f61f5d9bb715f1c1a949e8623b6cbd05f82e89ca50119fba56260f51103&quot;}}" x-data="{ trueNodesInfo: false, oldEphemerisTimeInfo: false }">
+    </div>
+
+<!-- Livewire Component wire-end:jyjAT5cyITD3vf9zUMhJ -->    <div wire:id="cZlpvAPrC47qOue41Zkj" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;cZlpvAPrC47qOue41Zkj&quot;,&quot;name&quot;:&quot;nativity.modals.chara-dasha-settings&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;charaDashaSettings&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;fb35db33&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.nativities.modals.settings.chara-dasha&quot;,&quot;titleKey&quot;:&quot;nativity\/settings.chara-dasha.title&quot;,&quot;okButtonKey&quot;:&quot;modals.save&quot;,&quot;cancelButtonKey&quot;:&quot;modals.cancel&quot;,&quot;doneEvent&quot;:&quot;updated&quot;,&quot;method&quot;:&quot;rao&quot;,&quot;messageKey&quot;:&quot;&quot;,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;e394f0295694e96fecd7b5c221f640dec17b95de86977db71f2bdd20d3b70342&quot;}}" x-data="{ trueNodesInfo: false, oldEphemerisTimeInfo: false }">
+    </div>
+
+<!-- Livewire Component wire-end:cZlpvAPrC47qOue41Zkj -->    <div wire:id="Z5DG2uKU1WAjwByCiJrI" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;Z5DG2uKU1WAjwByCiJrI&quot;,&quot;name&quot;:&quot;nativity.modals.charakaraka-settings&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;charakarakaSettings&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;fb35db33&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.nativities.modals.settings.charakarakas&quot;,&quot;titleKey&quot;:&quot;nativity\/settings.charakarakas.title&quot;,&quot;okButtonKey&quot;:&quot;modals.save&quot;,&quot;cancelButtonKey&quot;:&quot;modals.cancel&quot;,&quot;doneEvent&quot;:&quot;updated&quot;,&quot;method&quot;:&quot;7planets&quot;,&quot;messageKey&quot;:&quot;&quot;,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;15e6987fe47010ecab65f8b85f31f67f7e756525c60b2550c53c623b8e5485f4&quot;}}" x-data="{ trueNodesInfo: false, oldEphemerisTimeInfo: false }">
+    </div>
+
+<!-- Livewire Component wire-end:Z5DG2uKU1WAjwByCiJrI -->    <div wire:id="0BkROP3o1fUuhE3KPFxQ" wire:initial-data="{&quot;fingerprint&quot;:{&quot;id&quot;:&quot;0BkROP3o1fUuhE3KPFxQ&quot;,&quot;name&quot;:&quot;nativity.modals.varga-settings&quot;,&quot;locale&quot;:&quot;ru&quot;,&quot;path&quot;:&quot;h\/5400593&quot;,&quot;method&quot;:&quot;GET&quot;,&quot;v&quot;:&quot;acj&quot;},&quot;effects&quot;:{&quot;listeners&quot;:[&quot;vargaSettings&quot;]},&quot;serverMemo&quot;:{&quot;children&quot;:[],&quot;errors&quot;:[],&quot;htmlHash&quot;:&quot;fb35db33&quot;,&quot;data&quot;:{&quot;view&quot;:&quot;themes.classic.nativities.modals.settings.vargas&quot;,&quot;titleKey&quot;:&quot;nativity\/settings.vargas.title&quot;,&quot;okButtonKey&quot;:&quot;modals.save&quot;,&quot;cancelButtonKey&quot;:&quot;modals.cancel&quot;,&quot;doneEvent&quot;:&quot;updated&quot;,&quot;methodD2&quot;:&quot;D2parashara&quot;,&quot;methodD3&quot;:&quot;D3parashara&quot;,&quot;methodD4&quot;:&quot;D4parashara&quot;,&quot;methodD5&quot;:&quot;cyclic&quot;,&quot;methodD8&quot;:&quot;cyclic&quot;,&quot;methodD9&quot;:&quot;cyclic&quot;,&quot;methodD10&quot;:&quot;D10parashara&quot;,&quot;methodD11&quot;:&quot;cyclic&quot;,&quot;methodD12&quot;:&quot;D12parashara&quot;,&quot;methodD16&quot;:&quot;cyclic&quot;,&quot;methodD24&quot;:&quot;D24parashara&quot;,&quot;methodD30&quot;:&quot;D30parashara&quot;,&quot;methodD40&quot;:&quot;D40parashara&quot;,&quot;methodD45&quot;:&quot;D45parashara&quot;,&quot;methodD60&quot;:&quot;D60parashara&quot;,&quot;messageKey&quot;:&quot;&quot;,&quot;message&quot;:&quot;&quot;,&quot;show&quot;:false,&quot;confirmedId&quot;:0},&quot;dataMeta&quot;:[],&quot;checksum&quot;:&quot;233a73382b73011d35b1dccc2ac70a26f27865da299734a475080b63abbb5d6e&quot;}}" x-data="{ trueNodesInfo: false, oldEphemerisTimeInfo: false }">
+    </div>
+
+<!-- Livewire Component wire-end:0BkROP3o1fUuhE3KPFxQ --></div>
+
+<!-- Livewire Component wire-end:Rk8vTXL3n0IvH7xkjHo2 -->
+            </main>
+        </div>
+        <footer class="flex-shrink-0 mt-8 bg-gray-900 text-gray-50 print:hidden">
+    <div class="max-w-6xl mx-auto flex flex-col lg:flex-row p-6">
+        <div class="w-full lg:w-1/3">
+            © Университет Никифоровых<br>
+                            <a href="https://nikiforovy.ru/" target="_blank">Официальный сайт Университета</a>
+                    </div>
+        <div class="w-full lg:w-1/3">
+            <a href="/privacy">Политика конфиденциальности</a><br>
+            <a href="/agreement">Пользовательское соглашение</a><br>
+                            <a href="/oferta">Лицензионный договор</a>
+                                </div>
+        <div class="w-full lg:w-1/3">
+            <a href="/prices">Тарифные планы</a><br>
+            <a href="/contacts">Контакты</a><br>
+        </div>
+    </div>
+</footer>
+        <form id="logout-form" action="/logout" method="POST" style="display: none;"><input type="hidden" name="_token" value="DOnDwmYla7x3XPPkbSDsmvMODaMDguNzCO2vYwgB"></form>
+    </div>
+    <script defer src="https://unpkg.com/alpinejs@3.9.1/dist/cdn.min.js"></script>
+    <script src="/livewire/livewire.js?id=90730a3b0e7144480175" data-turbo-eval="false" data-turbolinks-eval="false" ></script><script data-turbo-eval="false" data-turbolinks-eval="false" >window.livewire = new Livewire();window.Livewire = window.livewire;window.livewire_app_url = '';window.livewire_token = 'DOnDwmYla7x3XPPkbSDsmvMODaMDguNzCO2vYwgB';window.deferLoadingAlpine = function (callback) {window.addEventListener('livewire:load', function () {callback();});};let started = false;window.addEventListener('alpine:initializing', function () {if (! started) {window.livewire.start();started = true;}});document.addEventListener("DOMContentLoaded", function () {if (! started) {window.livewire.start();started = true;}});</script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.1/cookieconsent.min.js" data-cfasync="false"></script>
+    <script>
+    window.addEventListener('load', function(){
+      window.cookieconsent.initialise({
+       revokeBtn: "<div class='cc-revoke'></div>",
+       type: "opt-in",
+       position: "bottom-right",
+       theme: "classic",
+       palette: {
+           popup: {
+               background: "#0c4a6e",
+               text: "#f0f9ff"
+            },
+           button: {
+               background: "#0284c7",
+               text: "#f0f9ff"
+            }
+        },
+       content: {
+           message: "Мы используем файлы cookie, чтобы предоставить вам максимум полезных функций и улучшить работу нашего сайта. Подробнее можно прочитать в нашей",
+           link: "Политике конфиденциальности.",
+           allow: "Разрешить",
+           deny: "Отклонить",
+           href: "/privacy"
+        },
+        onInitialise: function(status) {
+          if(status == cookieconsent.status.allow) myScripts();
+        },
+        onStatusChange: function(status) {
+          if (this.hasConsented()) myScripts();
+        }
+      })
+    });
+
+    function myScripts() {
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+          ga('create', 'UA-127707774-1', 'auto');
+          ga('send', 'pageview');
+    }
+    </script>
+</body>
+</html>
