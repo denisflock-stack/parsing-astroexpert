@@ -63,9 +63,13 @@ const data = Array.from(rows)
 
 
 // Нормализация подписей из SVG:
-// "(Sa)" -> "Sa", пробелы и лишние символы убираются.
+// "(Sa)" -> "Sa", "Me↑" -> "Me", "Me↓" -> "Me"
+// пробелы и служебные символы убираются.
 function normalizePlanetName(name = '') {
-  return name.replace(/[()]/g, '').trim();
+  return name
+    .replace(/[()↑↓]/g, '')
+    .replace(/\s+/g, '')
+    .trim();
 }
 
 
