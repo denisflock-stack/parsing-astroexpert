@@ -137,6 +137,19 @@ function renderList() {
   syncSelectAll();
 }
 
+function buildChartsForPopup(localizedResult) {
+  if (!localizedResult) return [];
+
+  const d1Chart = localizedResult.dataWithHouses
+    ? [{
+      chartName: localizedResult.dataWithHouses.chartName || 'D1',
+      planets: localizedResult.dataWithHouses.planets || []
+    }]
+    : [];
+
+  return [...d1Chart, ...(localizedResult.parsedCharts || [])];
+}
+
 function syncSelectAll() {
   const total = state.charts.length;
   elements.selectAll.checked = total > 0 && state.selected.size === total;
@@ -159,7 +172,7 @@ async function requestParse() {
 
   state.parsed = response.data;
   const localized = state.language === 'ru' ? response.data.finalResultTextRu : response.data.finalResultTextEn;
-  state.charts = (localized?.parsedCharts || []).slice(0, 100);
+  state.charts = buildChartsForPopup(localized).slice(0, 100);
   state.selected.clear();
 
   updateHeader();
@@ -195,7 +208,7 @@ function init() {
     state.language = state.language === 'en' ? 'ru' : 'en';
     if (state.parsed) {
       const localized = state.language === 'ru' ? state.parsed.finalResultTextRu : state.parsed.finalResultTextEn;
-      state.charts = localized?.parsedCharts || [];
+      state.charts = buildChartsForPopup(localized);
     }
     updateLabels();
     updateHeader();
