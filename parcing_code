@@ -286,10 +286,38 @@ const dataWithHouses = data.map(item => {
   };
 });
 
+// 5) Итоговый "чистый" вывод без служебных полей:
+// - из dataWithHouses оставляем только нужные астрополя
+// - из parsedCharts разворачиваем planets и оставляем только нужные поля
+const finalDataWithHouses = dataWithHouses.map(item => ({
+  planet: item.planet,
+  sign: item.sign,
+  degree: item.degree,
+  nakshatra: item.nakshatra,
+  pada: item.pada,
+  house: item.house,
+  retrograde: item.retrograde
+}));
 
-// 5) Вывод:
-// - D1 + таблица (основной итог)
-// - все найденные карты (для отладки/проверки)
+const finalParsedCharts = parsedCharts.flatMap(chart =>
+  chart.planets.map(planet => ({
+    chartName: chart.chartName,
+    planet: planet.planet,
+    retrograde: planet.retrograde,
+    sign: planet.sign,
+    house: planet.house
+  }))
+);
+
+const finalResult = {
+  dataWithHouses: finalDataWithHouses,
+  parsedCharts: finalParsedCharts
+};
+
+// 6) Вывод:
+// - исходные структуры для отладки
+// - финальный "чистый" результат для дальнейшего использования
 
 console.log('D1 + таблица:', dataWithHouses);
 console.log('Все найденные карты (D1/Dx 500x500):', parsedCharts);
+console.log('Итоговый результат (только нужные поля):', finalResult);
