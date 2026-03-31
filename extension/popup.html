@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Astro Parser D1</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div>
+        <h1 id="d1Title">D1</h1>
+        <p id="userData" class="user-data">-</p>
+      </div>
+      <button id="langToggle" class="secondary">EN</button>
+    </header>
+
+    <section class="controls">
+      <button id="refreshBtn">Parse</button>
+      <button id="copySelectedBtn" class="accent">Copy selected</button>
+    </section>
+
+    <section class="controls small">
+      <label><input type="checkbox" id="selectAll" /> <span id="selectAllLabel">Select all</span></label>
+      <button id="clearSelection" class="secondary" type="button">Clear</button>
+    </section>
+
+    <ul id="chartList" class="chart-list"></ul>
+    <p id="status" class="status"></p>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
