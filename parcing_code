@@ -288,6 +288,7 @@ const dataWithHouses = data.map(item => {
 
 // 5) Итоговый "чистый" вывод без служебных полей:
 // - из dataWithHouses оставляем только нужные астрополя
+
 // - из parsedCharts сохраняем группировку по картам и оставляем только нужные поля
 const finalDataWithHouses = dataWithHouses.map(item => ({
   planet: item.planet,
@@ -320,6 +321,7 @@ const finalResult = {
   dataWithHouses: finalDataWithHouses,
   parsedCharts: finalParsedCharts
 };
+
 
 // 6) Вывод:
 // - исходные структуры для отладки
