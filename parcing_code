@@ -103,6 +103,27 @@ function getChartName(svg, index) {
   return `Карта #${index + 1}`;
 }
 
+// Данные владельца карты (имя + базовые данные рождения) из шапки страницы.
+function getOwnerData() {
+  const ownerName =
+    document.querySelector('main .text-gray-700.font-bold.text-xl.leading-tight')?.innerText.trim()
+    || document.querySelector('span.text-sm.font-bold.text-gray-700')?.innerText.trim()
+    || null;
+
+  const detailsBlock = document.querySelector('main .text-gray-500.text-sm');
+  const detailLines = detailsBlock
+    ? Array.from(detailsBlock.querySelectorAll(':scope > div'))
+        .map(el => el.innerText.replace(/\s+/g, ' ').trim())
+        .filter(Boolean)
+    : [];
+
+  return {
+    name: ownerName,
+    birthDateTime: detailLines[0] || null,
+    birthPlace: detailLines[1] || null
+  };
+}
+
 
 // Порядок внешних ячеек (по часовой стрелке) для южной сетки 4x4.
 // Используется для вычисления номера дома от Asc.
@@ -254,6 +275,8 @@ const parsedCharts = chartSvgs
 // 3) Из всех карт выбираем D1 (600x600), чтобы связать с табличными планетами.
 const d1Chart = parsedCharts.find(chart => /0 0 600 600/.test(chart.viewBox));
 const d1ByPlanet = new Map((d1Chart?.planets || []).map(item => [item.planet, item]));
+const d1ChartName = d1Chart?.chartName || null;
+const ownerData = getOwnerData();
 
 const ascSign = data.find(x => x.planet === 'Asc')?.sign;
 const ascSignNumber = signToNumber[ascSign] || null;
@@ -291,6 +314,9 @@ const dataWithHouses = data.map(item => {
 
 // - из parsedCharts сохраняем группировку по картам и оставляем только нужные поля
 const finalDataWithHouses = dataWithHouses.map(item => ({
+  chartName: d1ChartName,
+  owner: ownerData,
+
   planet: item.planet,
   sign: item.sign,
   degree: item.degree,
