@@ -350,11 +350,191 @@ const finalResult = {
   parsedCharts: finalParsedCharts
 };
 
+// Переводы для единообразного текстового вывода на ru/en.
+const signTranslations = {
+  'Овен': { ru: 'Овен', en: 'Aries' },
+  'Телец': { ru: 'Телец', en: 'Taurus' },
+  'Близнецы': { ru: 'Близнецы', en: 'Gemini' },
+  'Рак': { ru: 'Рак', en: 'Cancer' },
+  'Лев': { ru: 'Лев', en: 'Leo' },
+  'Дева': { ru: 'Дева', en: 'Virgo' },
+  'Весы': { ru: 'Весы', en: 'Libra' },
+  'Скорпион': { ru: 'Скорпион', en: 'Scorpio' },
+  'Стрелец': { ru: 'Стрелец', en: 'Sagittarius' },
+  'Козерог': { ru: 'Козерог', en: 'Capricorn' },
+  'Водолей': { ru: 'Водолей', en: 'Aquarius' },
+  'Рыбы': { ru: 'Рыбы', en: 'Pisces' }
+};
 
-// 6) Вывод:
+const nakshatraTranslations = {
+  'Ашвини': { ru: 'Ашвини', en: 'Ashwini' },
+  'Бхарани': { ru: 'Бхарани', en: 'Bharani' },
+  'Криттика': { ru: 'Криттика', en: 'Krittika' },
+  'Рохини': { ru: 'Рохини', en: 'Rohini' },
+  'Мригашира': { ru: 'Мригашира', en: 'Mrigashira' },
+  'Ардра': { ru: 'Ардра', en: 'Ardra' },
+  'Пунарвасу': { ru: 'Пунарвасу', en: 'Punarvasu' },
+  'Пушья': { ru: 'Пушья', en: 'Pushya' },
+  'Ашлеша': { ru: 'Ашлеша', en: 'Ashlesha' },
+  'Магха': { ru: 'Магха', en: 'Magha' },
+  'Пурва Пхалгуни': { ru: 'Пурва Пхалгуни', en: 'Purva Phalguni' },
+  'Уттара Пхалгуни': { ru: 'Уттара Пхалгуни', en: 'Uttara Phalguni' },
+  'Хаста': { ru: 'Хаста', en: 'Hasta' },
+  'Читра': { ru: 'Читра', en: 'Chitra' },
+  'Свати': { ru: 'Свати', en: 'Swati' },
+  'Вишакха': { ru: 'Вишакха', en: 'Vishakha' },
+  'Анурадха': { ru: 'Анурадха', en: 'Anuradha' },
+  'Джйештха': { ru: 'Джйештха', en: 'Jyeshtha' },
+  'Мула': { ru: 'Мула', en: 'Mula' },
+  'Пурва Ашадха': { ru: 'Пурва Ашадха', en: 'Purva Ashadha' },
+  'Уттара Ашадха': { ru: 'Уттара Ашадха', en: 'Uttara Ashadha' },
+  'Шравана': { ru: 'Шравана', en: 'Shravana' },
+  'Дхаништха': { ru: 'Дхаништха', en: 'Dhanishta' },
+  'Шатабхиша': { ru: 'Шатабхиша', en: 'Shatabhisha' },
+  'Пурва Бхадрапада': { ru: 'Пурва Бхадрапада', en: 'Purva Bhadrapada' },
+  'Уттара Бхадрапада': { ru: 'Уттара Бхадрапада', en: 'Uttara Bhadrapada' },
+  'Ревати': { ru: 'Ревати', en: 'Revati' }
+};
+
+const houseLabelByLanguage = {
+  ru: 'дом',
+  en: 'house'
+};
+
+const padaLabelByLanguage = {
+  ru: 'пада',
+  en: 'pada'
+};
+
+const chartNameTranslations = {
+  'Хора (D2)': { ru: 'Хора (D2)', en: 'Hora (D2)' },
+  'Дреккана (D3)': { ru: 'Дреккана (D3)', en: 'Drekkana (D3)' },
+  'Чатуртамша (D4)': { ru: 'Чатуртамша (D4)', en: 'Chaturthamsha (D4)' },
+  'Панчамша (D5)': { ru: 'Панчамша (D5)', en: 'Panchamsha (D5)' },
+  'Шаштамша (D6)': { ru: 'Шаштамша (D6)', en: 'Shashtamsha (D6)' },
+  'Саптамша (D7)': { ru: 'Саптамша (D7)', en: 'Saptamsha (D7)' },
+  'Аштамша (D8)': { ru: 'Аштамша (D8)', en: 'Ashtamsha (D8)' },
+  'Навамша (D9)': { ru: 'Навамша (D9)', en: 'Navamsha (D9)' },
+  'Дашамша (D10)': { ru: 'Дашамша (D10)', en: 'Dashamsha (D10)' },
+  'Экадашамша (D11)': { ru: 'Экадашамша (D11)', en: 'Ekadashamsha (D11)' },
+  'Двадашамша (D12)': { ru: 'Двадашамша (D12)', en: 'Dvadashamsha (D12)' },
+  'Шодашамша (D16)': { ru: 'Шодашамша (D16)', en: 'Shodashamsha (D16)' },
+  'Карта': { ru: 'Карта', en: 'Chart' }
+};
+
+const planetNameTranslations = {
+  Asc: { ru: 'Asc', en: 'Asc' },
+  Su: { ru: 'Солнце', en: 'Sun' },
+  Mo: { ru: 'Луна', en: 'Moon' },
+  Ma: { ru: 'Марс', en: 'Mars' },
+  Me: { ru: 'Меркурий', en: 'Mercury' },
+  Jp: { ru: 'Юпитер', en: 'Jupiter' },
+  Ve: { ru: 'Венера', en: 'Venus' },
+  Sa: { ru: 'Сатурн', en: 'Saturn' },
+  Ra: { ru: 'Раху', en: 'Rahu' },
+  Ke: { ru: 'Кету', en: 'Ketu' }
+};
+
+function translateByLanguage(value, translations, language) {
+  if (!value) return value;
+
+  if (translations[value]) {
+    return translations[value][language] || value;
+  }
+
+  const reverseKey = Object.keys(translations).find(key =>
+    translations[key].ru === value || translations[key].en === value
+  );
+
+  return reverseKey ? (translations[reverseKey][language] || value) : value;
+}
+
+function localizeChartName(chartName, language) {
+  if (!chartName) return chartName;
+
+  // Имя D1 оставляем неизменным для любого языка.
+  if (/\bD1\b/i.test(chartName)) return chartName;
+
+  const directMatch = translateByLanguage(chartName, chartNameTranslations, language);
+  if (directMatch !== chartName) return directMatch;
+
+  // Поддержка шаблона "Карта #N" / "Chart #N".
+  const chartNumberMatch = chartName.match(/^(Карта|Chart)\s*#\s*(\d+)$/i);
+  if (chartNumberMatch) {
+    const label = chartNameTranslations.Карта[language] || chartNameTranslations.Карта.ru;
+    return `${label} #${chartNumberMatch[2]}`;
+  }
+
+  return chartName;
+}
+
+function formatFinalResultSingleLanguage(result, language = 'ru') {
+  const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
+  const padaLabel = padaLabelByLanguage[language] || padaLabelByLanguage.ru;
+  const localizePlanetName = (planetCode) =>
+    translateByLanguage(planetCode, planetNameTranslations, language);
+  const withRetrogradeTail = (baseText, retrograde) =>
+    retrograde ? `${baseText} (R)` : baseText;
+  const normalizeDegree = (degree) =>
+    (degree || '')
+      .replace(/˚/g, '°')
+      .replace(/'/g, '′')
+      .replace(/\\"/g, '″')
+      .replace(/"/g, '″');
+
+  const dataWithHousesText = {
+    chartName: localizeChartName(result.dataWithHouses?.chartName || null, language),
+    owner: result.dataWithHouses?.owner || null,
+    planets: (result.dataWithHouses?.planets || []).map(planet => {
+      const planetName = localizePlanetName(planet.planet);
+      const sign = translateByLanguage(planet.sign, signTranslations, language);
+      const nakshatra = translateByLanguage(planet.nakshatra, nakshatraTranslations, language);
+      const baseText = `${planetName}: ${sign} ${normalizeDegree(planet.degree)}, ${nakshatra} - ${padaLabel} ${planet.pada}, ${houseLabel} ${planet.house}`;
+      return withRetrogradeTail(baseText, planet.retrograde);
+    })
+  };
+
+  const parsedChartsText = (result.parsedCharts || []).map(chart => ({
+    chartName: localizeChartName(chart.chartName, language),
+    planets: (chart.planets || []).map(planet => {
+      const planetName = localizePlanetName(planet.planet);
+      const sign = translateByLanguage(planet.sign, signTranslations, language);
+      const baseText = `${planetName}: ${sign}, ${houseLabel} ${planet.house}`;
+      return withRetrogradeTail(baseText, planet.retrograde);
+    })
+  }));
+
+  return {
+    dataWithHouses: dataWithHousesText,
+    parsedCharts: parsedChartsText
+  };
+}
+
+// 6) Преобразование finalResult в текст:
+// - language: "ru" | "en" | "both"
+// - группировки остаются как в finalResult.
+function formatFinalResultToText(result, language = 'ru') {
+  if (language === 'both') {
+    return {
+      ru: formatFinalResultSingleLanguage(result, 'ru'),
+      en: formatFinalResultSingleLanguage(result, 'en')
+    };
+  }
+
+  return formatFinalResultSingleLanguage(result, language);
+}
+
+const finalResultTextRu = formatFinalResultToText(finalResult, 'ru');
+const finalResultTextEn = formatFinalResultToText(finalResult, 'en');
+const finalResultTextBoth = formatFinalResultToText(finalResult, 'both');
+
+// 7) Вывод:
 // - исходные структуры для отладки
 // - финальный "чистый" результат для дальнейшего использования
 
 console.log('D1 + таблица:', dataWithHouses);
 console.log('Все найденные карты (D1/Dx 500x500):', parsedCharts);
 console.log('Итоговый результат (только нужные поля):', finalResult);
+console.log('Итоговый результат (текстовый формат, RU):', finalResultTextRu);
+console.log('Final result (text format, EN):', finalResultTextEn);
+console.log('Итоговый результат (текстовый формат, RU + EN):', finalResultTextBoth);
