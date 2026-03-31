@@ -401,6 +401,11 @@ const houseLabelByLanguage = {
   en: 'house'
 };
 
+const padaLabelByLanguage = {
+  ru: 'пада',
+  en: 'pada'
+};
+
 const chartNameTranslations = {
   'Хора (D2)': { ru: 'Хора (D2)', en: 'Hora (D2)' },
   'Дреккана (D3)': { ru: 'Дреккана (D3)', en: 'Drekkana (D3)' },
@@ -466,6 +471,7 @@ function localizeChartName(chartName, language) {
 function formatFinalResultSingleLanguage(result, language = 'ru') {
   const formatRetrogradeSuffix = (retrograde) => (retrograde ? ' R' : '');
   const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
+  const padaLabel = padaLabelByLanguage[language] || padaLabelByLanguage.ru;
   const localizePlanetName = (planetCode) =>
     translateByLanguage(planetCode, planetNameTranslations, language);
 
@@ -473,7 +479,7 @@ function formatFinalResultSingleLanguage(result, language = 'ru') {
     chartName: localizeChartName(result.dataWithHouses?.chartName || null, language),
     owner: result.dataWithHouses?.owner || null,
     planets: (result.dataWithHouses?.planets || []).map(planet =>
-      `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${planet.degree} ${translateByLanguage(planet.nakshatra, nakshatraTranslations, language)} ${planet.pada} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
+      `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${planet.degree} ${translateByLanguage(planet.nakshatra, nakshatraTranslations, language)} ${padaLabel} ${planet.pada} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
     )
   };
 
