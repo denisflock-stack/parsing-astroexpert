@@ -475,6 +475,12 @@ function formatFinalResultSingleLanguage(result, language = 'ru') {
     translateByLanguage(planetCode, planetNameTranslations, language);
   const withRetrogradeTail = (baseText, retrograde) =>
     retrograde ? `${baseText}, R` : baseText;
+  const normalizeDegree = (degree) =>
+    (degree || '')
+      .replace(/˚/g, '°')
+      .replace(/'/g, '′')
+      .replace(/\\"/g, '″')
+      .replace(/"/g, '″');
 
   const dataWithHousesText = {
     chartName: localizeChartName(result.dataWithHouses?.chartName || null, language),
@@ -483,7 +489,7 @@ function formatFinalResultSingleLanguage(result, language = 'ru') {
       const planetName = localizePlanetName(planet.planet);
       const sign = translateByLanguage(planet.sign, signTranslations, language);
       const nakshatra = translateByLanguage(planet.nakshatra, nakshatraTranslations, language);
-      const baseText = `${planetName}: ${sign} ${planet.degree}, ${nakshatra} -${padaLabel} ${planet.pada}, ${houseLabel} ${planet.house}`;
+      const baseText = `${planetName}: ${sign} ${normalizeDegree(planet.degree)}, ${nakshatra} -${padaLabel} ${planet.pada}, ${houseLabel} ${planet.house}`;
       return withRetrogradeTail(baseText, planet.retrograde);
     })
   };
