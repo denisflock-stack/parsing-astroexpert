@@ -401,6 +401,19 @@ const houseLabelByLanguage = {
   en: 'house'
 };
 
+const planetNameTranslations = {
+  Asc: { ru: 'Asc', en: 'Asc' },
+  Su: { ru: 'Солнце', en: 'Sun' },
+  Mo: { ru: 'Луна', en: 'Moon' },
+  Ma: { ru: 'Марс', en: 'Mars' },
+  Me: { ru: 'Меркурий', en: 'Mercury' },
+  Jp: { ru: 'Юпитер', en: 'Jupiter' },
+  Ve: { ru: 'Венера', en: 'Venus' },
+  Sa: { ru: 'Сатурн', en: 'Saturn' },
+  Ra: { ru: 'Раху', en: 'Rahu' },
+  Ke: { ru: 'Кету', en: 'Ketu' }
+};
+
 function translateByLanguage(value, translations, language) {
   if (!value) return value;
 
@@ -418,19 +431,21 @@ function translateByLanguage(value, translations, language) {
 function formatFinalResultSingleLanguage(result, language = 'ru') {
   const formatRetrogradeSuffix = (retrograde) => (retrograde ? ' R' : '');
   const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
+  const localizePlanetName = (planetCode) =>
+    translateByLanguage(planetCode, planetNameTranslations, language);
 
   const dataWithHousesText = {
     chartName: result.dataWithHouses?.chartName || null,
     owner: result.dataWithHouses?.owner || null,
     planets: (result.dataWithHouses?.planets || []).map(planet =>
-      `${planet.planet} ${translateByLanguage(planet.sign, signTranslations, language)} ${planet.degree} ${translateByLanguage(planet.nakshatra, nakshatraTranslations, language)} ${planet.pada} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
+      `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${planet.degree} ${translateByLanguage(planet.nakshatra, nakshatraTranslations, language)} ${planet.pada} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
     )
   };
 
   const parsedChartsText = (result.parsedCharts || []).map(chart => ({
     chartName: chart.chartName,
     planets: (chart.planets || []).map(planet =>
-      `${planet.planet} ${translateByLanguage(planet.sign, signTranslations, language)} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
+      `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
     )
   }));
 
