@@ -288,7 +288,9 @@ const dataWithHouses = data.map(item => {
 
 // 5) Итоговый "чистый" вывод без служебных полей:
 // - из dataWithHouses оставляем только нужные астрополя
-// - из parsedCharts разворачиваем planets и оставляем только нужные поля
+
+// - из parsedCharts сохраняем группировку по картам и оставляем только нужные поля
+
 const finalDataWithHouses = dataWithHouses.map(item => ({
   planet: item.planet,
   sign: item.sign,
@@ -299,15 +301,19 @@ const finalDataWithHouses = dataWithHouses.map(item => ({
   retrograde: item.retrograde
 }));
 
-const finalParsedCharts = parsedCharts.flatMap(chart =>
-  chart.planets.map(planet => ({
-    chartName: chart.chartName,
+
+const finalParsedCharts = parsedCharts.map(chart => ({
+  chartName: chart.chartName,
+  planets: chart.planets.map(planet => ({
+
     planet: planet.planet,
     retrograde: planet.retrograde,
     sign: planet.sign,
     house: planet.house
   }))
-);
+
+}));
+
 
 const finalResult = {
   dataWithHouses: finalDataWithHouses,
