@@ -313,18 +313,20 @@ const dataWithHouses = data.map(item => {
 // - из dataWithHouses оставляем только нужные астрополя
 
 // - из parsedCharts сохраняем группировку по картам и оставляем только нужные поля
-const finalDataWithHouses = dataWithHouses.map(item => ({
+const finalDataWithHouses = {
   chartName: d1ChartName,
   owner: ownerData,
+  planets: dataWithHouses.map(item => ({
+    planet: item.planet,
+    sign: item.sign,
+    degree: item.degree,
+    nakshatra: item.nakshatra,
+    pada: item.pada,
+    house: item.house,
+    retrograde: item.retrograde
+  }))
+};
 
-  planet: item.planet,
-  sign: item.sign,
-  degree: item.degree,
-  nakshatra: item.nakshatra,
-  pada: item.pada,
-  house: item.house,
-  retrograde: item.retrograde
-}));
 
 const finalParsedCharts = parsedCharts
   .filter(chart => {
