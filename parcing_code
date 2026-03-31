@@ -361,7 +361,7 @@ function formatFinalResultToText(result) {
     chartName: result.dataWithHouses?.chartName || null,
     owner: result.dataWithHouses?.owner || null,
     planets: (result.dataWithHouses?.planets || []).map(planet =>
-      `${planet.planet} ${planet.sign} ${planet.degree} ${planet.nakshatra} ${planet.pada} house ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
+      `${planet.planet} ${planet.sign} ${planet.degree} ${planet.nakshatra} pada ${planet.pada} house ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
     )
   };
 
