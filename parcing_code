@@ -290,7 +290,6 @@ const dataWithHouses = data.map(item => {
 // - из dataWithHouses оставляем только нужные астрополя
 
 // - из parsedCharts сохраняем группировку по картам и оставляем только нужные поля
-
 const finalDataWithHouses = dataWithHouses.map(item => ({
   planet: item.planet,
   sign: item.sign,
@@ -301,24 +300,28 @@ const finalDataWithHouses = dataWithHouses.map(item => ({
   retrograde: item.retrograde
 }));
 
-
-const finalParsedCharts = parsedCharts.map(chart => ({
-  chartName: chart.chartName,
-  planets: chart.planets.map(planet => ({
-
-    planet: planet.planet,
-    retrograde: planet.retrograde,
-    sign: planet.sign,
-    house: planet.house
-  }))
-
-}));
-
+const finalParsedCharts = parsedCharts
+  .filter(chart => {
+    const name = (chart.chartName || '').trim();
+    const isD1 = /\bD1\b/i.test(name);
+    const isPlainNavamsha = /^Навамша$/i.test(name);
+    return !isD1 && !isPlainNavamsha;
+  })
+  .map(chart => ({
+    chartName: chart.chartName,
+    planets: chart.planets.map(planet => ({
+      planet: planet.planet,
+      retrograde: planet.retrograde,
+      sign: planet.sign,
+      house: planet.house
+    }))
+  }));
 
 const finalResult = {
   dataWithHouses: finalDataWithHouses,
   parsedCharts: finalParsedCharts
 };
+
 
 // 6) Вывод:
 // - исходные структуры для отладки
