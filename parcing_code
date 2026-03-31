@@ -402,8 +402,18 @@ const houseLabelByLanguage = {
 };
 
 const chartNameTranslations = {
+  'Хора (D2)': { ru: 'Хора (D2)', en: 'Hora (D2)' },
+  'Дреккана (D3)': { ru: 'Дреккана (D3)', en: 'Drekkana (D3)' },
+  'Чатуртамша (D4)': { ru: 'Чатуртамша (D4)', en: 'Chaturthamsha (D4)' },
+  'Панчамша (D5)': { ru: 'Панчамша (D5)', en: 'Panchamsha (D5)' },
+  'Шаштамша (D6)': { ru: 'Шаштамша (D6)', en: 'Shashtamsha (D6)' },
+  'Саптамша (D7)': { ru: 'Саптамша (D7)', en: 'Saptamsha (D7)' },
+  'Аштамша (D8)': { ru: 'Аштамша (D8)', en: 'Ashtamsha (D8)' },
   'Навамша (D9)': { ru: 'Навамша (D9)', en: 'Navamsha (D9)' },
   'Дашамша (D10)': { ru: 'Дашамша (D10)', en: 'Dashamsha (D10)' },
+  'Экадашамша (D11)': { ru: 'Экадашамша (D11)', en: 'Ekadashamsha (D11)' },
+  'Двадашамша (D12)': { ru: 'Двадашамша (D12)', en: 'Dvadashamsha (D12)' },
+  'Шодашамша (D16)': { ru: 'Шодашамша (D16)', en: 'Shodashamsha (D16)' },
   'Карта': { ru: 'Карта', en: 'Chart' }
 };
 
