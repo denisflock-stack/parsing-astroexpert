@@ -474,7 +474,7 @@ function formatFinalResultSingleLanguage(result, language = 'ru') {
   const localizePlanetName = (planetCode) =>
     translateByLanguage(planetCode, planetNameTranslations, language);
   const withRetrogradeTail = (baseText, retrograde) =>
-    retrograde ? `${baseText}, R` : baseText;
+    retrograde ? `${baseText} (R)` : baseText;
   const normalizeDegree = (degree) =>
     (degree || '')
       .replace(/˚/g, '°')
@@ -489,7 +489,7 @@ function formatFinalResultSingleLanguage(result, language = 'ru') {
       const planetName = localizePlanetName(planet.planet);
       const sign = translateByLanguage(planet.sign, signTranslations, language);
       const nakshatra = translateByLanguage(planet.nakshatra, nakshatraTranslations, language);
-      const baseText = `${planetName}: ${sign} ${normalizeDegree(planet.degree)}, ${nakshatra} -${padaLabel} ${planet.pada}, ${houseLabel} ${planet.house}`;
+      const baseText = `${planetName}: ${sign} ${normalizeDegree(planet.degree)}, ${nakshatra} - ${padaLabel} ${planet.pada}, ${houseLabel} ${planet.house}`;
       return withRetrogradeTail(baseText, planet.retrograde);
     })
   };
