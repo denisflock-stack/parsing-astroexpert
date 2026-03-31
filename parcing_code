@@ -287,9 +287,26 @@ const dataWithHouses = data.map(item => {
 });
 
 
-// 5) Вывод:
-// - D1 + таблица (основной итог)
-// - все найденные карты (для отладки/проверки)
+// 5) Чистый вывод:
+// - только основной результат с полезными полями;
+// - отладочные данные доступны отдельно через window.astroExpertDebug.
+const cleanedData = dataWithHouses.map(item => ({
+  planet: item.planet,
+  karaka: item.karaka,
+  sign: item.sign,
+  degree: item.degree,
+  nakshatra: item.nakshatra,
+  pada: item.pada,
+  house: item.house,
+  retrograde: item.retrograde,
+  d1Cell: item.d1Cell
+}));
 
-console.log('D1 + таблица:', dataWithHouses);
-console.log('Все найденные карты (D1/Dx 500x500):', parsedCharts);
+console.log('D1 (чистый вывод):', cleanedData);
+console.table(cleanedData);
+
+// Отладка (если понадобится для проверки):
+window.astroExpertDebug = {
+  fullTable: dataWithHouses,
+  charts: parsedCharts
+};
