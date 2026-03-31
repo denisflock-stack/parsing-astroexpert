@@ -74,9 +74,9 @@ function normalizePlanetName(name = '') {
 
 
 // Признак ретроградности в подписи SVG:
-// "(Sa)" -> true, "Sa" -> false
+// "(Sa)", "(Me)↓", "(Me)↑" -> true, "Sa" -> false
 function isRetrogradeToken(name = '') {
-  return /^\s*\(.+\)\s*$/.test(name);
+  return /^\s*\([^()]+\)\s*[↑↓]?\s*$/.test(name);
 }
 
 
