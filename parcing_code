@@ -401,6 +401,12 @@ const houseLabelByLanguage = {
   en: 'house'
 };
 
+const chartNameTranslations = {
+  'Навамша (D9)': { ru: 'Навамша (D9)', en: 'Navamsha (D9)' },
+  'Дашамша (D10)': { ru: 'Дашамша (D10)', en: 'Dashamsha (D10)' },
+  'Карта': { ru: 'Карта', en: 'Chart' }
+};
+
 const planetNameTranslations = {
   Asc: { ru: 'Asc', en: 'Asc' },
   Su: { ru: 'Солнце', en: 'Sun' },
@@ -428,6 +434,25 @@ function translateByLanguage(value, translations, language) {
   return reverseKey ? (translations[reverseKey][language] || value) : value;
 }
 
+function localizeChartName(chartName, language) {
+  if (!chartName) return chartName;
+
+  // Имя D1 оставляем неизменным для любого языка.
+  if (/\bD1\b/i.test(chartName)) return chartName;
+
+  const directMatch = translateByLanguage(chartName, chartNameTranslations, language);
+  if (directMatch !== chartName) return directMatch;
+
+  // Поддержка шаблона "Карта #N" / "Chart #N".
+  const chartNumberMatch = chartName.match(/^(Карта|Chart)\s*#\s*(\d+)$/i);
+  if (chartNumberMatch) {
+    const label = chartNameTranslations.Карта[language] || chartNameTranslations.Карта.ru;
+    return `${label} #${chartNumberMatch[2]}`;
+  }
+
+  return chartName;
+}
+
 function formatFinalResultSingleLanguage(result, language = 'ru') {
   const formatRetrogradeSuffix = (retrograde) => (retrograde ? ' R' : '');
   const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
@@ -435,7 +460,7 @@ function formatFinalResultSingleLanguage(result, language = 'ru') {
     translateByLanguage(planetCode, planetNameTranslations, language);
 
   const dataWithHousesText = {
-    chartName: result.dataWithHouses?.chartName || null,
+    chartName: localizeChartName(result.dataWithHouses?.chartName || null, language),
     owner: result.dataWithHouses?.owner || null,
     planets: (result.dataWithHouses?.planets || []).map(planet =>
       `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${planet.degree} ${translateByLanguage(planet.nakshatra, nakshatraTranslations, language)} ${planet.pada} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
@@ -443,7 +468,7 @@ function formatFinalResultSingleLanguage(result, language = 'ru') {
   };
 
   const parsedChartsText = (result.parsedCharts || []).map(chart => ({
-    chartName: chart.chartName,
+    chartName: localizeChartName(chart.chartName, language),
     planets: (chart.planets || []).map(planet =>
       `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
     )
