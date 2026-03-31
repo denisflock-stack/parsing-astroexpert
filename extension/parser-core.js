@@ -1,18 +1,8 @@
 (function initAstroParser(global) {
   const validPlanets = ['Asc', 'Su', 'Mo', 'Ma', 'Me', 'Jp', 'Ve', 'Sa', 'Ra', 'Ke'];
   const signToNumber = {
-    'Овен': 1,
-    'Телец': 2,
-    'Близнецы': 3,
-    'Рак': 4,
-    'Лев': 5,
-    'Дева': 6,
-    'Весы': 7,
-    'Скорпион': 8,
-    'Стрелец': 9,
-    'Козерог': 10,
-    'Водолей': 11,
-    'Рыбы': 12
+    'Овен': 1, 'Телец': 2, 'Близнецы': 3, 'Рак': 4, 'Лев': 5, 'Дева': 6,
+    'Весы': 7, 'Скорпион': 8, 'Стрелец': 9, 'Козерог': 10, 'Водолей': 11, 'Рыбы': 12
   };
 
   const perimeterCellsClockwise = [1, 2, 3, 4, 8, 12, 16, 15, 14, 13, 9, 5];
@@ -22,18 +12,12 @@
   };
 
   const signTranslations = {
-    'Овен': { ru: 'Овен', en: 'Aries' },
-    'Телец': { ru: 'Телец', en: 'Taurus' },
-    'Близнецы': { ru: 'Близнецы', en: 'Gemini' },
-    'Рак': { ru: 'Рак', en: 'Cancer' },
-    'Лев': { ru: 'Лев', en: 'Leo' },
-    'Дева': { ru: 'Дева', en: 'Virgo' },
-    'Весы': { ru: 'Весы', en: 'Libra' },
-    'Скорпион': { ru: 'Скорпион', en: 'Scorpio' },
-    'Стрелец': { ru: 'Стрелец', en: 'Sagittarius' },
-    'Козерог': { ru: 'Козерог', en: 'Capricorn' },
-    'Водолей': { ru: 'Водолей', en: 'Aquarius' },
-    'Рыбы': { ru: 'Рыбы', en: 'Pisces' }
+    'Овен': { ru: 'Овен', en: 'Aries' }, 'Телец': { ru: 'Телец', en: 'Taurus' },
+    'Близнецы': { ru: 'Близнецы', en: 'Gemini' }, 'Рак': { ru: 'Рак', en: 'Cancer' },
+    'Лев': { ru: 'Лев', en: 'Leo' }, 'Дева': { ru: 'Дева', en: 'Virgo' },
+    'Весы': { ru: 'Весы', en: 'Libra' }, 'Скорпион': { ru: 'Скорпион', en: 'Scorpio' },
+    'Стрелец': { ru: 'Стрелец', en: 'Sagittarius' }, 'Козерог': { ru: 'Козерог', en: 'Capricorn' },
+    'Водолей': { ru: 'Водолей', en: 'Aquarius' }, 'Рыбы': { ru: 'Рыбы', en: 'Pisces' }
   };
 
   const nakshatraTranslations = {
@@ -57,21 +41,29 @@
   };
 
   const chartNameTranslations = {
-    'Навамша (D9)': { ru: 'Навамша (D9)', en: 'Navamsha (D9)' }
+    'Хора (D2)': { ru: 'Хора (D2)', en: 'Hora (D2)' },
+    'Дреккана (D3)': { ru: 'Дреккана (D3)', en: 'Drekkana (D3)' },
+    'Чатуртамша (D4)': { ru: 'Чатуртамша (D4)', en: 'Chaturthamsha (D4)' },
+    'Панчамша (D5)': { ru: 'Панчамша (D5)', en: 'Panchamsha (D5)' },
+    'Шаштамша (D6)': { ru: 'Шаштамша (D6)', en: 'Shashtamsha (D6)' },
+    'Саптамша (D7)': { ru: 'Саптамша (D7)', en: 'Saptamsha (D7)' },
+    'Аштамша (D8)': { ru: 'Аштамша (D8)', en: 'Ashtamsha (D8)' },
+    'Навамша (D9)': { ru: 'Навамша (D9)', en: 'Navamsha (D9)' },
+    'Дашамша (D10)': { ru: 'Дашамша (D10)', en: 'Dashamsha (D10)' },
+    'Экадашамша (D11)': { ru: 'Экадашамша (D11)', en: 'Ekadashamsha (D11)' },
+    'Двадашамша (D12)': { ru: 'Двадашамша (D12)', en: 'Dvadashamsha (D12)' },
+    'Шодашамша (D16)': { ru: 'Шодашамша (D16)', en: 'Shodashamsha (D16)' },
+    'Карта': { ru: 'Карта', en: 'Chart' }
   };
 
   const planetNameTranslations = {
-    Asc: { ru: 'Asc', en: 'Asc' },
-    Su: { ru: 'Солнце', en: 'Sun' },
-    Mo: { ru: 'Луна', en: 'Moon' },
-    Ma: { ru: 'Марс', en: 'Mars' },
-    Me: { ru: 'Меркурий', en: 'Mercury' },
-    Jp: { ru: 'Юпитер', en: 'Jupiter' },
-    Ve: { ru: 'Венера', en: 'Venus' },
-    Sa: { ru: 'Сатурн', en: 'Saturn' },
-    Ra: { ru: 'Раху', en: 'Rahu' },
-    Ke: { ru: 'Кету', en: 'Ketu' }
+    Asc: { ru: 'Asc', en: 'Asc' }, Su: { ru: 'Солнце', en: 'Sun' }, Mo: { ru: 'Луна', en: 'Moon' },
+    Ma: { ru: 'Марс', en: 'Mars' }, Me: { ru: 'Меркурий', en: 'Mercury' }, Jp: { ru: 'Юпитер', en: 'Jupiter' },
+    Ve: { ru: 'Венера', en: 'Venus' }, Sa: { ru: 'Сатурн', en: 'Saturn' }, Ra: { ru: 'Раху', en: 'Rahu' }, Ke: { ru: 'Кету', en: 'Ketu' }
   };
+
+  const houseLabelByLanguage = { ru: 'дом', en: 'house' };
+  const padaLabelByLanguage = { ru: 'пада', en: 'pada' };
 
   function normalizePlanetName(name = '') {
     return name.replace(/[()↑↓]/g, '').replace(/\s+/g, '').trim();
@@ -89,7 +81,7 @@
 
     const viewBox = svg.getAttribute('viewBox') || '';
     if (/0 0 600 600/.test(viewBox)) return 'тест (D1)';
-    if (/0 0 500 500/.test(viewBox)) return `Навамша (D9) #${index + 1}`;
+    if (/0 0 500 500/.test(viewBox)) return `Карта #${index + 1}`;
     return `Карта #${index + 1}`;
   }
 
@@ -106,11 +98,7 @@
         .filter(Boolean)
       : [];
 
-    return {
-      name: ownerName,
-      birthDateTime: detailLines[0] || null,
-      birthPlace: detailLines[1] || null
-    };
+    return { name: ownerName, birthDateTime: detailLines[0] || null, birthPlace: detailLines[1] || null };
   }
 
   function getAscCellFromSvg(svg, width, height) {
@@ -146,15 +134,13 @@
     const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
     const width = Number(widthRaw);
     const height = Number(heightRaw);
-    if (!width || !height) return [];
-    if (![500, 600].includes(width) || ![500, 600].includes(height)) return [];
+    if (!width || !height || ![500, 600].includes(width) || ![500, 600].includes(height)) return [];
 
     const cellW = width / 4;
     const cellH = height / 4;
     const placements = [];
-    const natalTexts = svg.querySelectorAll('text.chart-planet.text-gray-900');
 
-    natalTexts.forEach((textEl) => {
+    svg.querySelectorAll('text.chart-planet.text-gray-900').forEach((textEl) => {
       const x = Number(textEl.getAttribute('x'));
       const y = Number(textEl.getAttribute('y'));
       if (Number.isNaN(x) || Number.isNaN(y)) return;
@@ -163,14 +149,11 @@
       const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
       const cell = row * 4 + col + 1;
 
-      const tokens = Array.from(textEl.querySelectorAll('tspan[dx="-4"]'))
+      Array.from(textEl.querySelectorAll('tspan[dx="-4"]'))
         .map((t) => (t.textContent || '').trim())
-        .map((raw) => ({ raw, planet: normalizePlanetName(raw), retrograde: isRetrogradeToken(raw) }))
-        .filter((x2) => x2.planet && validPlanets.includes(x2.planet));
-
-      tokens.forEach(({ planet, retrograde }) => {
-        placements.push({ planet, retrograde, x, y, row, col, cell });
-      });
+        .map((raw) => ({ planet: normalizePlanetName(raw), retrograde: isRetrogradeToken(raw) }))
+        .filter((token) => token.planet && validPlanets.includes(token.planet))
+        .forEach(({ planet, retrograde }) => placements.push({ planet, retrograde, x, y, row, col, cell }));
     });
 
     return placements;
@@ -188,108 +171,35 @@
 
   function localizeChartName(chartName, language) {
     if (!chartName) return chartName;
+    if (/\bD1\b/i.test(chartName)) return chartName;
+
     const directMatch = translateByLanguage(chartName, chartNameTranslations, language);
-    return directMatch;
+    if (directMatch !== chartName) return directMatch;
+
+    const chartNumberMatch = chartName.match(/^(Карта|Chart)\s*#\s*(\d+)$/i);
+    if (chartNumberMatch) {
+      const label = chartNameTranslations.Карта[language] || chartNameTranslations.Карта.ru;
+      return `${label} #${chartNumberMatch[2]}`;
+    }
+
+    return chartName;
   }
 
-  function parseAstroPage() {
-    const rows = document.querySelectorAll('table.planets tbody tr');
-    const data = Array.from(rows)
-      .map((row) => {
-        const cells = row.querySelectorAll('td');
-        const [planetRaw, signRaw, nakRaw] = [
-          cells[0]?.innerText.trim() || '',
-          cells[1]?.innerText.trim() || '',
-          cells[2]?.innerText.trim() || ''
-        ];
-        const [planet] = planetRaw.split('\n');
-        const [sign, degree] = signRaw.split('\n');
-        const [nakshatra, pada] = nakRaw.split('\n');
-
-        return { planet, sign, degree, nakshatra, pada };
-      })
-      .filter((x) => validPlanets.includes(x.planet));
-
-    const chartSvgs = Array.from(document.querySelectorAll('svg.render'));
-    const parsedCharts = chartSvgs
-      .map((svg, index) => {
-        const viewBox = svg.getAttribute('viewBox') || '';
-        const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
-        const width = Number(widthRaw);
-        const height = Number(heightRaw);
-        const ascCell = (!Number.isNaN(width) && !Number.isNaN(height))
-          ? getAscCellFromSvg(svg, width, height)
-          : null;
-
-        const planets = parseChartPlanets(svg).map((planet) => ({
-          ...planet,
-          sign: zodiacByCell[planet.cell] || null,
-          house: getHouseByCell(planet.cell, ascCell)
-        }));
-
-        return {
-          chartIndex: index,
-          chartName: getChartName(svg, index),
-          viewBox,
-          ascCell,
-          planets
-        };
-      })
-      .filter((chart) => chart.planets.length > 0);
-
-    const d1Chart = parsedCharts.find((chart) => /0 0 600 600/.test(chart.viewBox));
-    const d1ByPlanet = new Map((d1Chart?.planets || []).map((item) => [item.planet, item]));
-
-    const ascSign = data.find((x) => x.planet === 'Asc')?.sign;
-    const ascSignNumber = signToNumber[ascSign] || null;
-    const dataWithHouses = data.map((item) => {
-      const signNumber = signToNumber[item.sign] || null;
-      const house = (ascSignNumber && signNumber)
-        ? ((signNumber - ascSignNumber + 12) % 12) + 1
-        : null;
-      const placement = d1ByPlanet.get(item.planet);
-
-      return {
-        ...item,
-        house,
-        retrograde: placement?.retrograde ?? false
-      };
-    });
-
-    const navamshaCharts = parsedCharts
-      .filter((chart) => /D9/i.test(chart.chartName || ''))
-      .map((chart) => ({
-        chartName: chart.chartName,
-        planets: chart.planets.map((planet) => ({
-          planet: planet.planet,
-          sign: planet.sign,
-          house: planet.house,
-          retrograde: planet.retrograde
-        }))
-      }));
-
-    return {
-      dataWithHouses: {
-        chartName: d1Chart?.chartName || 'D1',
-        owner: getOwnerData(),
-        planets: dataWithHouses
-      },
-      navamshaCharts
-    };
+  function normalizeDegree(degree) {
+    return (degree || '').replace(/˚/g, '°').replace(/'/g, '′').replace(/\\"/g, '″').replace(/"/g, '″');
   }
 
   function formatChart(chart, language) {
-    const houseLabel = language === 'ru' ? 'дом' : 'house';
-
-    const chartName = localizeChartName(chart.chartName, language);
-    const planets = (chart.planets || []).map((planet) => {
-      const planetName = translateByLanguage(planet.planet, planetNameTranslations, language);
-      const sign = translateByLanguage(planet.sign, signTranslations, language);
-      const tail = planet.retrograde ? ' (R)' : '';
-      return `${planetName}: ${sign}, ${houseLabel} ${planet.house}${tail}`;
-    });
-
-    return { chartName, planets };
+    const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
+    return {
+      chartName: localizeChartName(chart.chartName, language),
+      planets: (chart.planets || []).map((planet) => {
+        const planetName = translateByLanguage(planet.planet, planetNameTranslations, language);
+        const sign = translateByLanguage(planet.sign, signTranslations, language);
+        const tail = planet.retrograde ? ' (R)' : '';
+        return `${planetName}: ${sign}, ${houseLabel} ${planet.house}${tail}`;
+      })
+    };
   }
 
   function formatD1Header(dataWithHouses, language) {
@@ -301,9 +211,113 @@
     };
   }
 
-  global.AstroParser = {
-    parseAstroPage,
-    formatChart,
-    formatD1Header
-  };
+  function formatFinalResultSingleLanguage(result, language = 'ru') {
+    const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
+    const padaLabel = padaLabelByLanguage[language] || padaLabelByLanguage.ru;
+
+    return {
+      dataWithHouses: {
+        chartName: localizeChartName(result.dataWithHouses?.chartName || null, language),
+        owner: result.dataWithHouses?.owner || null,
+        planets: (result.dataWithHouses?.planets || []).map((planet) => {
+          const planetName = translateByLanguage(planet.planet, planetNameTranslations, language);
+          const sign = translateByLanguage(planet.sign, signTranslations, language);
+          const nakshatra = translateByLanguage(planet.nakshatra, nakshatraTranslations, language);
+          const baseText = `${planetName}: ${sign} ${normalizeDegree(planet.degree)}, ${nakshatra} - ${padaLabel} ${planet.pada}, ${houseLabel} ${planet.house}`;
+          return planet.retrograde ? `${baseText} (R)` : baseText;
+        })
+      },
+      parsedCharts: (result.parsedCharts || []).map((chart) => formatChart(chart, language))
+    };
+  }
+
+  function formatFinalResultToText(result, language = 'ru') {
+    if (language === 'both') {
+      return {
+        ru: formatFinalResultSingleLanguage(result, 'ru'),
+        en: formatFinalResultSingleLanguage(result, 'en')
+      };
+    }
+
+    return formatFinalResultSingleLanguage(result, language);
+  }
+
+  function parseAstroPage() {
+    const data = Array.from(document.querySelectorAll('table.planets tbody tr'))
+      .map((row) => {
+        const cells = row.querySelectorAll('td');
+        const [planetRaw, signRaw, nakRaw] = [
+          cells[0]?.innerText.trim() || '',
+          cells[1]?.innerText.trim() || '',
+          cells[2]?.innerText.trim() || ''
+        ];
+        const [planet] = planetRaw.split('\n');
+        const [sign, degree] = signRaw.split('\n');
+        const [nakshatra, pada] = nakRaw.split('\n');
+        return { planet, sign, degree, nakshatra, pada };
+      })
+      .filter((item) => validPlanets.includes(item.planet));
+
+    const parsedCharts = Array.from(document.querySelectorAll('svg.render'))
+      .map((svg, index) => {
+        const viewBox = svg.getAttribute('viewBox') || '';
+        const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
+        const width = Number(widthRaw);
+        const height = Number(heightRaw);
+        const ascCell = (!Number.isNaN(width) && !Number.isNaN(height)) ? getAscCellFromSvg(svg, width, height) : null;
+        const planets = parseChartPlanets(svg).map((planet) => ({
+          ...planet,
+          sign: zodiacByCell[planet.cell] || null,
+          house: getHouseByCell(planet.cell, ascCell)
+        }));
+
+        return { chartIndex: index, chartName: getChartName(svg, index), viewBox, ascCell, planets };
+      })
+      .filter((chart) => chart.planets.length > 0);
+
+    const d1Chart = parsedCharts.find((chart) => /0 0 600 600/.test(chart.viewBox));
+    const d1ByPlanet = new Map((d1Chart?.planets || []).map((item) => [item.planet, item]));
+
+    const ascSign = data.find((x) => x.planet === 'Asc')?.sign;
+    const ascSignNumber = signToNumber[ascSign] || null;
+
+    const dataWithHouses = data.map((item) => {
+      const signNumber = signToNumber[item.sign] || null;
+      const house = (ascSignNumber && signNumber) ? ((signNumber - ascSignNumber + 12) % 12) + 1 : null;
+      const placement = d1ByPlanet.get(item.planet);
+      return { ...item, house, retrograde: placement?.retrograde ?? false };
+    });
+
+    const finalResult = {
+      dataWithHouses: {
+        chartName: d1Chart?.chartName || 'D1',
+        owner: getOwnerData(),
+        planets: dataWithHouses
+      },
+      parsedCharts: parsedCharts
+        .filter((chart) => {
+          const name = (chart.chartName || '').trim();
+          const isD1 = /\bD1\b/i.test(name);
+          const isPlainNavamsha = /^Навамша$/i.test(name);
+          return !isD1 && !isPlainNavamsha;
+        })
+        .map((chart) => ({
+          chartName: chart.chartName,
+          planets: chart.planets.map((planet) => ({
+            planet: planet.planet,
+            sign: planet.sign,
+            house: planet.house,
+            retrograde: planet.retrograde
+          }))
+        }))
+    };
+
+    return {
+      finalResult,
+      finalResultTextRu: formatFinalResultToText(finalResult, 'ru'),
+      finalResultTextEn: formatFinalResultToText(finalResult, 'en')
+    };
+  }
+
+  global.AstroParser = { parseAstroPage, formatChart, formatD1Header, formatFinalResultToText };
 })(typeof window !== 'undefined' ? window : globalThis);

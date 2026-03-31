@@ -11,7 +11,7 @@ const t = {
     copy: 'Copy selected',
     selectAll: 'Select all',
     clear: 'Clear',
-    noData: 'No Navamsha (D9) cards found on this page.',
+    noData: 'No cards found on this page.',
     copied: 'Selected cards copied.',
     noSelection: 'Select at least one card.',
     parseError: 'Parsing error:',
@@ -24,7 +24,7 @@ const t = {
     copy: 'Копировать выбранные',
     selectAll: 'Выбрать все',
     clear: 'Снять все',
-    noData: 'На странице не найдено карт Навамша (D9).',
+    noData: 'На странице не найдено карт.',
     copied: 'Выбранные карты скопированы.',
     noSelection: 'Выберите минимум одну карту.',
     parseError: 'Ошибка парсинга:',
@@ -70,7 +70,7 @@ function updateHeader() {
     return;
   }
 
-  const data = state.parsed.dataWithHouses;
+  const data = state.parsed.finalResult?.dataWithHouses || {};
   const d1Label = state.language === 'ru' ? 'Карта D1' : 'D1';
   elements.d1Title.textContent = `${d1Label}: ${data.chartName || 'D1'}`;
 
@@ -79,23 +79,11 @@ function updateHeader() {
 }
 
 function formatChartContent(chart) {
-  const houseLabel = state.language === 'ru' ? 'дом' : 'house';
-  const planetMap = {
-    en: { Asc: 'Asc', Su: 'Sun', Mo: 'Moon', Ma: 'Mars', Me: 'Mercury', Jp: 'Jupiter', Ve: 'Venus', Sa: 'Saturn', Ra: 'Rahu', Ke: 'Ketu' },
-    ru: { Asc: 'Asc', Su: 'Солнце', Mo: 'Луна', Ma: 'Марс', Me: 'Меркурий', Jp: 'Юпитер', Ve: 'Венера', Sa: 'Сатурн', Ra: 'Раху', Ke: 'Кету' }
-  };
-
-  return (chart.planets || []).map((p) => {
-    const base = `${planetMap[state.language][p.planet] || p.planet}: ${p.sign || '-'}, ${houseLabel} ${p.house ?? '-'}`;
-    return p.retrograde ? `${base} (R)` : base;
-  });
+  return chart.planets || [];
 }
 
 function localizeChartName(name) {
-  if (state.language === 'en') {
-    return name.replace('Навамша', 'Navamsha');
-  }
-  return name.replace('Navamsha', 'Навамша');
+  return name;
 }
 
 function renderList() {
@@ -122,7 +110,7 @@ function renderList() {
 
     const name = document.createElement('div');
     name.className = 'chart-name';
-    name.textContent = localizeChartName(chart.chartName || `D9 #${index + 1}`);
+    name.textContent = localizeChartName(chart.chartName || `#${index + 1}`);
 
     const expand = document.createElement('button');
     expand.className = 'expand-btn';
@@ -170,7 +158,8 @@ async function requestParse() {
   }
 
   state.parsed = response.data;
-  state.charts = (response.data.navamshaCharts || []).slice(0, 100);
+  const localized = state.language === 'ru' ? response.data.finalResultTextRu : response.data.finalResultTextEn;
+  state.charts = (localized?.parsedCharts || []).slice(0, 100);
   state.selected.clear();
 
   updateHeader();
@@ -187,7 +176,7 @@ function copySelected() {
     .sort((a, b) => a - b)
     .map((index) => {
       const chart = state.charts[index];
-      const title = localizeChartName(chart.chartName || `D9 #${index + 1}`);
+      const title = localizeChartName(chart.chartName || `#${index + 1}`);
       const body = formatChartContent(chart).join('\n');
       return `${title}\n${body}`;
     })
@@ -204,6 +193,10 @@ function init() {
 
   elements.langToggle.addEventListener('click', () => {
     state.language = state.language === 'en' ? 'ru' : 'en';
+    if (state.parsed) {
+      const localized = state.language === 'ru' ? state.parsed.finalResultTextRu : state.parsed.finalResultTextEn;
+      state.charts = localized?.parsedCharts || [];
+    }
     updateLabels();
     updateHeader();
     renderList();
