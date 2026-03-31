@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Astro D1 Parser",
+  "description": "Toolbar popup parser for Astro.Expert D1/D9 cards.",
+  "version": "1.0.0",
+  "action": {
+    "default_title": "Astro D1",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab", "tabs", "clipboardWrite"],
+  "host_permissions": [
+    "https://*.astro.expert/*",
+    "http://*.astro.expert/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.astro.expert/*",
+        "http://*.astro.expert/*"
+      ],
+      "js": ["parser-core.js", "content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
