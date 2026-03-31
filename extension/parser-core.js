@@ -80,7 +80,7 @@
     if (headingText) return headingText;
 
     const viewBox = svg.getAttribute('viewBox') || '';
-    if (/0 0 600 600/.test(viewBox)) return 'тест (D1)';
+    if (/0 0 600 600/.test(viewBox)) return 'D1';
     if (/0 0 500 500/.test(viewBox)) return `Карта #${index + 1}`;
     return `Карта #${index + 1}`;
   }
@@ -243,6 +243,7 @@
   }
 
   function parseAstroPage() {
+    const owner = getOwnerData();
     const data = Array.from(document.querySelectorAll('table.planets tbody tr'))
       .map((row) => {
         const cells = row.querySelectorAll('td');
@@ -290,8 +291,8 @@
 
     const finalResult = {
       dataWithHouses: {
-        chartName: d1Chart?.chartName || 'D1',
-        owner: getOwnerData(),
+        chartName: owner.name ? `${owner.name} (D1)` : (d1Chart?.chartName || 'D1'),
+        owner,
         planets: dataWithHouses
       },
       parsedCharts: parsedCharts
