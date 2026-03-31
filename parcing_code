@@ -350,11 +350,41 @@ const finalResult = {
   parsedCharts: finalParsedCharts
 };
 
+// 6) Преобразование finalResult в текстовый формат:
+// - dataWithHouses: "Su Рак 27˚11'43 Ашлеша 4 house 1" (+ " R" для ретроградных)
+// - parsedCharts: "Sa Лев house 2" (+ " R" для ретроградных)
+// Группировки сохраняются как в finalResult.
+function formatFinalResultToText(result) {
+  const formatRetrogradeSuffix = (retrograde) => (retrograde ? ' R' : '');
 
-// 6) Вывод:
+  const dataWithHousesText = {
+    chartName: result.dataWithHouses?.chartName || null,
+    owner: result.dataWithHouses?.owner || null,
+    planets: (result.dataWithHouses?.planets || []).map(planet =>
+      `${planet.planet} ${planet.sign} ${planet.degree} ${planet.nakshatra} ${planet.pada} house ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
+    )
+  };
+
+  const parsedChartsText = (result.parsedCharts || []).map(chart => ({
+    chartName: chart.chartName,
+    planets: (chart.planets || []).map(planet =>
+      `${planet.planet} ${planet.sign} house ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
+    )
+  }));
+
+  return {
+    dataWithHouses: dataWithHousesText,
+    parsedCharts: parsedChartsText
+  };
+}
+
+const finalResultText = formatFinalResultToText(finalResult);
+
+// 7) Вывод:
 // - исходные структуры для отладки
 // - финальный "чистый" результат для дальнейшего использования
 
 console.log('D1 + таблица:', dataWithHouses);
 console.log('Все найденные карты (D1/Dx 500x500):', parsedCharts);
 console.log('Итоговый результат (только нужные поля):', finalResult);
+console.log('Итоговый результат (текстовый формат):', finalResultText);
