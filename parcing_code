@@ -469,25 +469,33 @@ function localizeChartName(chartName, language) {
 }
 
 function formatFinalResultSingleLanguage(result, language = 'ru') {
-  const formatRetrogradeSuffix = (retrograde) => (retrograde ? ' R' : '');
   const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
   const padaLabel = padaLabelByLanguage[language] || padaLabelByLanguage.ru;
   const localizePlanetName = (planetCode) =>
     translateByLanguage(planetCode, planetNameTranslations, language);
+  const withRetrogradeTail = (baseText, retrograde) =>
+    retrograde ? `${baseText}, R` : baseText;
 
   const dataWithHousesText = {
     chartName: localizeChartName(result.dataWithHouses?.chartName || null, language),
     owner: result.dataWithHouses?.owner || null,
-    planets: (result.dataWithHouses?.planets || []).map(planet =>
-      `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${planet.degree} ${translateByLanguage(planet.nakshatra, nakshatraTranslations, language)} ${padaLabel} ${planet.pada} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
-    )
+    planets: (result.dataWithHouses?.planets || []).map(planet => {
+      const planetName = localizePlanetName(planet.planet);
+      const sign = translateByLanguage(planet.sign, signTranslations, language);
+      const nakshatra = translateByLanguage(planet.nakshatra, nakshatraTranslations, language);
+      const baseText = `${planetName}: ${sign} ${planet.degree}, ${nakshatra} -${padaLabel} ${planet.pada}, ${houseLabel} ${planet.house}`;
+      return withRetrogradeTail(baseText, planet.retrograde);
+    })
   };
 
   const parsedChartsText = (result.parsedCharts || []).map(chart => ({
     chartName: localizeChartName(chart.chartName, language),
-    planets: (chart.planets || []).map(planet =>
-      `${localizePlanetName(planet.planet)} ${translateByLanguage(planet.sign, signTranslations, language)} ${houseLabel} ${planet.house}${formatRetrogradeSuffix(planet.retrograde)}`
-    )
+    planets: (chart.planets || []).map(planet => {
+      const planetName = localizePlanetName(planet.planet);
+      const sign = translateByLanguage(planet.sign, signTranslations, language);
+      const baseText = `${planetName}: ${sign}, ${houseLabel} ${planet.house}`;
+      return withRetrogradeTail(baseText, planet.retrograde);
+    })
   }));
 
   return {
