@@ -209,6 +209,23 @@
     if (!chartName) return chartName;
     if (/\bD1\b/i.test(chartName)) return chartName;
 
+    if (language === 'en') {
+      const ashtakavargaNames = {
+        'Сарваштакаварга': 'Sarvashtakavarga',
+        'Аштакаварга Солнца': 'Sun Ashtakavarga',
+        'Аштакаварга Луны': 'Moon Ashtakavarga',
+        'Аштакаварга Марса': 'Mars Ashtakavarga',
+        'Аштакаварга Меркурия': 'Mercury Ashtakavarga',
+        'Аштакаварга Юпитера': 'Jupiter Ashtakavarga',
+        'Аштакаварга Венеры': 'Venus Ashtakavarga',
+        'Аштакаварга Сатурна': 'Saturn Ashtakavarga'
+      };
+
+      if (ashtakavargaNames[chartName]) {
+        return ashtakavargaNames[chartName];
+      }
+    }
+
     const directMatch = translateByLanguage(chartName, chartNameTranslations, language);
     if (directMatch !== chartName) return directMatch;
 
@@ -223,6 +240,17 @@
 
   function formatChart(chart, language) {
     const houseLabel = houseLabelByLanguage[language] || houseLabelByLanguage.ru;
+
+    if (chart.entries) {
+      return {
+        chartName: localizeChartName(chart.chartName, language),
+        planets: chart.entries.map((entry) => {
+          const sign = translateByLanguage(entry.sign, signTranslations, language) || '?';
+          return `${entry.house} ${houseLabel} ${sign} ${entry.value}`;
+        })
+      };
+    }
+
     return {
       chartName: localizeChartName(chart.chartName, language),
       planets: (chart.planets || []).map((planet) => {
@@ -304,6 +332,11 @@
     return /vimshottari/i.test(href);
   }
 
+  function isAshtakavargaPage() {
+    const href = window.location?.href || '';
+    return /ashtakavarga/i.test(href);
+  }
+
   function getAscCellFromSouthSvg(svg, width, height) {
     const ascText = Array.from(svg.querySelectorAll('text.chart-planet.text-gray-900')).find((textEl) => {
       const rawText = textEl.textContent || '';
@@ -382,6 +415,56 @@
     return placements;
   }
 
+  function parseSouthNumericChart(svg) {
+    const viewBox = svg.getAttribute('viewBox') || '';
+    const [, , widthRaw, heightRaw] = viewBox.split(/\s+/);
+    const width = Number(widthRaw);
+    const height = Number(heightRaw);
+    if (!width || !height) return [];
+
+    const cellW = width / 4;
+    const cellH = height / 4;
+
+    return Array.from(svg.querySelectorAll('text.chart-planet.text-gray-900, text.fill-current'))
+      .map((textEl) => {
+        const raw = (textEl.textContent || '').trim();
+        if (!/^\d+$/.test(raw)) return null;
+
+        const x = Number(textEl.getAttribute('x'));
+        const y = Number(textEl.getAttribute('y'));
+        if (Number.isNaN(x) || Number.isNaN(y)) return null;
+
+        const col = Math.max(0, Math.min(3, Math.floor(x / cellW)));
+        const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
+        const cell = row * 4 + col + 1;
+        return { value: raw, x, y, cell };
+      })
+      .filter(Boolean);
+  }
+
+  function buildSouthAshtakavargaCharts(parsedCharts) {
+    const d1Chart = parsedCharts.find((chart) => /0 0 600 600/.test(chart.viewBox));
+    const ascCell = d1Chart?.ascCell || null;
+
+    return Array.from(document.querySelectorAll('svg.render'))
+      .map((svg, index) => {
+        const chartName = getChartName(svg, index);
+        if (!/ashtakavarga|аштакаварга/i.test(chartName)) return null;
+
+        const entries = parseSouthNumericChart(svg)
+          .map((item) => {
+            const sign = zodiacByCell[item.cell] || null;
+            const house = getHouseBySouthCell(item.cell, ascCell);
+            return sign && house ? { house, sign, value: item.value } : null;
+          })
+          .filter(Boolean)
+          .sort((a, b) => a.house - b.house);
+
+        return entries.length ? { chartName, entries } : null;
+      })
+      .filter(Boolean);
+  }
+
   function ensureSouthAscFirst(planets, ascCell) {
     const planetsWithoutAsc = (planets || []).filter((planet) => planet.planet !== 'Asc');
     const existingAsc = (planets || []).find((planet) => planet.planet === 'Asc');
@@ -395,6 +478,7 @@
 
   function parseSouthCharts(owner, tablePlanets) {
     const onlyD1 = isVimshottariPage();
+    const ashtakavargaMode = isAshtakavargaPage();
     const parsedCharts = Array.from(document.querySelectorAll('svg.render'))
       .map((svg, index) => {
         const viewBox = svg.getAttribute('viewBox') || '';
@@ -417,6 +501,7 @@
 
     const d1Chart = parsedCharts.find((chart) => /0 0 600 600/.test(chart.viewBox));
     const d1ByPlanet = new Map((d1Chart?.planets || []).map((item) => [item.planet, item]));
+    const ashtakavargaCharts = ashtakavargaMode ? buildSouthAshtakavargaCharts(parsedCharts) : [];
 
     const ascSign = tablePlanets.find((item) => item.planet === 'Asc')?.sign;
     const ascSignNumber = signToNumber[ascSign] || null;
@@ -435,7 +520,7 @@
           owner,
           planets: dataWithHouses
         },
-        parsedCharts: onlyD1 ? [] : parsedCharts
+        parsedCharts: ashtakavargaMode ? ashtakavargaCharts : (onlyD1 ? [] : parsedCharts
           .filter((chart) => {
             const name = (chart.chartName || '').trim();
             return !/\bD1\b/i.test(name) && !/^Навамша$/i.test(name);
@@ -448,7 +533,7 @@
               house: planet.house,
               retrograde: planet.retrograde
             }))
-          }))
+          })))
       }
     };
   }
@@ -617,6 +702,53 @@
     });
   }
 
+  function parseNorthNumericChart(svg) {
+    const hosts = Array.from(new Set(
+      Array.from(svg.querySelectorAll('text.chart-planet.text-gray-900, g.chart-planet.text-gray-900, text.fill-current'))
+        .map((textEl) => (textEl.matches('text') ? textEl : textEl.querySelector('text')))
+        .filter(Boolean)
+    ));
+
+    return hosts
+      .map((host) => {
+        const raw = (host.textContent || '').trim();
+        if (!/^\d+$/.test(raw)) return null;
+
+        return {
+          value: raw,
+          x: Number(host.getAttribute('x')),
+          y: Number(host.getAttribute('y'))
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function buildNorthAshtakavargaCharts() {
+    const d1Svg = Array.from(document.querySelectorAll('svg.render')).find((svg) => /0 0 600 600/.test(svg.getAttribute('viewBox') || ''));
+    const d1HousePolygons = d1Svg ? getNorthHousePolygons(d1Svg) : null;
+    const d1SignPlacements = d1Svg ? assignNorthSignsToHouses(collectNorthChartGeometry(d1Svg).signs, d1HousePolygons) : [];
+    const houseToSign = new Map(d1SignPlacements.map((placement) => [placement.house, placement.signName]));
+
+    return Array.from(document.querySelectorAll('svg.render'))
+      .map((svg, index) => {
+        const chartName = getChartName(svg, index);
+        if (!/ashtakavarga|аштакаварга/i.test(chartName)) return null;
+
+        const housePolygons = getNorthHousePolygons(svg);
+        const entries = parseNorthNumericChart(svg)
+          .map((item) => {
+            const house = getHouseByNorthPoint(housePolygons, item);
+            const sign = houseToSign.get(house) || null;
+            return house && sign ? { house, sign, value: item.value } : null;
+          })
+          .filter(Boolean)
+          .sort((a, b) => a.house - b.house);
+
+        return entries.length ? { chartName, entries } : null;
+      })
+      .filter(Boolean);
+  }
+
   function getNorthAscFromTable(tablePlanets) {
     const ascPlanet = (tablePlanets || []).find((planet) => planet.planet === 'Asc');
     if (!ascPlanet) return null;
@@ -705,6 +837,7 @@
 
   function parseNorthCharts(owner, tablePlanets) {
     const onlyD1 = isVimshottariPage();
+    const ashtakavargaMode = isAshtakavargaPage();
     const tableAsc = getNorthAscFromTable(tablePlanets);
 
     const parsedCharts = Array.from(document.querySelectorAll('svg.render'))
@@ -752,6 +885,7 @@
       .filter((chart) => chart.planets.length > 0);
 
     const d1Chart = parsedCharts.find((chart) => /\bD1\b/i.test(chart.chartName || '') || /0 0 600 600/.test(chart.viewBox || ''));
+    const ashtakavargaCharts = ashtakavargaMode ? buildNorthAshtakavargaCharts() : [];
 
     return {
       finalResult: {
@@ -760,7 +894,7 @@
           owner,
           planets: buildNorthD1Result(tablePlanets, d1Chart)
         },
-        parsedCharts: onlyD1 ? [] : parsedCharts
+        parsedCharts: ashtakavargaMode ? ashtakavargaCharts : (onlyD1 ? [] : parsedCharts
           .filter((chart) => {
             const name = (chart.chartName || '').trim();
             return !/\bD1\b/i.test(name) && !/^Навамша$/i.test(name);
@@ -773,7 +907,7 @@
               house: planet.house,
               retrograde: planet.retrograde
             }))
-          }))
+          })))
       }
     };
   }
