@@ -102,6 +102,26 @@
   }
 
   function getAscCellFromSvg(svg, width, height) {
+    const ascText = Array.from(svg.querySelectorAll('text.chart-planet.text-gray-900')).find((textEl) => {
+      const rawText = textEl.textContent || '';
+      if (/\bAsc\b/.test(rawText)) return true;
+
+      return Array.from(textEl.querySelectorAll('tspan'))
+        .some((tspan) => normalizePlanetName(tspan.textContent || '') === 'Asc');
+    });
+
+    if (ascText) {
+      const x = Number(ascText.getAttribute('x'));
+      const y = Number(ascText.getAttribute('y'));
+      if (!Number.isNaN(x) && !Number.isNaN(y)) {
+        const cellW = width / 4;
+        const cellH = height / 4;
+        const col = Math.max(0, Math.min(3, Math.floor(x / cellW)));
+        const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
+        return row * 4 + col + 1;
+      }
+    }
+
     const paths = Array.from(svg.querySelectorAll('path[stroke-width="2"]'));
     const arrowPath = paths.at(-1);
     if (!arrowPath) return null;
@@ -157,6 +177,22 @@
     });
 
     return placements;
+  }
+
+  function ensureAscFirst(planets, ascCell) {
+    const planetsWithoutAsc = (planets || []).filter((planet) => planet.planet !== 'Asc');
+    const existingAsc = (planets || []).find((planet) => planet.planet === 'Asc');
+
+    const ascPlanet = existingAsc || (ascCell && zodiacByCell[ascCell]
+      ? {
+          planet: 'Asc',
+          retrograde: false,
+          sign: zodiacByCell[ascCell],
+          house: 1
+        }
+      : null);
+
+    return ascPlanet ? [ascPlanet, ...planetsWithoutAsc] : planetsWithoutAsc;
   }
 
   function translateByLanguage(value, translations, language) {
@@ -266,11 +302,11 @@
         const width = Number(widthRaw);
         const height = Number(heightRaw);
         const ascCell = (!Number.isNaN(width) && !Number.isNaN(height)) ? getAscCellFromSvg(svg, width, height) : null;
-        const planets = parseChartPlanets(svg).map((planet) => ({
+        const planets = ensureAscFirst(parseChartPlanets(svg).map((planet) => ({
           ...planet,
           sign: zodiacByCell[planet.cell] || null,
           house: getHouseByCell(planet.cell, ascCell)
-        }));
+        })), ascCell);
 
         return { chartIndex: index, chartName: getChartName(svg, index), viewBox, ascCell, planets };
       })
