@@ -2,12 +2,20 @@
   color-scheme: light;
   font-family: Arial, sans-serif;
 }
+html,
 body {
   margin: 0;
   width: 420px;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 .app {
   padding: 10px;
+  box-sizing: border-box;
 }
 .header {
   display: flex;
@@ -23,6 +31,30 @@ h1 {
   margin: 4px 0 0;
   color: #555;
   font-size: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  min-height: 16px;
+}
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  max-width: 100%;
+}
+.meta-item svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: #7a7a7a;
+}
+.meta-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .controls {
   margin-top: 10px;
@@ -52,7 +84,7 @@ button.secondary {
   margin: 10px 0 0;
   padding: 0;
   list-style: none;
-  max-height: calc(13 * 36px);
+  max-height: calc(13 * 32px);
   overflow-y: auto;
   border: 1px solid #ececec;
   border-radius: 6px;
@@ -60,7 +92,7 @@ button.secondary {
 .chart-row {
   display: flex;
   align-items: center;
-  min-height: 36px;
+  min-height: 32px;
   border-bottom: 1px solid #f0f0f0;
   padding: 0 8px;
   gap: 8px;
@@ -68,13 +100,14 @@ button.secondary {
 .chart-row:last-child { border-bottom: 0; }
 .chart-name {
   flex: 1;
-  font-size: 13px;
+  font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .expand-btn {
   font-size: 12px;
+  padding: 4px 8px;
 }
 .chart-content {
   display: none;

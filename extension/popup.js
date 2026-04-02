@@ -10,7 +10,6 @@ const t = {
     parse: 'Parse',
     copy: 'Copy selected',
     selectAll: 'Select all',
-    clear: 'Clear',
     noData: 'No cards found on this page.',
     copied: 'Selected cards copied.',
     noSelection: 'Select at least one card.',
@@ -23,7 +22,6 @@ const t = {
     parse: 'Парсить',
     copy: 'Копировать выбранные',
     selectAll: 'Выбрать все',
-    clear: 'Снять все',
     noData: 'На странице не найдено карт.',
     copied: 'Выбранные карты скопированы.',
     noSelection: 'Выберите минимум одну карту.',
@@ -42,7 +40,6 @@ const elements = {
   copySelectedBtn: document.getElementById('copySelectedBtn'),
   selectAll: document.getElementById('selectAll'),
   selectAllLabel: document.getElementById('selectAllLabel'),
-  clearSelection: document.getElementById('clearSelection'),
   chartList: document.getElementById('chartList'),
   status: document.getElementById('status')
 };
@@ -56,26 +53,102 @@ function updateLabels() {
   elements.refreshBtn.textContent = tr('parse');
   elements.copySelectedBtn.textContent = tr('copy');
   elements.selectAllLabel.textContent = tr('selectAll');
-  elements.clearSelection.textContent = tr('clear');
 }
 
 function setStatus(message) {
   elements.status.textContent = message;
 }
 
+function createIcon(type) {
+  const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  icon.setAttribute('viewBox', '0 0 24 24');
+  icon.setAttribute('fill', 'none');
+  icon.setAttribute('stroke', 'currentColor');
+  icon.setAttribute('stroke-width', '1.9');
+  icon.setAttribute('stroke-linecap', 'round');
+  icon.setAttribute('stroke-linejoin', 'round');
+  icon.setAttribute('aria-hidden', 'true');
+
+  if (type === 'date') {
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', '3');
+    rect.setAttribute('y', '4');
+    rect.setAttribute('width', '18');
+    rect.setAttribute('height', '17');
+    rect.setAttribute('rx', '2');
+
+    const topLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    topLine.setAttribute('x1', '3');
+    topLine.setAttribute('y1', '9');
+    topLine.setAttribute('x2', '21');
+    topLine.setAttribute('y2', '9');
+
+    const leftPin = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    leftPin.setAttribute('x1', '8');
+    leftPin.setAttribute('y1', '2');
+    leftPin.setAttribute('x2', '8');
+    leftPin.setAttribute('y2', '6');
+
+    const rightPin = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    rightPin.setAttribute('x1', '16');
+    rightPin.setAttribute('y1', '2');
+    rightPin.setAttribute('x2', '16');
+    rightPin.setAttribute('y2', '6');
+
+    icon.append(rect, topLine, leftPin, rightPin);
+    return icon;
+  }
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', 'M12 21s-7-4.35-7-11a7 7 0 1 1 14 0c0 6.65-7 11-7 11Z');
+
+  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('cx', '12');
+  circle.setAttribute('cy', '10');
+  circle.setAttribute('r', '2.5');
+
+  icon.append(path, circle);
+  return icon;
+}
+
+function createMetaItem(type, text) {
+  const item = document.createElement('span');
+  item.className = 'meta-item';
+
+  const label = document.createElement('span');
+  label.className = 'meta-text';
+  label.textContent = text;
+
+  item.append(createIcon(type), label);
+  return item;
+}
+
 function updateHeader() {
   if (!state.parsed) {
-    elements.d1Title.textContent = 'D1';
+    elements.d1Title.textContent = 'Chart';
     elements.userData.textContent = '-';
     return;
   }
 
   const data = state.parsed.finalResult?.dataWithHouses || {};
-  const d1Label = state.language === 'ru' ? 'Карта D1' : 'D1';
-  elements.d1Title.textContent = `${d1Label}: ${data.chartName || 'D1'}`;
+  const chartLabel = state.language === 'ru' ? 'Карта' : 'Chart';
+  const chartName = (data.chartName || 'D1').replace(/\s*\(D1\)\s*$/i, '').trim() || 'D1';
+  elements.d1Title.textContent = `${chartLabel}: ${chartName}`;
 
   const owner = data.owner || {};
-  elements.userData.textContent = [owner.name, owner.birthDateTime, owner.birthPlace].filter(Boolean).join(' • ') || '-';
+  elements.userData.replaceChildren();
+
+  if (owner.birthDateTime) {
+    elements.userData.appendChild(createMetaItem('date', owner.birthDateTime));
+  }
+
+  if (owner.birthPlace) {
+    elements.userData.appendChild(createMetaItem('place', owner.birthPlace));
+  }
+
+  if (!elements.userData.childNodes.length) {
+    elements.userData.textContent = '-';
+  }
 }
 
 function formatChartContent(chart) {
@@ -103,8 +176,11 @@ function renderList() {
     checkbox.type = 'checkbox';
     checkbox.checked = state.selected.has(index);
     checkbox.addEventListener('change', () => {
-      if (checkbox.checked) state.selected.add(index);
-      else state.selected.delete(index);
+      if (checkbox.checked) {
+        state.selected.add(index);
+      } else {
+        state.selected.delete(index);
+      }
       syncSelectAll();
     });
 
@@ -142,9 +218,9 @@ function buildChartsForPopup(localizedResult) {
 
   const d1Chart = localizedResult.dataWithHouses
     ? [{
-      chartName: localizedResult.dataWithHouses.chartName || 'D1',
-      planets: localizedResult.dataWithHouses.planets || []
-    }]
+        chartName: localizedResult.dataWithHouses.chartName || 'D1',
+        planets: localizedResult.dataWithHouses.planets || []
+      }]
     : [];
 
   return [...d1Chart, ...(localizedResult.parsedCharts || [])];
@@ -163,7 +239,9 @@ async function requestParse() {
     return;
   }
 
-  const response = await chrome.tabs.sendMessage(tab.id, { type: 'PARSE_ASTRO_PAGE' }).catch((error) => ({ ok: false, error: error.message }));
+  const response = await chrome.tabs
+    .sendMessage(tab.id, { type: 'PARSE_ASTRO_PAGE' })
+    .catch((error) => ({ ok: false, error: error.message }));
 
   if (!response?.ok) {
     setStatus(`${tr('parseError')} ${response?.error || 'unknown error'}`);
@@ -195,7 +273,8 @@ function copySelected() {
     })
     .join('\n\n');
 
-  navigator.clipboard.writeText(grouped)
+  navigator.clipboard
+    .writeText(grouped)
     .then(() => setStatus(tr('copied')))
     .catch((err) => setStatus(String(err)));
 }
@@ -223,11 +302,6 @@ function init() {
     if (elements.selectAll.checked) {
       state.charts.forEach((_, index) => state.selected.add(index));
     }
-    renderList();
-  });
-
-  elements.clearSelection.addEventListener('click', () => {
-    state.selected.clear();
     renderList();
   });
 
