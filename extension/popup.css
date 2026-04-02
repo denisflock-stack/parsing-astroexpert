@@ -8,6 +8,7 @@ body {
   width: 480px;
   overflow: hidden;
   scrollbar-width: none;
+  background: transparent;
 }
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
@@ -16,6 +17,7 @@ body::-webkit-scrollbar {
 .app {
   padding: 10px;
   box-sizing: border-box;
+  background: #ffffff;
 }
 .header {
   display: flex;
@@ -92,7 +94,7 @@ button.secondary {
 .chart-row {
   display: flex;
   align-items: center;
-  min-height: 32px;
+  min-height: 30px;
   border-bottom: 1px solid #f0f0f0;
   padding: 0 8px;
   gap: 8px;
@@ -107,7 +109,7 @@ button.secondary {
 }
 .expand-btn {
   font-size: 12px;
-  padding: 4px 8px;
+  padding: 3px 8px;
 }
 .chart-content {
   display: none;
