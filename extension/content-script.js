@@ -9,6 +9,11 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       return;
     }
 
+    if (typeof window.AstroParser.isSupportedAstroPage === 'function' && !window.AstroParser.isSupportedAstroPage()) {
+      sendResponse({ ok: false, error: 'This page is not a supported Astro.Expert chart page.' });
+      return;
+    }
+
     const parsed = window.AstroParser.parseAstroPage();
     sendResponse({ ok: true, data: parsed });
   } catch (error) {
