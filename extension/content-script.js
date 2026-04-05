@@ -1,9 +1,20 @@
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message?.type !== 'PARSE_ASTRO_PAGE') {
-    return;
-  }
-
   try {
+    if (message?.type === 'PARSE_VIMSHOTTARI_TREE') {
+      if (!window.AstroVimshottari) {
+        sendResponse({ ok: false, error: 'Vimshottari module is not initialized on this page.' });
+        return;
+      }
+
+      const tree = window.AstroVimshottari.parseVisibleTree();
+      sendResponse({ ok: true, data: tree });
+      return;
+    }
+
+    if (message?.type !== 'PARSE_ASTRO_PAGE') {
+      return;
+    }
+
     if (!window.AstroParser) {
       sendResponse({ ok: false, error: 'Parser is not initialized on this page.' });
       return;

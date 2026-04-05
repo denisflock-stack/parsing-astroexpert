@@ -1,8 +1,10 @@
 const state = {
   language: 'en',
+  mode: 'charts',
   charts: [],
   parsed: null,
-  selected: new Set()
+  selected: new Set(),
+  vimshottariTree: []
 };
 
 const t = {
@@ -16,7 +18,15 @@ const t = {
     parseError: 'Parsing error:',
     parseDone: 'Ready.',
     open: 'Open',
-    close: 'Close'
+    close: 'Close',
+    chartTitle: 'Chart',
+    vimTitle: 'Vimshottari Dasha',
+    refreshTree: 'Refresh tree',
+    copyTree: 'Copy tree',
+    treeCopied: 'Tree copied.',
+    treeEmpty: 'No visible periods found.',
+    treeError: 'Vimshottari error:',
+    noActiveTab: 'No active tab'
   },
   ru: {
     parse: 'Парсить',
@@ -28,7 +38,15 @@ const t = {
     parseError: 'Ошибка парсинга:',
     parseDone: 'Готово.',
     open: 'Открыть',
-    close: 'Скрыть'
+    close: 'Скрыть',
+    chartTitle: 'Карта',
+    vimTitle: 'Вимшоттари Даша',
+    refreshTree: 'Обновить дерево',
+    copyTree: 'Копировать дерево',
+    treeCopied: 'Дерево скопировано.',
+    treeEmpty: 'Видимые периоды не найдены.',
+    treeError: 'Ошибка Вимшоттари:',
+    noActiveTab: 'Нет активной вкладки'
   }
 };
 
@@ -38,9 +56,14 @@ const elements = {
   langToggle: document.getElementById('langToggle'),
   refreshBtn: document.getElementById('refreshBtn'),
   copySelectedBtn: document.getElementById('copySelectedBtn'),
+  chartControls: document.getElementById('chartControls'),
   selectAll: document.getElementById('selectAll'),
   selectAllLabel: document.getElementById('selectAllLabel'),
   chartList: document.getElementById('chartList'),
+  vimshottariControls: document.getElementById('vimshottariControls'),
+  refreshTreeBtn: document.getElementById('refreshTreeBtn'),
+  copyTreeBtn: document.getElementById('copyTreeBtn'),
+  vimshottariTree: document.getElementById('vimshottariTree'),
   status: document.getElementById('status')
 };
 
@@ -48,15 +71,31 @@ function tr(key) {
   return t[state.language][key] || key;
 }
 
+function setStatus(message) {
+  elements.status.textContent = message;
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  const isCharts = mode === 'charts';
+  const isVim = mode === 'vimshottari';
+
+  elements.chartControls.classList.toggle('hidden', !isCharts);
+  elements.chartList.classList.toggle('hidden', !isCharts);
+  elements.copySelectedBtn.classList.toggle('hidden', !isCharts);
+
+  elements.vimshottariControls.classList.toggle('hidden', !isVim);
+  elements.vimshottariTree.classList.toggle('hidden', !isVim);
+  elements.refreshBtn.classList.toggle('hidden', !isCharts);
+}
+
 function updateLabels() {
   elements.langToggle.textContent = state.language.toUpperCase();
   elements.refreshBtn.textContent = tr('parse');
   elements.copySelectedBtn.textContent = tr('copy');
   elements.selectAllLabel.textContent = tr('selectAll');
-}
-
-function setStatus(message) {
-  elements.status.textContent = message;
+  elements.refreshTreeBtn.textContent = tr('refreshTree');
+  elements.copyTreeBtn.textContent = tr('copyTree');
 }
 
 function createIcon(type) {
@@ -124,14 +163,20 @@ function createMetaItem(type, text) {
 }
 
 function updateHeader() {
+  if (state.mode === 'vimshottari') {
+    elements.d1Title.textContent = tr('vimTitle');
+    elements.userData.textContent = '-';
+    return;
+  }
+
   if (!state.parsed) {
-    elements.d1Title.textContent = 'Chart';
+    elements.d1Title.textContent = tr('chartTitle');
     elements.userData.textContent = '-';
     return;
   }
 
   const data = state.parsed.finalResult?.dataWithHouses || {};
-  const chartLabel = state.language === 'ru' ? 'Карта' : 'Chart';
+  const chartLabel = tr('chartTitle');
   const chartName = (data.chartName || 'D1').replace(/\s*\(D1\)\s*$/i, '').trim() || 'D1';
   elements.d1Title.textContent = `${chartLabel}: ${chartName}`;
 
@@ -157,6 +202,26 @@ function formatChartContent(chart) {
 
 function localizeChartName(name) {
   return name;
+}
+
+function getBirthDateOnly() {
+  const birthDateTime = state.parsed?.finalResult?.dataWithHouses?.owner?.birthDateTime || '';
+  const match = birthDateTime.match(/\d{2}\.\d{2}\.\d{4}/);
+  return match ? match[0] : '';
+}
+
+function getCopyTitle(chart, index) {
+  const baseTitle = localizeChartName(chart.chartName || `#${index + 1}`);
+  const isD1 = index === 0 && chart?.chartName;
+  if (!isD1) return baseTitle;
+
+  const birthDate = getBirthDateOnly();
+  return birthDate ? `${baseTitle} - ${birthDate}` : baseTitle;
+}
+
+function syncSelectAll() {
+  const total = state.charts.length;
+  elements.selectAll.checked = total > 0 && state.selected.size === total;
 }
 
 function renderList() {
@@ -209,8 +274,55 @@ function renderList() {
     elements.chartList.appendChild(content);
   });
 
-  setStatus(tr('parseDone'));
   syncSelectAll();
+  setStatus(tr('parseDone'));
+}
+
+function renderVimshottariNodes(nodes, depth = 0) {
+  nodes.forEach((node) => {
+    const row = document.createElement('div');
+    row.className = 'vim-node';
+    row.style.marginLeft = `${depth * 14}px`;
+
+    const line = document.createElement('div');
+    line.className = 'vim-line';
+
+    const title = document.createElement('span');
+    title.className = `vim-title${depth === 0 ? ' root' : ''}`;
+    title.textContent = node.title;
+
+    const dates = document.createElement('span');
+    dates.className = 'vim-dates';
+    if (node.begin && node.end) {
+      dates.textContent = `${node.begin} -> ${node.end}`;
+    } else if (node.begin) {
+      dates.textContent = node.begin;
+    } else if (node.end) {
+      dates.textContent = node.end;
+    } else {
+      dates.textContent = '';
+    }
+
+    line.append(title, dates);
+    row.appendChild(line);
+    elements.vimshottariTree.appendChild(row);
+
+    if (node.children?.length) {
+      renderVimshottariNodes(node.children, depth + 1);
+    }
+  });
+}
+
+function renderVimshottariTree() {
+  elements.vimshottariTree.innerHTML = '';
+
+  if (!state.vimshottariTree.length) {
+    setStatus(tr('treeEmpty'));
+    return;
+  }
+
+  renderVimshottariNodes(state.vimshottariTree, 0);
+  setStatus(tr('parseDone'));
 }
 
 function buildChartsForPopup(localizedResult) {
@@ -226,16 +338,24 @@ function buildChartsForPopup(localizedResult) {
   return [...d1Chart, ...(localizedResult.parsedCharts || [])];
 }
 
-function syncSelectAll() {
-  const total = state.charts.length;
-  elements.selectAll.checked = total > 0 && state.selected.size === total;
+async function getActiveTab() {
+  const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const activeUrl = activeTab?.url || '';
+
+  if (activeTab?.id && !/^chrome-extension:|^chrome:|^about:/i.test(activeUrl)) {
+    return activeTab;
+  }
+
+  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const fallback = tabs.find((tab) => /astro\.expert/i.test(tab.url || ''));
+  return fallback || activeTab || null;
 }
 
 async function requestParse() {
   setStatus('...');
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tab = await getActiveTab();
   if (!tab?.id) {
-    setStatus('No active tab');
+    setStatus(tr('noActiveTab'));
     return;
   }
 
@@ -253,8 +373,32 @@ async function requestParse() {
   state.charts = buildChartsForPopup(localized).slice(0, 100);
   state.selected.clear();
 
+  setMode('charts');
   updateHeader();
   renderList();
+}
+
+async function requestVimshottariTree() {
+  setStatus('...');
+  const tab = await getActiveTab();
+  if (!tab?.id) {
+    setStatus(tr('noActiveTab'));
+    return;
+  }
+
+  const response = await chrome.tabs
+    .sendMessage(tab.id, { type: 'PARSE_VIMSHOTTARI_TREE' })
+    .catch((error) => ({ ok: false, error: error.message }));
+
+  if (!response?.ok) {
+    setStatus(`${tr('treeError')} ${response?.error || 'unknown error'}`);
+    return;
+  }
+
+  state.vimshottariTree = response.data || [];
+  setMode('vimshottari');
+  updateHeader();
+  renderVimshottariTree();
 }
 
 function copySelected() {
@@ -267,7 +411,7 @@ function copySelected() {
     .sort((a, b) => a - b)
     .map((index) => {
       const chart = state.charts[index];
-      const title = localizeChartName(chart.chartName || `#${index + 1}`);
+      const title = getCopyTitle(chart, index);
       const body = formatChartContent(chart).join('\n');
       return `${title}\n${body}`;
     })
@@ -279,23 +423,53 @@ function copySelected() {
     .catch((err) => setStatus(String(err)));
 }
 
+function copyVimshottariTree() {
+  navigator.clipboard
+    .writeText(JSON.stringify(state.vimshottariTree, null, 2))
+    .then(() => setStatus(tr('treeCopied')))
+    .catch((err) => setStatus(String(err)));
+}
+
+async function detectModeAndLoad() {
+  const tab = await getActiveTab();
+  const url = tab?.url || '';
+
+  if (/vimshottari/i.test(url)) {
+    await requestVimshottariTree();
+    return;
+  }
+
+  await requestParse();
+}
+
 function init() {
   updateLabels();
+  setMode('charts');
   updateHeader();
 
-  elements.langToggle.addEventListener('click', () => {
+  elements.langToggle.addEventListener('click', async () => {
     state.language = state.language === 'en' ? 'ru' : 'en';
+    updateLabels();
+
+    if (state.mode === 'vimshottari') {
+      updateHeader();
+      renderVimshottariTree();
+      return;
+    }
+
     if (state.parsed) {
       const localized = state.language === 'ru' ? state.parsed.finalResultTextRu : state.parsed.finalResultTextEn;
       state.charts = buildChartsForPopup(localized);
     }
-    updateLabels();
+
     updateHeader();
     renderList();
   });
 
   elements.refreshBtn.addEventListener('click', requestParse);
   elements.copySelectedBtn.addEventListener('click', copySelected);
+  elements.refreshTreeBtn.addEventListener('click', requestVimshottariTree);
+  elements.copyTreeBtn.addEventListener('click', copyVimshottariTree);
 
   elements.selectAll.addEventListener('change', () => {
     state.selected.clear();
@@ -305,7 +479,7 @@ function init() {
     renderList();
   });
 
-  requestParse();
+  detectModeAndLoad();
 }
 
 init();

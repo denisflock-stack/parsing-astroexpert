@@ -328,8 +328,7 @@
   }
 
   function isVimshottariPage() {
-    const href = window.location?.href || '';
-    return /vimshottari/i.test(href);
+    return global.AstroVimshottari?.isVimshottariPage?.() || false;
   }
 
   function isAshtakavargaPage() {

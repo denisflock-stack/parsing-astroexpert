@@ -21,11 +21,16 @@
       <button id="copySelectedBtn" class="accent">Copy selected</button>
     </section>
 
-    <section class="controls small">
+    <section id="chartControls" class="controls small">
       <label><input type="checkbox" id="selectAll" /> <span id="selectAllLabel">Select all</span></label>
     </section>
 
     <ul id="chartList" class="chart-list"></ul>
+    <section id="vimshottariControls" class="controls vimshottari-controls hidden">
+      <button id="refreshTreeBtn">Refresh tree</button>
+      <button id="copyTreeBtn" class="accent">Copy tree</button>
+    </section>
+    <div id="vimshottariTree" class="vimshottari-tree hidden"></div>
     <p id="status" class="status"></p>
   </div>
   <script src="popup.js"></script>

@@ -67,6 +67,9 @@ h1 {
 .controls.small {
   justify-content: space-between;
 }
+.hidden {
+  display: none !important;
+}
 button {
   border: 1px solid #bbb;
   background: white;
@@ -127,4 +130,40 @@ button.secondary {
   margin: 10px 0 0;
   font-size: 12px;
   color: #444;
+}
+.vimshottari-controls {
+  margin-top: 10px;
+}
+.vimshottari-tree {
+  margin: 10px 0 0;
+  max-height: calc(13 * 32px);
+  overflow-y: auto;
+  border: 1px solid #ececec;
+  border-radius: 6px;
+  background: #fff;
+}
+.vim-node {
+  padding: 6px 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.vim-node:last-child {
+  border-bottom: 0;
+}
+.vim-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+}
+.vim-title {
+  font-size: 12px;
+  font-weight: 600;
+}
+.vim-title.root {
+  font-size: 13px;
+  font-weight: 700;
+}
+.vim-dates {
+  font-size: 12px;
+  color: #4b5563;
 }

@@ -29,7 +29,7 @@
         "https://*.astro.expert/*",
         "http://*.astro.expert/*"
       ],
-      "js": ["parser-core.js", "content-script.js"],
+      "js": ["vimshottari.js", "parser-core.js", "content-script.js"],
       "run_at": "document_idle"
     }
   ]
