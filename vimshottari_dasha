@@ -170,41 +170,41 @@
     };
   }
 
-  function collectVisibleNodes() {
+  function collectVisibleRowEntries() {
     const root = findSectionRoot();
     if (!root) return [];
 
-    const rawNodes = [
-      ...findPrimaryRows(root).map((row, index) => parseRow(row, index, 'period')),
-      ...findNestedRows(root).map((row, index) => parseRow(row, index, 'subperiod'))
-    ].filter(Boolean);
-
-    const nodes = rawNodes.map((node, order) => {
-      node.order = order;
-      return node;
-    });
+    const rawEntries = [
+      ...findPrimaryRows(root).map((row, index) => ({ row, node: parseRow(row, index, 'period') })),
+      ...findNestedRows(root).map((row, index) => ({ row, node: parseRow(row, index, 'subperiod') }))
+    ].filter((entry) => !!entry.node);
 
     const unique = new Map();
-    nodes.forEach((node) => {
-      const key = node.path.join('>') + '|' + (node.begin || '') + '|' + (node.end || '');
+    rawEntries.forEach((entry, order) => {
+      entry.node.order = order;
+      const key = getNodeKey(entry.node);
       if (!unique.has(key)) {
-        unique.set(key, node);
+        unique.set(key, entry);
         return;
       }
 
       const existing = unique.get(key);
-      existing.begin = existing.begin || node.begin;
-      existing.end = existing.end || node.end;
-      existing.title = existing.title || node.title;
-      if (existing.order == null || (node.order != null && node.order < existing.order)) {
-        existing.order = node.order;
+      existing.node.begin = existing.node.begin || entry.node.begin;
+      existing.node.end = existing.node.end || entry.node.end;
+      existing.node.title = existing.node.title || entry.node.title;
+      if (existing.node.order == null || (entry.node.order != null && entry.node.order < existing.node.order)) {
+        existing.node.order = entry.node.order;
       }
     });
 
     return Array.from(unique.values()).sort((a, b) => {
-      if (a.path.length !== b.path.length) return a.path.length - b.path.length;
-      return a.index - b.index;
+      if (a.node.path.length !== b.node.path.length) return a.node.path.length - b.node.path.length;
+      return a.node.index - b.node.index;
     });
+  }
+
+  function collectVisibleNodes() {
+    return collectVisibleRowEntries().map((entry) => entry.node);
   }
 
   function isWithinRange(node, data) {
@@ -465,6 +465,14 @@
     actions.append(refreshBtn, copyBtn);
     topRow.append(title, actions);
     header.append(topRow, selectAllLabel);
+
+    const status = document.createElement('div');
+    status.dataset.role = 'status';
+    status.style.fontSize = '12px';
+    status.style.minHeight = '16px';
+    status.style.color = '#6b7280';
+
+    header.appendChild(status);
     panel.appendChild(header);
 
     const content = document.createElement('div');
@@ -476,6 +484,199 @@
 
   function getNodeKey(node) {
     return (node.path || []).join('>') + '|' + (node.begin || '') + '|' + (node.end || '');
+  }
+
+  function getPathKey(path) {
+    return (path || []).join('>');
+  }
+
+  function setStatus(message, tone) {
+    const panel = ensurePanel();
+    const status = panel.querySelector('[data-role="status"]');
+    if (!status) return;
+
+    status.textContent = message || '';
+    if (tone === 'success') {
+      status.style.color = '#15803d';
+      return;
+    }
+    if (tone === 'error') {
+      status.style.color = '#b91c1c';
+      return;
+    }
+    status.style.color = '#6b7280';
+  }
+
+  function sleep(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
+  async function waitForVisiblePath(path, timeoutMs) {
+    const startedAt = Date.now();
+    while (Date.now() - startedAt < timeoutMs) {
+      const entries = collectVisibleRowEntries();
+      const found = entries.find((entry) => getPathKey(entry.node.path) === getPathKey(path));
+      if (found) {
+        return found;
+      }
+      await sleep(120);
+    }
+    return null;
+  }
+
+  async function waitForVisiblePathOrDescendant(path, timeoutMs) {
+    const pathKey = getPathKey(path);
+    const startedAt = Date.now();
+    while (Date.now() - startedAt < timeoutMs) {
+      const entries = collectVisibleRowEntries();
+      const found = entries.find((entry) => {
+        const entryKey = getPathKey(entry.node.path);
+        return entryKey === pathKey || entryKey.startsWith(pathKey + '>');
+      });
+      if (found) {
+        return found;
+      }
+      await sleep(120);
+    }
+    return null;
+  }
+
+  function hasVisibleDescendant(path) {
+    const pathKey = getPathKey(path);
+    return collectVisibleRowEntries().some((entry) => {
+      const entryKey = getPathKey(entry.node.path);
+      return entryKey.startsWith(pathKey + '>');
+    });
+  }
+
+  async function waitForDescendantsToDisappear(path, timeoutMs) {
+    const pathKey = getPathKey(path);
+    const startedAt = Date.now();
+    while (Date.now() - startedAt < timeoutMs) {
+      const stillVisible = collectVisibleRowEntries().some((entry) => {
+        const entryKey = getPathKey(entry.node.path);
+        return entryKey.startsWith(pathKey + '>');
+      });
+      if (!stillVisible) {
+        return true;
+      }
+      await sleep(120);
+    }
+    return false;
+  }
+
+  function getWireSelectPath(row) {
+    const clickable = row?.matches?.('[wire\\:click]') ? row : row?.querySelector?.('[wire\\:click]');
+    const wireClick = clickable?.getAttribute?.('wire:click') || '';
+    const emitMatch = wireClick.match(/\$emit\('selectDasha',\s*(\[[^\]]*\])\)/);
+    if (!emitMatch) return null;
+
+    try {
+      return JSON.parse(emitMatch[1]);
+    } catch (error) {
+      console.warn('Failed to parse wire:click path', error);
+      return null;
+    }
+  }
+
+  function emitSelectDasha(sitePath) {
+    if (!Array.isArray(sitePath) || !window.Livewire?.emit) return false;
+    window.Livewire.emit('selectDasha', sitePath);
+    return true;
+  }
+
+  function findSiteToggleTarget(node) {
+    const normalizedTitle = normalizeSpace(node?.title);
+    if (!normalizedTitle) return null;
+
+    const clickable = Array.from(document.querySelectorAll('[wire\\:click]')).find((el) => {
+      const text = normalizeSpace(el.textContent);
+      if (!text.includes(normalizedTitle)) return false;
+      if (node.begin && !text.includes(node.begin)) return false;
+      if (node.end && !text.includes(node.end)) return false;
+      return true;
+    });
+
+    return clickable || null;
+  }
+
+  function triggerRowOpen(row, depth) {
+    if (!row) return false;
+
+    const clickable = row.matches('[wire\\:click]') ? row : (row.querySelector('[wire\\:click]') || row);
+    const wirePath = getWireSelectPath(clickable);
+    if (wirePath?.length) {
+      const effectivePath = typeof depth === 'number' ? wirePath.slice(0, depth) : wirePath;
+      if (emitSelectDasha(effectivePath)) {
+        return true;
+      }
+    }
+
+    if (typeof clickable.click === 'function') {
+      clickable.click();
+      return true;
+    }
+
+    clickable.dispatchEvent(new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window
+    }));
+    return true;
+  }
+
+  async function navigateToNode(node) {
+    const path = node?.path || [];
+    if (!path.length) return false;
+
+    setStatus('Открываю ветку на сайте...', 'info');
+
+    for (let depth = 0; depth < path.length - 1; depth += 1) {
+      const prefix = path.slice(0, depth + 1);
+      const nextPrefix = path.slice(0, depth + 2);
+      const nextVisible = await waitForVisiblePath(nextPrefix, 150);
+      if (nextVisible) continue;
+
+      const currentVisible = await waitForVisiblePath(prefix, 400);
+      if (!currentVisible) return false;
+
+      triggerRowOpen(currentVisible.row, prefix.length);
+      const revealed = await waitForVisiblePath(nextPrefix, 1500);
+      if (!revealed) {
+        return false;
+      }
+    }
+
+    const targetVisible = await waitForVisiblePathOrDescendant(path, 500);
+    if (!targetVisible) {
+      setStatus('Ветка не найдена на странице', 'error');
+      return false;
+    }
+
+    if (hasVisibleDescendant(path)) {
+      setStatus('Сворачиваю ветку на сайте...', 'info');
+      const collapseTarget = findSiteToggleTarget(node) || targetVisible.row;
+      triggerRowOpen(collapseTarget, path.length);
+      const collapsed = await waitForDescendantsToDisappear(path, 1500);
+      if (!collapsed) {
+        setStatus('Не удалось свернуть ветку', 'error');
+        return false;
+      }
+      setStatus('Ветка свернута на сайте', 'success');
+      window.setTimeout(function () {
+        setStatus('', 'info');
+      }, 1400);
+      return true;
+    }
+
+    if (getPathKey(targetVisible.node.path) === getPathKey(path)) {
+      triggerRowOpen(targetVisible.row, path.length);
+    }
+    setStatus('Ветка открыта на сайте', 'success');
+    window.setTimeout(function () {
+      setStatus('', 'info');
+    }, 1400);
+    return true;
   }
 
   function walkTree(nodes, visitor, parentNode) {
@@ -612,11 +813,33 @@
         state.tree = buildDisplayTreeFromState();
         render(state.tree);
       };
+      marker.onclick = function (event) {
+        event.stopPropagation();
+      };
 
       const title = document.createElement('span');
       title.style.fontWeight = (depth || 0) === 0 ? '700' : '600';
       title.style.fontSize = (depth || 0) === 0 ? '13px' : '12px';
+      title.style.cursor = 'pointer';
+      title.style.textDecoration = 'underline';
+      title.style.textDecorationStyle = 'dotted';
       title.textContent = node.title;
+      title.onclick = async function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const clicked = await navigateToNode(node);
+        if (clicked) {
+          title.style.color = '#2563eb';
+          window.setTimeout(function () {
+            title.style.color = '';
+          }, 700);
+          return;
+        }
+        title.style.color = '#b91c1c';
+        window.setTimeout(function () {
+          title.style.color = '';
+        }, 1000);
+      };
 
       const dates = document.createElement('span');
       dates.style.fontSize = '12px';
@@ -630,6 +853,9 @@
       } else {
         dates.textContent = '';
       }
+
+      dates.style.cursor = 'pointer';
+      dates.onclick = title.onclick;
 
       line.append(marker, title, dates);
       row.appendChild(line);
