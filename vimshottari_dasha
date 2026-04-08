@@ -70,7 +70,7 @@
       '\u0434\u0435\u043a\u0430\u0431\u0440\u044f': 11
     };
 
-    const match = normalized.match(/^(\d{1,2})\s+(\p{L}+)\s+(\d{4})$/u);
+    const match = normalized.match(/^(\d{1,2})\s+(\p{L}+)\s+(\d{4})(?:\s+\d{2}:\d{2})?$/u);
     if (!match) return null;
 
     const day = Number(match[1]);
@@ -79,6 +79,40 @@
     if (month == null) return null;
 
     return new Date(year, month, day).getTime();
+  }
+
+  function formatDateForExport(dateText) {
+    const value = parseDateValue(dateText);
+    if (value == null) return normalizeSpace(dateText);
+
+    const date = new Date(value);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear());
+    return `${day}.${month}.${year}`;
+  }
+
+  function buildExportLines(nodes, lines, depth) {
+    (nodes || []).forEach((node) => {
+      const label = (node.path || []).join(' - ');
+      const begin = formatDateForExport(node.begin);
+      const end = formatDateForExport(node.end);
+      const level = depth || 0;
+
+      if (label && begin && end) {
+        lines.push(`${label}: ${begin} - ${end}`);
+      } else if (label && begin && level >= 2) {
+        lines.push(`${label}: ${begin}`);
+      }
+
+      buildExportLines(node.children, lines, level + 1);
+    });
+  }
+
+  function buildExportText(tree) {
+    const lines = [];
+    buildExportLines(tree, lines, 0);
+    return lines.join('\n');
   }
 
   function findSectionRoot() {
@@ -454,8 +488,8 @@
     copyBtn.style.padding = '4px 8px';
     copyBtn.style.cursor = 'pointer';
     copyBtn.onclick = async function () {
-      const data = window.VimshottariDashaTracker?.export?.() || [];
-      await navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+      const text = window.VimshottariDashaTracker?.exportText?.() || '';
+      await navigator.clipboard.writeText(text);
       copyBtn.textContent = 'Copied';
       window.setTimeout(function () {
         copyBtn.textContent = 'Copy JSON';
@@ -957,6 +991,9 @@
       refresh: refresh,
       export: function () {
         return deepClone(state.savedTree);
+      },
+      exportText: function () {
+        return buildExportText(state.savedTree);
       },
       destroy: destroy
     };
