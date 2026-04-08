@@ -112,7 +112,7 @@
   function buildExportText(tree) {
     const lines = [];
     buildExportLines(tree, lines, 0);
-    return lines.join('\n');
+    return ['Vimshottari Dasha', '', ...lines].join('\n');
   }
 
   function findSectionRoot() {
