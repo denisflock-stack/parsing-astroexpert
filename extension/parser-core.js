@@ -118,7 +118,50 @@
   }
 
   function isRetrogradeToken(name = '') {
-    return /^\s*\([^()]+\)\s*[↑↓]?\s*$/.test(name) || /[↑↓]/.test(name);
+    return /^\s*\([^()]+\)\s*[↑↓]?\s*$/.test(name);
+  }
+
+  function extractPlanetCandidates(raw = '') {
+    const tokenPattern = /\(?\s*(Asc|Su|Mo|Ma|Me|Jp|Ve|Sa|Ra|Ke)\s*\)?\s*[↑↓]?/g;
+    return Array.from(raw.matchAll(tokenPattern))
+      .map((match) => {
+        const value = match[0] || '';
+        return {
+          planet: normalizePlanetName(value),
+          retrograde: isRetrogradeToken(value)
+        };
+      })
+      .filter((token) => token.planet && validPlanets.includes(token.planet));
+  }
+
+  function extractPlanetTokens(host) {
+    if (!host) return [];
+
+    const childTokens = Array.from(host.children || [])
+      .filter((child) => child.tagName?.toLowerCase() === 'tspan')
+      .map((tspan) => (tspan.textContent || '').trim())
+      .filter(Boolean);
+
+    const lineTokens = (host.textContent || '')
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    const rawSources = Array.from(new Set([
+      ...childTokens,
+      ...lineTokens,
+      (host.textContent || '').trim()
+    ].filter(Boolean)));
+
+    const seen = new Set();
+    return rawSources
+      .flatMap((raw) => extractPlanetCandidates(raw))
+      .filter((token) => {
+        const key = `${token.planet}:${token.retrograde ? 'r' : 'n'}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
   }
 
   function translateByLanguage(value, translations, language) {
@@ -404,10 +447,7 @@
       const row = Math.max(0, Math.min(3, Math.floor(y / cellH)));
       const cell = row * 4 + col + 1;
 
-      Array.from(textEl.querySelectorAll('tspan[dx="-4"]'))
-        .map((tspan) => (tspan.textContent || '').trim())
-        .map((raw) => ({ planet: normalizePlanetName(raw), retrograde: isRetrogradeToken(raw) }))
-        .filter((token) => token.planet && validPlanets.includes(token.planet))
+      extractPlanetTokens(textEl)
         .forEach(({ planet, retrograde }) => placements.push({ planet, retrograde, x, y, row, col, cell }));
     });
 
@@ -672,23 +712,7 @@
       const x = Number(host.getAttribute('x'));
       const y = Number(host.getAttribute('y'));
 
-      const childTokens = Array.from(host.children)
-        .filter((child) => child.tagName?.toLowerCase() === 'tspan')
-        .map((tspan) => (tspan.childNodes[0]?.textContent || tspan.textContent || '').trim())
-        .filter(Boolean);
-
-      const lineTokens = (host.textContent || '')
-        .split('\n')
-        .map((line) => line.trim())
-        .filter(Boolean);
-
-      const rawTokens = childTokens.length ? childTokens : lineTokens;
-      const tokens = rawTokens
-        .map((raw) => ({
-          planet: normalizePlanetName(raw),
-          retrograde: isRetrogradeToken(raw)
-        }))
-        .filter((token) => token.planet && validPlanets.includes(token.planet));
+      const tokens = extractPlanetTokens(host);
 
       if (!tokens.length) return [];
 
