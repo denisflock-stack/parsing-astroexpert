@@ -110,6 +110,16 @@ function tr(key) {
   return t[state.language][key] || key;
 }
 
+function getActiveDashaTitle() {
+  return state.vimshottari?.dashaTitles?.[state.language]
+    || state.vimshottari?.dashaTitles?.en
+    || tr('vimTitle');
+}
+
+function getTreeErrorPrefix() {
+  return `${getActiveDashaTitle()} error:`;
+}
+
 function loadSavedLanguage() {
   return new Promise((resolve) => {
     if (!chrome?.storage?.local) {
@@ -121,6 +131,59 @@ function loadSavedLanguage() {
       resolve(result?.[LANGUAGE_STORAGE_KEY] === 'ru' ? 'ru' : 'en');
     });
   });
+}
+
+function getCurrentHorizonSettings() {
+  return {
+    level: elements.levelSelect.value || '2',
+    fromPreset: elements.fromPresetSelect.value || 'today',
+    fromDate: elements.fromDateInput.value || formatIsoDate(new Date()),
+    toDate: elements.toDateInput.value || formatIsoDate(new Date()),
+    toPreset: elements.toPresetSelect.value || 'today'
+  };
+}
+
+function applyHorizonSettings(settings) {
+  if (!settings) return;
+
+  if (settings.level) {
+    elements.levelSelect.value = settings.level;
+  }
+
+  if (settings.fromDate) {
+    elements.fromDateInput.value = settings.fromDate;
+  }
+
+  if (settings.toDate) {
+    elements.toDateInput.value = settings.toDate;
+  }
+
+  syncPresetFromDate(elements.fromPresetSelect, elements.fromDateInput, [-1, -2, -3, -4, -5]);
+  syncPresetFromDate(elements.toPresetSelect, elements.toDateInput, [1, 2, 3, 4, 5]);
+
+  if (settings.fromPreset === 'data') {
+    ensureTemporaryManualOption(elements.fromPresetSelect);
+    elements.fromPresetSelect.value = 'data';
+  } else if (settings.fromPreset) {
+    removeTemporaryManualOption(elements.fromPresetSelect);
+    elements.fromPresetSelect.value = settings.fromPreset;
+  }
+
+  if (settings.toPreset === 'data') {
+    ensureTemporaryManualOption(elements.toPresetSelect);
+    elements.toPresetSelect.value = 'data';
+  } else if (settings.toPreset) {
+    removeTemporaryManualOption(elements.toPresetSelect);
+    elements.toPresetSelect.value = settings.toPreset;
+  }
+}
+
+function persistCurrentHorizonSettings() {
+  if (state.mode !== 'vimshottari') return;
+  sendToActiveTab({
+    type: 'SET_VIMSHOTTARI_HORIZON_SETTINGS',
+    settings: getCurrentHorizonSettings()
+  }).catch(() => {});
 }
 
 function saveLanguage(language) {
@@ -316,6 +379,21 @@ function formatChartContent(chart) {
   return chart.planets || [];
 }
 
+function getBirthDateOnly() {
+  const birthDateTime = state.parsed?.finalResult?.dataWithHouses?.owner?.birthDateTime || '';
+  const match = birthDateTime.match(/\d{2}\.\d{2}\.\d{4}/);
+  return match ? match[0] : '';
+}
+
+function getCopyTitle(chart, index) {
+  const baseTitle = chart.chartName || `#${index + 1}`;
+  const isD1 = index === 0 && chart?.chartName;
+  if (!isD1) return baseTitle;
+
+  const birthDate = getBirthDateOnly();
+  return birthDate ? `${baseTitle} - ${birthDate}` : baseTitle;
+}
+
 function buildChartsForPopup(localizedResult) {
   if (!localizedResult) return [];
 
@@ -433,6 +511,7 @@ async function requestParse() {
 
 function applyVimState(nextState) {
   state.vimshottari = nextState;
+  applyHorizonSettings(nextState?.horizonSettings || null);
   setMode('vimshottari');
   updateHeader();
   renderVimshottariTree();
@@ -444,7 +523,7 @@ async function requestVimshottariState() {
   const response = await sendToActiveTab({ type: 'GET_VIMSHOTTARI_STATE' });
 
   if (!response.ok) {
-    setStatus(`${tr('treeError')} ${response.error}`);
+    setStatus(`${getTreeErrorPrefix()} ${response.error}`);
     return;
   }
 
@@ -501,7 +580,7 @@ function renderVimshottariNodes(nodes, depth = 0) {
       });
 
       if (!response.ok) {
-        setStatus(`${tr('treeError')} ${response.error}`);
+        setStatus(`${getTreeErrorPrefix()} ${response.error}`);
         return;
       }
 
@@ -532,12 +611,12 @@ function renderVimshottariNodes(nodes, depth = 0) {
       });
 
       if (!response.ok) {
-        setStatus(`${tr('treeError')} ${response.error}`);
+        setStatus(`${getTreeErrorPrefix()} ${response.error}`);
         return;
       }
 
       applyVimState(response.data.state);
-      syncStatusFromVimState(response.data.ok ? tr('parseDone') : tr('treeError'));
+      syncStatusFromVimState(response.data.ok ? tr('parseDone') : getTreeErrorPrefix());
     };
 
     title.addEventListener('click', navigate);
@@ -582,7 +661,7 @@ function copySelected() {
     .map((index) => {
       const chart = state.charts[index];
       const body = formatChartContent(chart).join('\n');
-      return `${chart.chartName || `#${index + 1}`}\n${body}`;
+      return `${getCopyTitle(chart, index)}\n${body}`;
     })
     .join('\n\n');
 
@@ -596,7 +675,7 @@ async function refreshVimshottari() {
   const response = await sendToActiveTab({ type: 'REFRESH_VIMSHOTTARI' });
 
   if (!response.ok) {
-    setStatus(`${tr('treeError')} ${response.error}`);
+    setStatus(`${getTreeErrorPrefix()} ${response.error}`);
     return;
   }
 
@@ -605,10 +684,14 @@ async function refreshVimshottari() {
 
 async function pinVimshottariPanel() {
   setStatus(tr('working'));
-  const response = await sendToActiveTab({ type: 'OPEN_VIMSHOTTARI_PANEL' });
+  persistCurrentHorizonSettings();
+  const response = await sendToActiveTab({
+    type: 'OPEN_VIMSHOTTARI_PANEL',
+    settings: getCurrentHorizonSettings()
+  });
 
   if (!response.ok) {
-    setStatus(`${tr('treeError')} ${response.error}`);
+    setStatus(`${getTreeErrorPrefix()} ${response.error}`);
     return;
   }
 
@@ -622,7 +705,7 @@ async function copyVimshottariText() {
   const response = await sendToActiveTab({ type: 'EXPORT_VIMSHOTTARI_TEXT' });
 
   if (!response.ok) {
-    setStatus(`${tr('treeError')} ${response.error}`);
+    setStatus(`${getTreeErrorPrefix()} ${response.error}`);
     return;
   }
 
@@ -754,6 +837,7 @@ function initHorizonControls() {
       ? formatIsoDate(new Date())
       : formatIsoDate(shiftYears(new Date(), Number(value)));
     elements.fromPresetSelect.value = value;
+    persistCurrentHorizonSettings();
   });
 
   elements.toPresetSelect.addEventListener('change', () => {
@@ -764,15 +848,20 @@ function initHorizonControls() {
       ? formatIsoDate(new Date())
       : formatIsoDate(shiftYears(new Date(), Number(value)));
     elements.toPresetSelect.value = value;
+    persistCurrentHorizonSettings();
   });
 
   elements.fromDateInput.addEventListener('change', () => {
     syncPresetFromDate(elements.fromPresetSelect, elements.fromDateInput, [-1, -2, -3, -4, -5]);
+    persistCurrentHorizonSettings();
   });
 
   elements.toDateInput.addEventListener('change', () => {
     syncPresetFromDate(elements.toPresetSelect, elements.toDateInput, [1, 2, 3, 4, 5]);
+    persistCurrentHorizonSettings();
   });
+
+  elements.levelSelect.addEventListener('change', persistCurrentHorizonSettings);
 
   updateHorizonOptionLabels();
 }
@@ -789,7 +878,7 @@ async function applyHorizon() {
   elements.applyHorizonBtn.disabled = false;
 
   if (!response.ok) {
-    setStatus(`${tr('treeError')} ${response.error}`);
+    setStatus(`${getTreeErrorPrefix()} ${response.error}`);
     return;
   }
 
@@ -800,7 +889,7 @@ async function detectModeAndLoad() {
   const tab = await getActiveTab();
   const url = tab?.url || '';
 
-  if (/vimshottari/i.test(url)) {
+  if (/(vimshottari|ashtottari)/i.test(url)) {
     await requestVimshottariState();
     return;
   }
@@ -856,7 +945,7 @@ async function init() {
     });
 
     if (!response.ok) {
-      setStatus(`${tr('treeError')} ${response.error}`);
+      setStatus(`${getTreeErrorPrefix()} ${response.error}`);
       return;
     }
 

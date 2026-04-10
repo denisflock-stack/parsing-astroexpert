@@ -9,7 +9,7 @@ function getVimshottariBridge() {
 function handleVimshottariMessage(message) {
   const bridge = getVimshottariBridge();
   if (!bridge) {
-    return { ok: false, error: 'Vimshottari module is not initialized on this page.' };
+    return { ok: false, error: 'Dasha module is not initialized on this page.' };
   }
 
   switch (message.type) {
@@ -18,7 +18,9 @@ function handleVimshottariMessage(message) {
     case 'GET_VIMSHOTTARI_STATE':
       return { ok: true, data: bridge.getPanelState() };
     case 'OPEN_VIMSHOTTARI_PANEL':
-      return { ok: true, data: bridge.openPanel() };
+      return { ok: true, data: bridge.openPanel(message.settings || null) };
+    case 'SET_VIMSHOTTARI_HORIZON_SETTINGS':
+      return { ok: true, data: bridge.setHorizonSettings(message.settings || null) };
     case 'REFRESH_VIMSHOTTARI':
       bridge.refresh();
       return { ok: true, data: bridge.getPanelState() };

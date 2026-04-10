@@ -1,7 +1,26 @@
 (function initVimshottariDashaTracker(window) {
   const ROOT_KEY = 'vimshottariDashaTree';
+  const DASHA_CONFIGS = [
+    {
+      key: 'vimshottari',
+      urlToken: 'vimshottari',
+      headingEn: 'vimshottari',
+      headingRu: '\u0412\u0438\u043c\u0448\u043e\u0442\u0442\u0430\u0440\u0438',
+      titleEn: 'Vimshottari Dasha',
+      titleRu: '\u0412\u0438\u043c\u0448\u043e\u0442\u0442\u0430\u0440\u0438 \u0414\u0430\u0448\u0430'
+    },
+    {
+      key: 'ashtottari',
+      urlToken: 'ashtottari',
+      headingEn: 'ashtottari',
+      headingRu: '\u0410\u0448\u0442\u043e\u0442\u0442\u0430\u0440\u0438',
+      titleEn: 'Ashtottari Dasha',
+      titleRu: '\u0410\u0448\u0442\u043e\u0442\u0442\u0430\u0440\u0438 \u0414\u0430\u0448\u0430'
+    }
+  ];
   const RU_WORDS = {
     vimshottari: '\u0412\u0438\u043c\u0448\u043e\u0442\u0442\u0430\u0440\u0438',
+    ashtottari: '\u0410\u0448\u0442\u043e\u0442\u0442\u0430\u0440\u0438',
     period: '\u041f\u0435\u0440\u0438\u043e\u0434',
     subperiod: '\u041f\u043e\u0434\u043f\u0435\u0440\u0438\u043e\u0434',
     begin: '\u041d\u0430\u0447\u0430\u043b\u043e',
@@ -105,9 +124,50 @@
     return (text || '').replace(/\s+/g, ' ').trim();
   }
 
+  function getDefaultDashaConfig() {
+    return DASHA_CONFIGS[0];
+  }
+
+  function getDashaTitle(config, language) {
+    return language === 'ru' ? config.titleRu : config.titleEn;
+  }
+
+  function getCurrentPageKey() {
+    try {
+      return `${window.location.origin}${window.location.pathname}${window.location.search}`;
+    } catch {
+      return window.location.href || '';
+    }
+  }
+
+  function detectDashaConfigFromHref(href) {
+    const normalizedHref = String(href || '').toLowerCase();
+    return DASHA_CONFIGS.find((config) => normalizedHref.includes(config.urlToken)) || null;
+  }
+
+  function detectDashaConfig() {
+    const byUrl = detectDashaConfigFromHref(window.location.href || '');
+    if (byUrl) return byUrl;
+
+    const heading = Array.from(document.querySelectorAll('h3')).find((el) => {
+      const text = normalizeSpace(el.textContent).toLowerCase();
+      return DASHA_CONFIGS.some((config) => text.includes(config.headingEn) || text.includes(config.headingRu.toLowerCase()));
+    });
+
+    if (!heading) return null;
+
+    const headingText = normalizeSpace(heading.textContent).toLowerCase();
+    return DASHA_CONFIGS.find((config) => (
+      headingText.includes(config.headingEn) || headingText.includes(config.headingRu.toLowerCase())
+    )) || getDefaultDashaConfig();
+  }
+
   function getUiText(key, replacements) {
     const table = UI_TEXT[currentUiLanguage] || UI_TEXT.en;
     let text = table[key] || UI_TEXT.en[key] || key;
+    if (key === 'panelTitle') {
+      text = getDashaTitle(detectDashaConfig() || getDefaultDashaConfig(), currentUiLanguage);
+    }
     if (replacements) {
       Object.entries(replacements).forEach(function ([name, value]) {
         text = text.replace(`{${name}}`, String(value));
@@ -194,7 +254,7 @@
   function buildExportText(tree) {
     const lines = [];
     buildExportLines(tree, lines, 0);
-    return ['Vimshottari Dasha', '', ...lines].join('\n');
+    return [getDashaTitle(detectDashaConfig() || getDefaultDashaConfig(), 'en'), '', ...lines].join('\n');
   }
 
   function getOwnerData() {
@@ -219,8 +279,8 @@
 
   function findSectionRoot() {
     const heading = Array.from(document.querySelectorAll('h3')).find((el) => {
-      const text = normalizeSpace(el.textContent);
-      return text.includes('vimshottari') || text.includes(RU_WORDS.vimshottari);
+      const text = normalizeSpace(el.textContent).toLowerCase();
+      return DASHA_CONFIGS.some((config) => text.includes(config.headingEn) || text.includes(config.headingRu.toLowerCase()));
     });
 
     return heading?.nextElementSibling
@@ -229,7 +289,7 @@
   }
 
   function isVimshottariPage() {
-    return /vimshottari/i.test(window.location.href) || !!findSectionRoot();
+    return !!detectDashaConfig() || !!findSectionRoot();
   }
 
   function findPrimaryRows(root) {
@@ -693,6 +753,7 @@
       }
 
       syncPresetFromDate(fromPresetSelect, fromDateInput, [-1, -2, -3, -4, -5]);
+      persistPanelHorizonSettings(panel);
     };
 
     const toPresetSelect = document.createElement('select');
@@ -725,6 +786,7 @@
       }
 
       syncPresetFromDate(toPresetSelect, dateInput, [1, 2, 3, 4, 5]);
+      persistPanelHorizonSettings(panel);
     };
 
     function removeTemporaryManualOption(select) {
@@ -778,9 +840,14 @@
 
     fromDateInput.addEventListener('change', function () {
       syncPresetFromDate(fromPresetSelect, fromDateInput, [-1, -2, -3, -4, -5]);
+      persistPanelHorizonSettings(panel);
     });
     dateInput.addEventListener('change', function () {
       syncPresetFromDate(toPresetSelect, dateInput, [1, 2, 3, 4, 5]);
+      persistPanelHorizonSettings(panel);
+    });
+    levelSelect.addEventListener('change', function () {
+      persistPanelHorizonSettings(panel);
     });
     syncPresetFromDate(fromPresetSelect, fromDateInput, [-1, -2, -3, -4, -5]);
     syncPresetFromDate(toPresetSelect, dateInput, [1, 2, 3, 4, 5]);
@@ -807,6 +874,7 @@
       applyHorizonBtn.textContent = getUiText('working');
       try {
         await tracker.applyHorizonSelection(levelSelect.value, dateInput.value, fromDateInput.value);
+        persistPanelHorizonSettings(panel);
       } finally {
         applyHorizonBtn.disabled = false;
         applyHorizonBtn.textContent = getUiText('open');
@@ -864,6 +932,90 @@
     status.style.color = '#6b7280';
   }
 
+  function getPanelHorizonControls(panel) {
+    if (!panel) return null;
+    return {
+      levelSelect: panel.querySelector('[data-role="horizon-level"]'),
+      fromPresetSelect: panel.querySelector('[data-role="horizon-from-preset"]'),
+      fromDateInput: panel.querySelector('[data-role="horizon-from-date"]'),
+      toDateInput: panel.querySelector('[data-role="horizon-date"]'),
+      toPresetSelect: panel.querySelector('[data-role="horizon-to-preset"]')
+    };
+  }
+
+  function getPanelHorizonSettings(panel) {
+    const controls = getPanelHorizonControls(panel);
+    if (!controls) return getDefaultHorizonSettings();
+
+    return {
+      level: controls.levelSelect?.value || '2',
+      fromPreset: controls.fromPresetSelect?.value || 'today',
+      fromDate: controls.fromDateInput?.value || formatIsoDate(new Date()),
+      toDate: controls.toDateInput?.value || formatIsoDate(new Date()),
+      toPreset: controls.toPresetSelect?.value || 'today'
+    };
+  }
+
+  function persistPanelHorizonSettings(panel) {
+    state.pageKey = getCurrentPageKey();
+    state.horizonSettings = getPanelHorizonSettings(panel);
+  }
+
+  function applyPanelHorizonSettings(panel, settings) {
+    const controls = getPanelHorizonControls(panel);
+    if (!controls) return;
+
+    const next = { ...getDefaultHorizonSettings(), ...(settings || {}) };
+
+    if (controls.levelSelect) {
+      controls.levelSelect.value = next.level || '2';
+    }
+
+    if (controls.fromDateInput) {
+      controls.fromDateInput.value = next.fromDate || formatIsoDate(new Date());
+    }
+
+    if (controls.toDateInput) {
+      controls.toDateInput.value = next.toDate || formatIsoDate(new Date());
+    }
+
+    const syncPreset = function (select, input, offsets, presetValue) {
+      if (!select || !input) return;
+
+      const manualOption = select.querySelector('option[data-role="manual-temp"]');
+      if (manualOption) {
+        manualOption.remove();
+      }
+
+      const todayIso = formatIsoDate(new Date());
+      const value = input.value;
+      let derivedValue = 'today';
+
+      if (!value) {
+        derivedValue = 'data';
+      } else if (value !== todayIso) {
+        const matched = offsets.find(function (offset) {
+          return value === formatIsoDate(shiftYears(new Date(), offset));
+        });
+        derivedValue = matched == null ? 'data' : String(matched);
+      }
+
+      const finalValue = presetValue || derivedValue;
+      if (finalValue === 'data') {
+        const option = document.createElement('option');
+        option.value = 'data';
+        option.textContent = getUiText('manualDate');
+        option.dataset.role = 'manual-temp';
+        select.appendChild(option);
+      }
+
+      select.value = finalValue;
+    };
+
+    syncPreset(controls.fromPresetSelect, controls.fromDateInput, [-1, -2, -3, -4, -5], next.fromPreset);
+    syncPreset(controls.toPresetSelect, controls.toDateInput, [1, 2, 3, 4, 5], next.toPreset);
+  }
+
   function updatePanelLanguage() {
     const panel = getPanelIfOpen();
     if (!panel) return;
@@ -915,6 +1067,17 @@
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  function getDefaultHorizonSettings() {
+    const today = formatIsoDate(new Date());
+    return {
+      level: '2',
+      fromPreset: 'today',
+      fromDate: today,
+      toDate: today,
+      toPreset: 'today'
+    };
   }
 
   function shiftYears(date, years) {
@@ -1317,6 +1480,12 @@
 
     return {
       isVimshottariPage: isVimshottariPage(),
+      dashaKey: (detectDashaConfig() || getDefaultDashaConfig()).key,
+      dashaTitles: {
+        en: getDashaTitle(detectDashaConfig() || getDefaultDashaConfig(), 'en'),
+        ru: getDashaTitle(detectDashaConfig() || getDefaultDashaConfig(), 'ru')
+      },
+      horizonSettings: deepClone(state.horizonSettings),
       trackerReady: !!getTracker(),
       panelOpen: !!getPanelIfOpen(),
       owner: getOwnerData(),
@@ -1576,6 +1745,16 @@
     return buildTrackerState();
   }
 
+  function setHorizonSettings(settings) {
+    state.pageKey = getCurrentPageKey();
+    state.horizonSettings = { ...getDefaultHorizonSettings(), ...(settings || {}) };
+    const panel = getPanelIfOpen();
+    if (panel) {
+      applyPanelHorizonSettings(panel, state.horizonSettings);
+    }
+    return buildTrackerState();
+  }
+
   function setAllMarkers(checked) {
     state.markerDefaultChecked = !!checked;
     walkTree(state.tree, function (node) {
@@ -1637,12 +1816,15 @@
 
   function destroy() {
     observer?.disconnect();
+    observedSectionRoot = null;
     document.getElementById('vimshottari-tree-panel')?.remove();
     delete window.VimshottariDashaTracker;
   }
 
   const state = {
     key: ROOT_KEY,
+    pageKey: getCurrentPageKey(),
+    dashaKey: (detectDashaConfig() || getDefaultDashaConfig()).key,
     tree: [],
     fullTree: [],
     savedTree: [],
@@ -1651,12 +1833,28 @@
     markerByKey: Object.create(null),
     parentByKey: Object.create(null),
     markerDefaultChecked: true,
+    horizonSettings: getDefaultHorizonSettings(),
     isAutoSelecting: false,
     statusMessage: '',
     statusTone: 'info'
   };
 
+  function resetTrackerState() {
+    state.tree = [];
+    state.fullTree = [];
+    state.savedTree = [];
+    state.lastVisibleNodes = [];
+    state.rootMetaByCode = Object.create(null);
+    state.markerByKey = Object.create(null);
+    state.parentByKey = Object.create(null);
+    state.markerDefaultChecked = true;
+    state.isAutoSelecting = false;
+    state.statusMessage = '';
+    state.statusTone = 'info';
+  }
+
   let refreshTimer = null;
+  let observedSectionRoot = null;
   const observer = new MutationObserver(function () {
     if (state.isAutoSelecting) return;
     window.clearTimeout(refreshTimer);
@@ -1665,9 +1863,16 @@
     }, 250);
   });
 
-  const sectionRoot = findSectionRoot();
-  if (sectionRoot) {
-    observer.observe(sectionRoot, { childList: true, subtree: true });
+  function reconnectSectionObserver() {
+    const nextSectionRoot = findSectionRoot();
+    if (observedSectionRoot === nextSectionRoot) return;
+
+    observer.disconnect();
+    observedSectionRoot = nextSectionRoot || null;
+
+    if (observedSectionRoot) {
+      observer.observe(observedSectionRoot, { childList: true, subtree: true });
+    }
   }
 
   function bindPanelEvents() {
@@ -1690,6 +1895,9 @@
   function startTracker() {
     window.VimshottariDashaTracker?.destroy?.();
     getPanelIfOpen()?.remove();
+    state.dashaKey = (detectDashaConfig() || getDefaultDashaConfig()).key;
+    resetTrackerState();
+    reconnectSectionObserver();
     window.VimshottariDashaTracker = {
       key: ROOT_KEY,
       get tree() {
@@ -1702,6 +1910,7 @@
       exportText: function () {
         return buildExportText(state.savedTree);
       },
+      setHorizonSettings: setHorizonSettings,
       applyHorizonSelection: applyHorizonSelection,
       destroy: destroy
     };
@@ -1740,13 +1949,21 @@
     return tracker?.exportText?.() || buildExportText(exportTree());
   }
 
-  function openPanel() {
+  function openPanel(settings) {
     const tracker = ensureTrackerStarted();
-    ensurePanel();
+    const panel = ensurePanel();
+    const currentPageKey = getCurrentPageKey();
+    const samePage = state.pageKey === currentPageKey;
+    state.pageKey = currentPageKey;
+    if (!samePage) {
+      state.horizonSettings = getDefaultHorizonSettings();
+    }
+    applyPanelHorizonSettings(panel, settings || (samePage ? state.horizonSettings : null));
     bindPanelEvents();
     if (tracker?.refresh) {
       tracker.refresh();
     }
+    persistPanelHorizonSettings(panel);
     return getPanelState();
   }
 
@@ -1761,7 +1978,14 @@
   let trackerStarted = false;
 
   function syncAutoStart() {
-    const shouldRun = isVimshottariPage();
+    const config = detectDashaConfig();
+    const shouldRun = !!config;
+    const nextDashaKey = config?.key || null;
+
+    if (shouldRun && trackerStarted && nextDashaKey && state.dashaKey !== nextDashaKey) {
+      stopTracker();
+      trackerStarted = false;
+    }
 
     if (shouldRun && !trackerStarted) {
       trackerStarted = true;
@@ -1779,13 +2003,24 @@
     syncAutoStart();
 
     watchTimer = window.setInterval(function () {
+      reconnectSectionObserver();
+
       if (window.location.href !== lastHref) {
         lastHref = window.location.href;
+        const nextConfigByUrl = detectDashaConfigFromHref(lastHref);
+        state.pageKey = getCurrentPageKey();
+        if (nextConfigByUrl?.key && state.dashaKey !== nextConfigByUrl.key) {
+          stopTracker();
+          trackerStarted = false;
+          state.dashaKey = nextConfigByUrl.key;
+          resetTrackerState();
+        }
+        state.horizonSettings = getDefaultHorizonSettings();
         syncAutoStart();
         return;
       }
 
-      if (!trackerStarted && isVimshottariPage()) {
+      if (isVimshottariPage()) {
         syncAutoStart();
       }
     }, 500);
@@ -1813,6 +2048,7 @@
     parseVisibleTree: parseVisibleTree,
     exportTree: exportTree,
     exportText: exportText,
+    setHorizonSettings: setHorizonSettings,
     getPanelState: getPanelState,
     setAllMarkers: setAllMarkers,
     setNodeMarker: setNodeMarker,
