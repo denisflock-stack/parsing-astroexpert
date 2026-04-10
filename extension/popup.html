@@ -16,21 +16,44 @@
       <button id="langToggle" class="secondary">EN</button>
     </header>
 
-    <section class="controls">
-      <button id="refreshBtn">Parse</button>
-      <button id="copySelectedBtn" class="accent">Copy selected</button>
+    <section id="chartMode" class="mode-section">
+      <section class="controls">
+        <button id="refreshBtn">Parse</button>
+        <button id="copySelectedBtn" class="accent">Copy selected</button>
+      </section>
+
+      <section id="chartControls" class="controls small header-row">
+        <label><input type="checkbox" id="selectAll" /> <span id="selectAllLabel">Select all</span></label>
+      </section>
+
+      <ul id="chartList" class="chart-list"></ul>
     </section>
 
-    <section id="chartControls" class="controls small">
-      <label><input type="checkbox" id="selectAll" /> <span id="selectAllLabel">Select all</span></label>
+    <section id="vimMode" class="mode-section hidden">
+      <section class="controls small header-row">
+        <label><input type="checkbox" id="vimSelectAll" /> <span id="vimSelectAllLabel">Select all</span></label>
+        <div class="inline-actions">
+          <button id="pinPanelBtn">Pin</button>
+          <button id="refreshTreeBtn">Refresh</button>
+          <button id="copyTreeBtn" class="accent">Copy text</button>
+        </div>
+      </section>
+
+      <section class="controls horizon-controls">
+        <select id="levelSelect">
+          <option value="2">Antardasha</option>
+          <option value="3">Pratyantardasha</option>
+        </select>
+        <select id="fromPresetSelect"></select>
+        <input type="date" id="fromDateInput" />
+        <input type="date" id="toDateInput" />
+        <select id="toPresetSelect"></select>
+        <button id="applyHorizonBtn">Open</button>
+      </section>
+
+      <div id="vimshottariTree" class="vimshottari-tree"></div>
     </section>
 
-    <ul id="chartList" class="chart-list"></ul>
-    <section id="vimshottariControls" class="controls vimshottari-controls hidden">
-      <button id="refreshTreeBtn">Refresh tree</button>
-      <button id="copyTreeBtn" class="accent">Copy tree</button>
-    </section>
-    <div id="vimshottariTree" class="vimshottari-tree hidden"></div>
     <p id="status" class="status"></p>
   </div>
   <script src="popup.js"></script>

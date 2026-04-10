@@ -18,7 +18,7 @@
     },
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab", "tabs", "clipboardWrite"],
+  "permissions": ["activeTab", "tabs", "clipboardWrite", "storage"],
   "host_permissions": [
     "https://*.astro.expert/*",
     "http://*.astro.expert/*"
