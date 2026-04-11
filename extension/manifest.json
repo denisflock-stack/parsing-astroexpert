@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Astro D1 Parser",
-  "description": "Toolbar popup parser for Astro.Expert D1/D9 cards.",
+  "name": "Astro.Expert Chart Parser",
+  "description": "Parse Astro.Expert chart pages, copy chart data, and work with Vimshottari or Ashtottari dasha trees.",
   "version": "1.0.0",
   "icons": {
     "16": "icons/icon16.png",
@@ -18,16 +18,14 @@
     },
     "default_popup": "popup.html"
   },
-  "permissions": ["activeTab", "tabs", "clipboardWrite", "storage"],
+  "permissions": ["tabs", "storage"],
   "host_permissions": [
-    "https://*.astro.expert/*",
-    "http://*.astro.expert/*"
+    "https://*.astro.expert/*"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://*.astro.expert/*",
-        "http://*.astro.expert/*"
+        "https://*.astro.expert/*"
       ],
       "js": ["vimshottari.js", "parser-core.js", "content-script.js"],
       "run_at": "document_idle"
