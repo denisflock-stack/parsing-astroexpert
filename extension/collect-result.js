@@ -53,9 +53,10 @@ function localize(language) {
 function buildClipboardText() {
   const resultText = (elements.resultText.value || '').trimEnd();
   const requestText = (elements.userRequest.value || '').trim();
-  return requestText
-    ? `${resultText}\n\n---\n\n# ${activeCopy.requestClipboardTitle}\n\n${requestText}\n`
-    : `${resultText}\n`;
+  const requestBlock = requestText
+    ? `# ${activeCopy.requestClipboardTitle}\n\n${requestText}`
+    : `# ${activeCopy.requestClipboardTitle}`;
+  return `${resultText}\n\n---\n\n${requestBlock}\n`;
 }
 
 async function init() {
