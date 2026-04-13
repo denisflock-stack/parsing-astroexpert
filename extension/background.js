@@ -145,8 +145,11 @@ async function parseCurrentPage(tabId, language, options = {}) {
   const localized = language === 'ru' ? response.data?.finalResultTextRu : response.data?.finalResultTextEn;
   const charts = [];
   if (localized?.dataWithHouses && !options.omitBaseChart) {
+    const birthDateTime = localized.dataWithHouses.owner?.birthDateTime;
+    const dateLabel = language === 'ru' ? 'Дата' : 'Date';
     charts.push({
       chartName: localized.dataWithHouses.chartName || 'D1',
+      meta: birthDateTime ? [`${dateLabel}: ${birthDateTime}`] : [],
       planets: localized.dataWithHouses.planets || []
     });
   }
@@ -157,7 +160,14 @@ async function parseCurrentPage(tabId, language, options = {}) {
   }
 
   return charts
-    .map((chart) => `${chart.chartName || 'Chart'}\n${(chart.planets || []).join('\n')}`.trim())
+    .map((chart) => {
+      const lines = [
+        chart.chartName || 'Chart',
+        ...(chart.meta || []),
+        ...(chart.planets || [])
+      ];
+      return lines.join('\n').trim();
+    })
     .join('\n\n');
 }
 
