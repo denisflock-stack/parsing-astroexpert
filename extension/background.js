@@ -11,6 +11,7 @@ const SECTION_LABELS = {
     vimshottari: 'Vimshottari Dasha: Pratyantardasha, today +5 years',
     notes: 'Notes',
     title: 'Astro.Expert data',
+    userRequestTitle: 'User request',
     dashaReview: 'Review dashas: automatic opening may miss something'
   },
   ru: {
@@ -19,7 +20,8 @@ const SECTION_LABELS = {
     ashtakavarga: 'Аштакаварга',
     vimshottari: 'Вимшоттари Даша: Pratyantardasha, today +5 years',
     notes: 'Примечания',
-    title: 'Astro.Expert data',
+    title: 'Данные Astro.Expert',
+    userRequestTitle: 'Запрос пользователя',
     dashaReview: 'Проверьте даши: автоматическое раскрытие может что-то пропустить'
   }
 };
@@ -301,7 +303,7 @@ function buildResultText({ prompt, labels, collectedSections, errors }) {
     ? `\n\n## ${labels.notes}\n\n${errors.map((error) => `- ${error}`).join('\n')}`
     : '';
 
-  return `${prompt.trim()}\n\n---\n\n# ${labels.title}\n\n${sectionBlocks || '_No data collected._'}${notes}\n`;
+  return `${prompt.trim()}\n\n---\n\n# ${labels.title}\n\n${sectionBlocks || '_No data collected._'}${notes}\n\n---\n\n# ${labels.userRequestTitle}\n`;
 }
 
 async function openResultPage(text, language, status) {
