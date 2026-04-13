@@ -90,6 +90,55 @@ h1 {
   gap: 6px;
 }
 
+.help-steps li {
+  white-space: pre-line;
+}
+
+.help-prompt-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.help-prompt-actions .hidden,
+.prompt-note.hidden,
+.prompt-preview.hidden,
+.prompt-editor.hidden {
+  display: none;
+}
+
+.prompt-note {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.prompt-preview,
+.prompt-editor {
+  margin: 10px 0 0;
+  max-height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+  border: 1px solid #dbe3f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2937;
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.prompt-editor {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  box-sizing: border-box;
+  font-family: Consolas, "Courier New", monospace;
+}
+
 .controls {
   margin-top: 10px;
   display: flex;

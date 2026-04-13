@@ -6,11 +6,16 @@ const state = {
   selected: new Set(),
   vimshottari: null,
   helpOpen: false,
+  promptOpen: false,
+  promptEditing: false,
+  promptText: '',
+  promptPath: '',
   vimAutoRefreshTimer: null,
   vimAutoRefreshPending: false
 };
 
 const LANGUAGE_STORAGE_KEY = 'uiLanguage';
+const PROMPT_STORAGE_PREFIX = 'userPrompt';
 
 // Keep this file in UTF-8 so Russian UI labels do not turn into mojibake.
 const t = {
@@ -38,17 +43,31 @@ const t = {
     help: 'Help',
     helpTitle: 'How to use',
     helpClose: 'Close',
+    promptToggle: 'Example prompt',
+    promptHide: 'Hide prompt',
+    promptCopy: 'Copy prompt',
+    promptEdit: 'Edit',
+    promptSave: 'Save',
+    promptReset: 'Reset',
+    promptResetConfirm: 'Reset this prompt to the default version? Your saved edits will be deleted.',
+    promptSaved: 'Prompt saved.',
+    promptResetDone: 'Default prompt restored.',
+    promptCopied: 'Prompt copied.',
+    promptError: 'Prompt loading error:',
+    promptNote: 'EN and RU prompts are saved separately. Your edits are stored locally in this browser and will be deleted if browser or extension data is cleared.',
     helpStepsCharts: [
-      'Open a supported page on astro.expert.',
-      'Click the extension icon and press Update.',
-      'Select the chart sections you want.',
-      'Use Copy selected to copy the chosen text.'
+      'Works on Pod rukoi, Divisional charts, Ashtakavarga, Vimshottari Dasha, and Ashtottari Dasha pages.',
+      'Select the chart sections you need.',
+      'Click "Copy selected" to copy the data.',
+      'Paste the data into the AI chat.'
     ],
     helpStepsVim: [
-      'Open a Vimshottari or Ashtottari page on astro.expert.',
-      'Click a period name or dates to navigate inside the tree.',
+      'Works on Pod rukoi, Divisional charts, Ashtakavarga, Vimshottari Dasha, and Ashtottari Dasha pages.',
+      'Click a period name or date to open a subperiod.',
       'Mark the periods you need with checkboxes.',
-      'Use Copy text to export the selected tree text.'
+      'Click "Copy" to copy the selected data.',
+      'The "Open" button automatically opens and selects dashas for the selected period.\n⚠ (Please review the result — it may miss something.)',
+      'Paste the data into the AI chat.'
     ]
   },
   ru: {
@@ -73,17 +92,31 @@ const t = {
     help: 'Помощь',
     helpTitle: 'Как пользоваться',
     helpClose: 'Закрыть',
+    promptToggle: 'Пример промта',
+    promptHide: 'Скрыть промт',
+    promptCopy: 'Копировать промт',
+    promptEdit: 'Редактировать',
+    promptSave: 'Сохранить',
+    promptReset: 'Сбросить',
+    promptResetConfirm: 'Сбросить промт к стандартной версии? Сохранённые правки будут удалены.',
+    promptSaved: 'Промт сохранён.',
+    promptResetDone: 'Промт сброшен к стандартному.',
+    promptCopied: 'Промт скопирован.',
+    promptError: 'Ошибка загрузки промта:',
+    promptNote: 'Промты RU и EN сохраняются отдельно. Правки хранятся локально в этом браузере и удалятся при очистке данных браузера или расширения.',
     helpStepsCharts: [
-      'Откройте поддерживаемую страницу на astro.expert.',
-      'Нажмите на иконку расширения и затем Обновить.',
+      'Работает на страницах Под рукой, Дробные карты, Аштакаварга, Вимшоттари Даша, Ашоттари Даша.',
       'Выберите нужные разделы карты.',
-      'Нажмите Копировать выбранное, чтобы скопировать текст.'
+      'Нажмите "Копировать выбранное", чтобы скопировать данные.',
+      'Вставьте данные в чат нейросети.'
     ],
     helpStepsVim: [
-      'Откройте страницу Vimshottari или Ashtottari на astro.expert.',
-      'Нажимайте на название периода или даты, чтобы перейти по дереву.',
+      'Работает на страницах Под рукой, Дробные карты, Аштакаварга, Вимшоттари Даша, Ашоттари Даша.',
+      'Нажимайте на название периода или дату, чтобы открыть подпериод.',
       'Отметьте галочками нужные периоды.',
-      'Нажмите Копировать, чтобы выгрузить выбранный текст дерева.'
+      'Нажмите "Копировать", чтобы скопировать выбранные данные.',
+      'Кнопка «Открыть» автоматически раскрывает и выбирает даши за указанный период.\n⚠ (Проверьте результат — может что-то пропустить)',
+      'Вставьте данные в чат нейросети.'
     ]
   }
 };
@@ -118,6 +151,13 @@ const elements = {
   helpTitle: document.getElementById('helpTitle'),
   helpSteps: document.getElementById('helpSteps'),
   helpClose: document.getElementById('helpClose'),
+  promptToggle: document.getElementById('promptToggle'),
+  promptEdit: document.getElementById('promptEdit'),
+  promptCopy: document.getElementById('promptCopy'),
+  promptReset: document.getElementById('promptReset'),
+  promptNote: document.getElementById('promptNote'),
+  promptPreview: document.getElementById('promptPreview'),
+  promptEditor: document.getElementById('promptEditor'),
   langToggle: document.getElementById('langToggle'),
   chartMode: document.getElementById('chartMode'),
   refreshBtn: document.getElementById('refreshBtn'),
@@ -235,11 +275,93 @@ function getHelpSteps() {
   return state.mode === 'vimshottari' ? tr('helpStepsVim') : tr('helpStepsCharts');
 }
 
+function getPromptPath() {
+  return `prompts/prompt.${state.language}.md`;
+}
+
+function getPromptStorageKey() {
+  return `${PROMPT_STORAGE_PREFIX}:${state.language}`;
+}
+
+function getStoredPrompt() {
+  return new Promise((resolve) => {
+    if (!chrome?.storage?.local) {
+      resolve(null);
+      return;
+    }
+
+    chrome.storage.local.get({ [getPromptStorageKey()]: null }, (result) => {
+      const value = result?.[getPromptStorageKey()];
+      resolve(typeof value === 'string' && value.trim() ? value : null);
+    });
+  });
+}
+
+function saveStoredPrompt(text) {
+  return new Promise((resolve) => {
+    if (!chrome?.storage?.local) {
+      resolve();
+      return;
+    }
+
+    chrome.storage.local.set({ [getPromptStorageKey()]: text }, resolve);
+  });
+}
+
+function removeStoredPrompt() {
+  return new Promise((resolve) => {
+    if (!chrome?.storage?.local) {
+      resolve();
+      return;
+    }
+
+    chrome.storage.local.remove(getPromptStorageKey(), resolve);
+  });
+}
+
+async function loadPromptExample() {
+  const promptPath = getPromptPath();
+  if (state.promptText && state.promptPath === promptPath) {
+    return state.promptText;
+  }
+
+  const response = await fetch(chrome.runtime.getURL(promptPath));
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`.trim());
+  }
+
+  state.promptPath = promptPath;
+  state.promptText = await getStoredPrompt() || await response.text();
+  return state.promptText;
+}
+
 function renderHelpPanel() {
   elements.helpPanel.classList.toggle('hidden', !state.helpOpen);
   elements.helpToggle.textContent = tr('help');
   elements.helpTitle.textContent = tr('helpTitle');
   elements.helpClose.textContent = tr('helpClose');
+  elements.promptToggle.textContent = state.promptOpen ? tr('promptHide') : tr('promptToggle');
+  elements.promptCopy.textContent = tr('promptCopy');
+  elements.promptEdit.textContent = state.promptEditing ? tr('promptSave') : tr('promptEdit');
+  elements.promptReset.textContent = tr('promptReset');
+  elements.promptNote.textContent = tr('promptNote');
+  elements.promptEdit.classList.toggle('hidden', !state.promptOpen || !state.promptText);
+  elements.promptCopy.classList.toggle('hidden', !state.promptOpen || !state.promptText);
+  elements.promptReset.classList.toggle('hidden', !state.promptOpen || !state.promptText);
+  elements.promptNote.classList.toggle('hidden', !state.promptOpen);
+  elements.promptPreview.classList.toggle('hidden', !state.promptOpen || state.promptEditing);
+  elements.promptEditor.classList.toggle('hidden', !state.promptOpen || !state.promptEditing);
+  elements.promptPreview.textContent = state.promptOpen
+    ? (state.promptText || tr('working'))
+    : '';
+  if (
+    state.promptOpen
+    && state.promptEditing
+    && document.activeElement !== elements.promptEditor
+    && elements.promptEditor.value !== state.promptText
+  ) {
+    elements.promptEditor.value = state.promptText;
+  }
   elements.helpSteps.innerHTML = '';
 
   getHelpSteps().forEach((step) => {
@@ -255,7 +377,14 @@ function syncStatusFromVimState(fallbackMessage) {
 }
 
 function setMode(mode) {
+  const modeChanged = state.mode !== mode;
   state.mode = mode;
+  if (modeChanged) {
+    state.promptOpen = false;
+    state.promptEditing = false;
+    state.promptText = '';
+    state.promptPath = '';
+  }
   elements.chartMode.classList.toggle('hidden', mode !== 'charts');
   elements.vimMode.classList.toggle('hidden', mode !== 'vimshottari');
   renderHelpPanel();
@@ -963,8 +1092,22 @@ async function init() {
   elements.langToggle.addEventListener('click', () => {
     state.language = state.language === 'en' ? 'ru' : 'en';
     saveLanguage(state.language);
+    const shouldReloadPrompt = state.promptOpen;
+    state.promptEditing = false;
+    state.promptText = '';
+    state.promptPath = '';
     updateLabels();
     updateHeader();
+
+    if (shouldReloadPrompt) {
+      loadPromptExample()
+        .then(() => renderHelpPanel())
+        .catch((error) => {
+          state.promptOpen = false;
+          setStatus(`${tr('promptError')} ${error?.message || String(error)}`);
+          renderHelpPanel();
+        });
+    }
 
     if (state.mode === 'vimshottari') {
       renderVimshottariTree();
@@ -984,8 +1127,82 @@ async function init() {
     renderHelpPanel();
   });
 
+  elements.promptToggle.addEventListener('click', async () => {
+    state.promptOpen = !state.promptOpen;
+    if (!state.promptOpen) {
+      state.promptEditing = false;
+      renderHelpPanel();
+      return;
+    }
+
+    renderHelpPanel();
+    try {
+      state.promptText = await loadPromptExample();
+      state.promptEditing = false;
+      renderHelpPanel();
+    } catch (error) {
+      state.promptOpen = false;
+      setStatus(`${tr('promptError')} ${error?.message || String(error)}`);
+      renderHelpPanel();
+    }
+  });
+
+  elements.promptEdit.addEventListener('click', async () => {
+    if (!state.promptEditing) {
+      state.promptEditing = true;
+      renderHelpPanel();
+      elements.promptEditor.focus();
+      return;
+    }
+
+    state.promptText = elements.promptEditor.value;
+    await saveStoredPrompt(state.promptText);
+    state.promptEditing = false;
+    setStatus(tr('promptSaved'));
+    renderHelpPanel();
+  });
+
+  elements.promptReset.addEventListener('click', async () => {
+    if (!window.confirm(tr('promptResetConfirm'))) {
+      return;
+    }
+
+    await removeStoredPrompt();
+    state.promptText = '';
+    state.promptPath = '';
+    state.promptEditing = false;
+
+    try {
+      state.promptText = await loadPromptExample();
+      setStatus(tr('promptResetDone'));
+    } catch (error) {
+      state.promptOpen = false;
+      setStatus(`${tr('promptError')} ${error?.message || String(error)}`);
+    }
+
+    renderHelpPanel();
+  });
+
+  elements.promptCopy.addEventListener('click', async () => {
+    if (!state.promptText) {
+      try {
+        state.promptText = await loadPromptExample();
+      } catch (error) {
+        setStatus(`${tr('promptError')} ${error?.message || String(error)}`);
+        renderHelpPanel();
+        return;
+      }
+    }
+
+    navigator.clipboard.writeText(state.promptText)
+      .then(() => setStatus(tr('promptCopied')))
+      .catch((error) => setStatus(String(error)));
+  });
+
   elements.helpClose.addEventListener('click', () => {
     state.helpOpen = false;
+    state.promptOpen = false;
+    state.promptEditing = false;
     renderHelpPanel();
   });
 
