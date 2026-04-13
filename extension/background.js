@@ -6,6 +6,7 @@ const PROMPT_STORAGE_PREFIX = 'userPrompt';
 const SECTION_LABELS = {
   en: {
     base: 'Pod rukoi',
+    rashi: 'Rashi (D1)',
     divisional: 'Divisional charts',
     ashtakavarga: 'Ashtakavarga',
     vimshottari: 'Vimshottari Dasha: Pratyantardasha, today +5 years',
@@ -14,6 +15,7 @@ const SECTION_LABELS = {
   },
   ru: {
     base: 'Под рукой',
+    rashi: 'Раши (D1)',
     divisional: 'Дробные карты',
     ashtakavarga: 'Аштакаварга',
     vimshottari: 'Вимшоттари Даша: Pratyantardasha, today +5 years',
@@ -153,7 +155,9 @@ async function parseCurrentPage(tabId, language, options = {}) {
       planets: localized.dataWithHouses.planets || []
     });
   }
-  charts.push(...(localized?.parsedCharts || []));
+  if (!options.onlyBaseChart) {
+    charts.push(...(localized?.parsedCharts || []));
+  }
 
   if (!charts.length) {
     throw new Error('No parsed chart data found.');
@@ -349,9 +353,22 @@ async function runCollectAll(tabId, language) {
       collectedSections,
       errors
     }, {
+      label: labels.rashi,
+      progress: labels.divisional,
+      candidates: ['divisional', 'division', 'varga', 'дроб', 'дробные'],
+      parseOptions: { onlyBaseChart: true }
+    });
+
+    await collectChartSection({
+      tabId,
+      language,
+      labels,
+      collectedSections,
+      errors
+    }, {
       label: labels.divisional,
       progress: labels.divisional,
-      candidates: ['divisional', 'division', 'varga', 'дроб', 'дробные']
+      parseOptions: { omitBaseChart: true }
     });
 
     await collectChartSection({
