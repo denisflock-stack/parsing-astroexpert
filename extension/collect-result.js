@@ -8,8 +8,9 @@ const copy = {
     copied: 'Copied.',
     missing: 'No collected result found.',
     requestLabel: 'User request',
-    requestHint: 'Here you can write your request to AI and copy everything together.',
-    requestPlaceholder: 'Write your question here...'
+    requestHint: 'Here you can write your request to AI. "Copy all" will copy the data and your request together.',
+    requestPlaceholder: 'Write your question here...',
+    requestClipboardTitle: 'User request'
   },
   ru: {
     title: 'Собранные данные',
@@ -18,10 +19,13 @@ const copy = {
     copied: 'Скопировано.',
     missing: 'Собранный результат не найден.',
     requestLabel: 'Запрос пользователя',
-    requestHint: 'Здесь вы можете написать свой запрос к ИИ и скопировать всё вместе.',
-    requestPlaceholder: 'Напишите свой вопрос здесь...'
+    requestHint: 'Здесь вы можете написать свой запрос к ИИ. Кнопка «Скопировать всё» скопирует данные и вопрос вместе.',
+    requestPlaceholder: 'Напишите свой вопрос здесь...',
+    requestClipboardTitle: 'Запрос пользователя'
   }
 };
+
+let activeCopy = copy.en;
 
 const elements = {
   title: document.getElementById('title'),
@@ -36,6 +40,7 @@ const elements = {
 
 function localize(language) {
   const table = copy[language] || copy.en;
+  activeCopy = table;
   elements.title.textContent = table.title;
   elements.subtitle.textContent = table.subtitle;
   elements.copyBtn.textContent = table.copy;
@@ -48,7 +53,9 @@ function localize(language) {
 function buildClipboardText() {
   const resultText = (elements.resultText.value || '').trimEnd();
   const requestText = (elements.userRequest.value || '').trim();
-  return requestText ? `${resultText}\n\n${requestText}\n` : `${resultText}\n`;
+  return requestText
+    ? `${resultText}\n\n---\n\n# ${activeCopy.requestClipboardTitle}\n\n${requestText}\n`
+    : `${resultText}\n`;
 }
 
 async function init() {
