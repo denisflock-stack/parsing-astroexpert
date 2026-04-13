@@ -342,8 +342,11 @@ function buildResultText({ prompt, labels, collectedSections, errors }) {
     if (section.title === labels.rashi) {
       const lines = section.text.split('\n').map((line) => line.trim()).filter(Boolean);
       const [rawTitle, ...body] = lines;
-      const dateMatch = rawTitle?.match(/\s-\s(.+)$/);
-      const title = dateMatch ? `${section.title} - ${dateMatch[1]}` : section.title;
+      const titleMatch = rawTitle?.match(/^(.*?)\s*\(D1\)(?:\s-\s(.+))?$/i);
+      const chartName = titleMatch?.[1]?.trim();
+      const date = titleMatch?.[2]?.trim();
+      const titleParts = [section.title, chartName, date].filter(Boolean);
+      const title = titleParts.join(' - ');
       return `#### ${title}\n\n${body.join('\n')}`.trim();
     }
 
