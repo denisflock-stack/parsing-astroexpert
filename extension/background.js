@@ -11,8 +11,7 @@ const SECTION_LABELS = {
     vimshottari: 'Vimshottari Dasha: Pratyantardasha, today +5 years',
     notes: 'Notes',
     title: 'Astro.Expert data',
-    userRequestTitle: 'User request',
-    dashaReview: 'Review dashas: automatic opening may miss something'
+    userRequestTitle: 'User request'
   },
   ru: {
     base: 'Под рукой',
@@ -21,8 +20,7 @@ const SECTION_LABELS = {
     vimshottari: 'Вимшоттари Даша: Pratyantardasha, today +5 years',
     notes: 'Примечания',
     title: 'Данные Astro.Expert',
-    userRequestTitle: 'Запрос пользователя',
-    dashaReview: 'Проверьте даши: автоматическое раскрытие может что-то пропустить'
+    userRequestTitle: 'Запрос пользователя'
   }
 };
 
@@ -280,7 +278,6 @@ async function collectVimshottari(context) {
   }
 
   collectedSections.push({ title: labels.vimshottari, text });
-  errors.push(labels.dashaReview);
 }
 
 async function loadPrompt(language) {
