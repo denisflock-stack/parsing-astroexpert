@@ -138,7 +138,7 @@ async function checkCancelled() {
   }
 }
 
-async function parseCurrentPage(tabId, language) {
+async function parseCurrentPage(tabId, language, options = {}) {
   const response = await sendToTab(tabId, { type: 'PARSE_ASTRO_PAGE' });
   if (!response?.ok) {
     throw new Error(response?.error || 'Parse failed.');
@@ -146,7 +146,7 @@ async function parseCurrentPage(tabId, language) {
 
   const localized = language === 'ru' ? response.data?.finalResultTextRu : response.data?.finalResultTextEn;
   const charts = [];
-  if (localized?.dataWithHouses) {
+  if (localized?.dataWithHouses && !options.omitBaseChart) {
     charts.push({
       chartName: localized.dataWithHouses.chartName || 'D1',
       planets: localized.dataWithHouses.planets || []
@@ -223,7 +223,7 @@ async function collectChartSection(context, section) {
 
   await checkCancelled();
   try {
-    const text = await parseCurrentPage(tabId, language);
+    const text = await parseCurrentPage(tabId, language, section.parseOptions || {});
     collectedSections.push({ title: section.label, text });
   } catch (error) {
     errors.push(`${section.label}: ${error?.message || String(error)}`);
@@ -326,26 +326,14 @@ async function runCollectAll(tabId, language) {
       running: true,
       cancelRequested: false,
       activeTabId: tabId,
-      currentStep: labels.base,
+      currentStep: labels.divisional,
       collectedSections: [],
       errors: [],
       startedAt: Date.now()
     });
 
     await ensureTabReady(tabId);
-    await reloadWorkflowTab(tabId, labels.base);
-
-    await collectChartSection({
-      tabId,
-      language,
-      labels,
-      collectedSections,
-      errors
-    }, {
-      label: labels.base,
-      progress: labels.base,
-      candidates: ['pod rukoi', 'под рукой']
-    });
+    await reloadWorkflowTab(tabId, labels.divisional);
 
     await collectChartSection({
       tabId,
@@ -368,7 +356,8 @@ async function runCollectAll(tabId, language) {
     }, {
       label: labels.ashtakavarga,
       progress: labels.ashtakavarga,
-      candidates: ['ashtakavarga', 'аштакаварга']
+      candidates: ['ashtakavarga', 'аштакаварга'],
+      parseOptions: { omitBaseChart: true }
     });
 
     await collectVimshottari({
