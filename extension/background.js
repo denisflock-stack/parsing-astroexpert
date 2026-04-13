@@ -317,6 +317,15 @@ function buildResultText({ prompt, labels, collectedSections, errors }) {
     return `#### ${title}\n\n${body.join('\n')}`.trim();
   }
 
+  function renderNestedDataBlock(block) {
+    const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+    if (!lines.length) {
+      return '';
+    }
+    const [title, ...body] = lines;
+    return `##### ${title}\n\n${body.join('\n')}`.trim();
+  }
+
   function renderSection(section) {
     if (section.title === labels.rashi) {
       const lines = section.text.split('\n').map((line) => line.trim()).filter(Boolean);
@@ -332,6 +341,15 @@ function buildResultText({ prompt, labels, collectedSections, errors }) {
         .map(renderChartBlock)
         .filter(Boolean)
         .join('\n\n');
+    }
+
+    if (section.title === labels.ashtakavarga) {
+      const blocks = section.text
+        .split(/\n{2,}/)
+        .map(renderNestedDataBlock)
+        .filter(Boolean)
+        .join('\n\n');
+      return `#### ${section.title}\n\n${blocks || section.text}`.trim();
     }
 
     return `#### ${section.title}\n\n${section.text}`.trim();
