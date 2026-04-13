@@ -6,21 +6,25 @@ const PROMPT_STORAGE_PREFIX = 'userPrompt';
 const SECTION_LABELS = {
   en: {
     base: 'Pod rukoi',
-    rashi: 'Rashi (D1)',
+    rashi: 'D1 (Rashi)',
     divisional: 'Divisional charts',
     ashtakavarga: 'Ashtakavarga',
     vimshottari: 'Vimshottari Dasha: Pratyantardasha, today +5 years',
     notes: 'Notes',
-    title: 'Astro.Expert data'
+    systemTitle: 'SYSTEM',
+    dataTitle: 'ASTRO DATA',
+    noData: '_No data collected._'
   },
   ru: {
     base: 'Под рукой',
-    rashi: 'Раши (D1)',
+    rashi: 'D1 (Раши)',
     divisional: 'Дробные карты',
     ashtakavarga: 'Аштакаварга',
     vimshottari: 'Вимшоттари Даша: Pratyantardasha, today +5 years',
     notes: 'Примечания',
-    title: 'Данные Astro.Expert'
+    systemTitle: 'SYSTEM',
+    dataTitle: 'ASTRO DATA',
+    noData: '_Данные не собраны._'
   }
 };
 
@@ -304,15 +308,44 @@ async function loadPrompt(language) {
 }
 
 function buildResultText({ prompt, labels, collectedSections, errors }) {
+  function renderChartBlock(block) {
+    const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+    if (!lines.length) {
+      return '';
+    }
+    const [title, ...body] = lines;
+    return `#### ${title}\n\n${body.join('\n')}`.trim();
+  }
+
+  function renderSection(section) {
+    if (section.title === labels.rashi) {
+      const lines = section.text.split('\n').map((line) => line.trim()).filter(Boolean);
+      const [rawTitle, ...body] = lines;
+      const dateMatch = rawTitle?.match(/\s-\s(.+)$/);
+      const title = dateMatch ? `${section.title} - ${dateMatch[1]}` : section.title;
+      return `#### ${title}\n\n${body.join('\n')}`.trim();
+    }
+
+    if (section.title === labels.divisional) {
+      return section.text
+        .split(/\n{2,}/)
+        .map(renderChartBlock)
+        .filter(Boolean)
+        .join('\n\n');
+    }
+
+    return `#### ${section.title}\n\n${section.text}`.trim();
+  }
+
   const sectionBlocks = collectedSections
-    .map((section) => `## ${section.title}\n\n${section.text}`.trim())
+    .map(renderSection)
     .join('\n\n');
 
   const notes = errors.length
-    ? `\n\n## ${labels.notes}\n\n${errors.map((error) => `- ${error}`).join('\n')}`
+    ? `\n\n#### ${labels.notes}\n\n${errors.map((error) => `- ${error}`).join('\n')}`
     : '';
 
-  return `${prompt.trim()}\n\n---\n\n# ${labels.title}\n\n${sectionBlocks || '_No data collected._'}${notes}\n`;
+  return `### ${labels.systemTitle}\n\n${prompt.trim()}\n\n---\n\n### ${labels.dataTitle}\n\n${sectionBlocks || labels.noData}${notes}\n`;
 }
 
 async function openResultPage(text, language, status) {

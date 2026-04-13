@@ -9,8 +9,8 @@ const copy = {
     missing: 'No collected result found.',
     requestLabel: 'User request',
     requestHint: 'Here you can write your request to AI. "Copy all" will copy the data and your request together.',
-    requestPlaceholder: 'Write your question here...',
-    requestClipboardTitle: 'User request'
+    requestPlaceholder: 'Write your question here:',
+    requestClipboardTitle: 'USER QUERY'
   },
   ru: {
     title: 'Собранные данные',
@@ -20,8 +20,8 @@ const copy = {
     missing: 'Собранный результат не найден.',
     requestLabel: 'Запрос пользователя',
     requestHint: 'Здесь вы можете написать свой запрос к ИИ. Кнопка «Скопировать всё» скопирует данные и вопрос вместе.',
-    requestPlaceholder: 'Напишите свой вопрос здесь...',
-    requestClipboardTitle: 'Запрос пользователя'
+    requestPlaceholder: 'Напишите свой вопрос здесь:',
+    requestClipboardTitle: 'USER QUERY'
   }
 };
 
@@ -54,8 +54,8 @@ function buildClipboardText() {
   const resultText = (elements.resultText.value || '').trimEnd();
   const requestText = (elements.userRequest.value || '').trim();
   const requestBlock = requestText
-    ? `# ${activeCopy.requestClipboardTitle}\n\n${requestText}`
-    : `# ${activeCopy.requestClipboardTitle}`;
+    ? `### ${activeCopy.requestClipboardTitle}\n\n${requestText}`
+    : `### ${activeCopy.requestClipboardTitle}`;
   return `${resultText}\n\n---\n\n${requestBlock}\n`;
 }
 
