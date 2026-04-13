@@ -31,6 +31,7 @@ Astro.Expert parser is packaged in this repository as a Chrome extension based o
 ## Publishing notes
 
 - Package the contents of the `extension` folder as the release ZIP
-- Review `PRIVACY.md` before publication and add your final publisher contact details
+- Review `PRIVACY.md` before publication and replace the placeholder support contact details
 - Review `CHROME_WEB_STORE.md` for listing, privacy, and reviewer preparation notes
 - Use `RELEASE.md` and the scripts in `scripts/` for version bumps and release packaging
+- Use `PROJECT_MAP.md` when you need to quickly understand where things live

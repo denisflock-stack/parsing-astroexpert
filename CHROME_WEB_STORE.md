@@ -23,6 +23,24 @@ This repository is prepared for publishing the extension from the `extension` fo
 - At least 1 screenshot, preferably 3 to 5
 - Small promo tile: 440x280
 
+## User contact guidance
+
+Before publication, make sure the user can easily see how to contact you.
+
+Recommended places to show the contact:
+
+- Chrome Web Store support field
+- Chrome Web Store full description
+- `PRIVACY.md`
+
+Recommended text pattern:
+
+`If you have a question, found a parsing issue, or want to report a bug, contact us by email at support@example.com or in Telegram: @your_support_handle`
+
+If you prefer a bot instead of a public Telegram account, use:
+
+`If you have a question, found a parsing issue, or want to report a bug, write to our Telegram bot: https://t.me/your_support_bot`
+
 ## Privacy form notes
 
 Suggested disclosure based on the current code:

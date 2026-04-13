@@ -32,4 +32,6 @@ Storage
 
 Contact
 
-- Publisher contact details should be added in the Chrome Web Store listing before publication
+- Support and privacy questions: `support@example.com`
+- Telegram: `@your_support_handle`
+- If you use a support bot instead of a public account, replace the Telegram line with `https://t.me/your_support_bot`

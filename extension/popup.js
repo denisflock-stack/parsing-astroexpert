@@ -5,6 +5,7 @@ const state = {
   parsed: null,
   selected: new Set(),
   vimshottari: null,
+  helpOpen: false,
   vimAutoRefreshTimer: null,
   vimAutoRefreshPending: false
 };
@@ -33,7 +34,22 @@ const t = {
     noActiveTab: 'No active tab',
     subtitleVim: 'Work with the Vimshottari tree directly in this popup.',
     subtitleChart: '-',
-    working: 'Working...'
+    working: 'Working...',
+    help: 'Help',
+    helpTitle: 'How to use',
+    helpClose: 'Close',
+    helpStepsCharts: [
+      'Open a supported page on astro.expert.',
+      'Click the extension icon and press Update.',
+      'Select the chart sections you want.',
+      'Use Copy selected to copy the chosen text.'
+    ],
+    helpStepsVim: [
+      'Open a Vimshottari or Ashtottari page on astro.expert.',
+      'Click a period name or dates to navigate inside the tree.',
+      'Mark the periods you need with checkboxes.',
+      'Use Copy text to export the selected tree text.'
+    ]
   },
   ru: {
     parse: 'Обновить',
@@ -53,7 +69,22 @@ const t = {
     treeEmpty: 'No visible periods found.',
     treeError: 'Vimshottari error:',
     noActiveTab: 'No active tab',
-    working: 'Working...'
+    working: 'Working...',
+    help: 'Помощь',
+    helpTitle: 'Как пользоваться',
+    helpClose: 'Закрыть',
+    helpStepsCharts: [
+      'Откройте поддерживаемую страницу на astro.expert.',
+      'Нажмите на иконку расширения и затем Обновить.',
+      'Выберите нужные разделы карты.',
+      'Нажмите Копировать выбранное, чтобы скопировать текст.'
+    ],
+    helpStepsVim: [
+      'Откройте страницу Vimshottari или Ashtottari на astro.expert.',
+      'Нажимайте на название периода или даты, чтобы перейти по дереву.',
+      'Отметьте галочками нужные периоды.',
+      'Нажмите Копировать, чтобы выгрузить выбранный текст дерева.'
+    ]
   }
 };
 
@@ -82,6 +113,11 @@ t.ru.manualDate = 'дата';
 const elements = {
   d1Title: document.getElementById('d1Title'),
   userData: document.getElementById('userData'),
+  helpToggle: document.getElementById('helpToggle'),
+  helpPanel: document.getElementById('helpPanel'),
+  helpTitle: document.getElementById('helpTitle'),
+  helpSteps: document.getElementById('helpSteps'),
+  helpClose: document.getElementById('helpClose'),
   langToggle: document.getElementById('langToggle'),
   chartMode: document.getElementById('chartMode'),
   refreshBtn: document.getElementById('refreshBtn'),
@@ -195,6 +231,24 @@ function setStatus(message) {
   elements.status.textContent = message;
 }
 
+function getHelpSteps() {
+  return state.mode === 'vimshottari' ? tr('helpStepsVim') : tr('helpStepsCharts');
+}
+
+function renderHelpPanel() {
+  elements.helpPanel.classList.toggle('hidden', !state.helpOpen);
+  elements.helpToggle.textContent = tr('help');
+  elements.helpTitle.textContent = tr('helpTitle');
+  elements.helpClose.textContent = tr('helpClose');
+  elements.helpSteps.innerHTML = '';
+
+  getHelpSteps().forEach((step) => {
+    const item = document.createElement('li');
+    item.textContent = step;
+    elements.helpSteps.appendChild(item);
+  });
+}
+
 function syncStatusFromVimState(fallbackMessage) {
   const message = state.vimshottari?.statusMessage || fallbackMessage || '';
   setStatus(message);
@@ -204,6 +258,7 @@ function setMode(mode) {
   state.mode = mode;
   elements.chartMode.classList.toggle('hidden', mode !== 'charts');
   elements.vimMode.classList.toggle('hidden', mode !== 'vimshottari');
+  renderHelpPanel();
 
   if (mode === 'vimshottari') {
     startVimAutoRefresh();
@@ -214,6 +269,7 @@ function setMode(mode) {
 }
 
 function updateLabels() {
+  renderHelpPanel();
   elements.langToggle.textContent = state.language.toUpperCase();
   elements.refreshBtn.textContent = tr('parse');
   elements.copySelectedBtn.textContent = tr('copy');
@@ -921,6 +977,16 @@ async function init() {
     }
 
     renderList();
+  });
+
+  elements.helpToggle.addEventListener('click', () => {
+    state.helpOpen = !state.helpOpen;
+    renderHelpPanel();
+  });
+
+  elements.helpClose.addEventListener('click', () => {
+    state.helpOpen = false;
+    renderHelpPanel();
   });
 
   elements.refreshBtn.addEventListener('click', requestParse);
