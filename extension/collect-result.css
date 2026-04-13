@@ -48,7 +48,6 @@ button {
 
 textarea {
   width: 100%;
-  min-height: 72vh;
   box-sizing: border-box;
   border: 1px solid #d8deea;
   border-radius: 12px;
@@ -57,4 +56,27 @@ textarea {
   padding: 14px;
   font: 13px/1.5 Consolas, "Courier New", monospace;
   resize: vertical;
+}
+
+#resultText {
+  min-height: 58vh;
+}
+
+.request-section {
+  margin-top: 18px;
+}
+
+label {
+  display: block;
+  color: #172033;
+  font-weight: 700;
+}
+
+.request-section p {
+  margin-bottom: 8px;
+}
+
+.request-text {
+  min-height: 120px;
+  font: 14px/1.5 Arial, sans-serif;
 }
