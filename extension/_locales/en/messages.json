@@ -3,6 +3,6 @@
     "message": "Astro.Expert Chart Parser"
   },
   "extensionDescription": {
-    "message": "Parse Astro.Expert chart pages, copy chart data, and work with Vimshottari or Ashtottari dasha trees."
+    "message": "Copy astrological data from Astro.Expert and prepare it for AI analysis."
   }
 }
