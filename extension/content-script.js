@@ -31,6 +31,46 @@ function findAstroSectionLink(candidates = []) {
   return matched?.href || null;
 }
 
+function findAstroSectionControl(candidates = []) {
+  const normalizedCandidates = (candidates || [])
+    .map((candidate) => normalizeCollectText(candidate))
+    .filter(Boolean);
+
+  if (!normalizedCandidates.length) {
+    return null;
+  }
+
+  const controls = Array.from(document.querySelectorAll('button, [role="button"], a[href], [wire\\:click]'));
+  return controls.find((control) => {
+    const text = normalizeCollectText(control.textContent || '');
+    const href = normalizeCollectText(control.href || control.getAttribute?.('href') || '');
+    return normalizedCandidates.some((candidate) => text.includes(candidate) || href.includes(candidate));
+  }) || null;
+}
+
+function clickAstroSection(candidates = []) {
+  const control = findAstroSectionControl(candidates);
+  if (!control) {
+    return { ok: false, error: 'Section control not found.' };
+  }
+
+  if (typeof control.click === 'function') {
+    control.click();
+  } else {
+    control.dispatchEvent(new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window
+    }));
+  }
+
+  return {
+    ok: true,
+    text: (control.textContent || '').replace(/\s+/g, ' ').trim(),
+    href: control.href || control.getAttribute?.('href') || null
+  };
+}
+
 function showCollectOverlay(message = 'Working...') {
   let overlay = document.getElementById(COLLECT_OVERLAY_ID);
   if (!overlay) {
@@ -152,6 +192,11 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
     if (message?.type === 'FIND_ASTRO_SECTION_LINK') {
       sendResponse({ ok: true, href: findAstroSectionLink(message.candidates || []) });
+      return true;
+    }
+
+    if (message?.type === 'CLICK_ASTRO_SECTION') {
+      sendResponse(clickAstroSection(message.candidates || []));
       return true;
     }
 

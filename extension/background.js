@@ -70,6 +70,13 @@ async function sendToTab(tabId, message) {
   return chrome.tabs.sendMessage(tabId, message);
 }
 
+async function injectContentScripts(tabId) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['vimshottari.js', 'parser-core.js', 'content-script.js']
+  });
+}
+
 async function waitForTabComplete(tabId, timeoutMs = 30000) {
   const startedAt = Date.now();
   while (Date.now() - startedAt < timeoutMs) {
@@ -88,6 +95,7 @@ async function waitForTabComplete(tabId, timeoutMs = 30000) {
 async function waitForContentReady(tabId, timeoutMs = 30000) {
   const startedAt = Date.now();
   let lastError = null;
+  let injectedScripts = false;
   while (Date.now() - startedAt < timeoutMs) {
     try {
       const response = await sendToTab(tabId, { type: 'COLLECT_PING' });
@@ -96,6 +104,14 @@ async function waitForContentReady(tabId, timeoutMs = 30000) {
       }
     } catch (error) {
       lastError = error;
+      if (!injectedScripts && /Receiving end does not exist|Could not establish connection/i.test(error?.message || '')) {
+        injectedScripts = true;
+        try {
+          await injectContentScripts(tabId);
+        } catch (injectError) {
+          lastError = injectError;
+        }
+      }
     }
     await sleep(300);
   }
@@ -155,11 +171,35 @@ async function findSectionHref(tabId, candidates) {
   return response?.href || null;
 }
 
+async function clickSection(tabId, candidates, message) {
+  const response = await sendToTab(tabId, {
+    type: 'CLICK_ASTRO_SECTION',
+    candidates
+  });
+
+  if (!response?.ok) {
+    return false;
+  }
+
+  await sleep(900);
+  await ensureTabReady(tabId);
+  await showOverlay(tabId, message);
+  await sleep(500);
+  return true;
+}
+
 async function navigateToHref(tabId, href, message) {
   await chrome.tabs.update(tabId, { url: href });
   await ensureTabReady(tabId);
   await showOverlay(tabId, message);
   await sleep(700);
+}
+
+async function reloadWorkflowTab(tabId, message) {
+  await chrome.tabs.reload(tabId);
+  await ensureTabReady(tabId);
+  await showOverlay(tabId, message);
+  await sleep(500);
 }
 
 async function collectChartSection(context, section) {
@@ -169,12 +209,16 @@ async function collectChartSection(context, section) {
   await showOverlay(tabId, section.progress);
 
   if (section.candidates?.length) {
-    const href = await findSectionHref(tabId, section.candidates);
-    if (!href) {
-      errors.push(`${section.label}: not found`);
-      return;
+    const clicked = await clickSection(tabId, section.candidates, section.progress);
+    if (!clicked) {
+      const href = await findSectionHref(tabId, section.candidates);
+      if (href) {
+        await navigateToHref(tabId, href, section.progress);
+      } else {
+        errors.push(`${section.label}: not found`);
+        return;
+      }
     }
-    await navigateToHref(tabId, href, section.progress);
   }
 
   await checkCancelled();
@@ -192,13 +236,19 @@ async function collectVimshottari(context) {
   await updateCollectState({ currentStep: labels.vimshottari });
   await showOverlay(tabId, labels.vimshottari);
 
-  const href = await findSectionHref(tabId, ['vimshottari', 'вимшоттари']);
-  if (!href) {
-    errors.push(`${labels.vimshottari}: not found`);
-    return;
+  const candidates = ['vimshottari', 'вимшоттари'];
+  const clicked = await clickSection(tabId, candidates, labels.vimshottari);
+  if (!clicked) {
+    const href = await findSectionHref(tabId, candidates);
+    if (href) {
+      await navigateToHref(tabId, href, labels.vimshottari);
+    } else {
+      errors.push(`${labels.vimshottari}: not found`);
+      return;
+    }
   }
 
-  await navigateToHref(tabId, href, labels.vimshottari);
+  await reloadWorkflowTab(tabId, labels.vimshottari);
   await checkCancelled();
 
   const today = new Date();
@@ -283,7 +333,7 @@ async function runCollectAll(tabId, language) {
     });
 
     await ensureTabReady(tabId);
-    await showOverlay(tabId, labels.base);
+    await reloadWorkflowTab(tabId, labels.base);
 
     await collectChartSection({
       tabId,
@@ -293,7 +343,8 @@ async function runCollectAll(tabId, language) {
       errors
     }, {
       label: labels.base,
-      progress: labels.base
+      progress: labels.base,
+      candidates: ['pod rukoi', 'под рукой']
     });
 
     await collectChartSection({
@@ -355,18 +406,21 @@ async function runCollectAll(tabId, language) {
   }
 }
 
-async function startCollectAll() {
+async function startCollectAll(options = {}) {
   if (activeRun) {
     return { ok: false, error: 'Collect all is already running.' };
   }
 
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tab = options.tabId
+    ? await chrome.tabs.get(options.tabId)
+    : (await chrome.tabs.query({ active: true, currentWindow: true }))[0];
   if (!tab?.id || !/^https:\/\/.*astro\.expert\//i.test(tab.url || '')) {
     return { ok: false, error: 'Open an Astro.Expert page first.' };
   }
 
   const settings = await storageGet({ [LANGUAGE_STORAGE_KEY]: 'en' });
-  const language = settings[LANGUAGE_STORAGE_KEY] === 'ru' ? 'ru' : 'en';
+  const languageSetting = options.language || settings[LANGUAGE_STORAGE_KEY];
+  const language = languageSetting === 'ru' ? 'ru' : 'en';
   activeRun = runCollectAll(tab.id, language);
   activeRun.catch(() => {});
   return { ok: true };
@@ -383,7 +437,7 @@ async function cancelCollectAll() {
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === 'START_COLLECT_ALL') {
-    startCollectAll().then(sendResponse).catch((error) => {
+    startCollectAll(message).then(sendResponse).catch((error) => {
       sendResponse({ ok: false, error: error?.message || String(error) });
     });
     return true;
