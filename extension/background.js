@@ -307,6 +307,10 @@ async function loadPrompt(language) {
   return response.text();
 }
 
+function formatSystemPrompt(prompt) {
+  return prompt.trim().replace(/^##\s+/gm, '#### ');
+}
+
 function buildResultText({ prompt, labels, collectedSections, errors }) {
   function normalizeDivisionalTitle(title) {
     const match = title.match(/^(.*?)\s*\((D\d+)\)\s*$/i);
@@ -372,7 +376,7 @@ function buildResultText({ prompt, labels, collectedSections, errors }) {
     ? `\n\n#### ${labels.notes}\n\n${errors.map((error) => `- ${error}`).join('\n')}`
     : '';
 
-  return `### ${labels.systemTitle}\n\n${prompt.trim()}\n\n---\n\n### ${labels.dataTitle}\n\n${sectionBlocks || labels.noData}${notes}\n`;
+  return `### ${labels.systemTitle}\n\n${formatSystemPrompt(prompt)}\n\n---\n\n### ${labels.dataTitle}\n\n${sectionBlocks || labels.noData}${notes}\n`;
 }
 
 async function openResultPage(text, language, status) {
