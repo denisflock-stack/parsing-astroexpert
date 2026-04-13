@@ -81,12 +81,16 @@ function showCollectOverlay(message = 'Working...') {
     overlay.style.zIndex = '2147483647';
     overlay.style.background = 'rgba(15, 23, 42, 0.38)';
     overlay.style.backdropFilter = 'blur(1px)';
-    overlay.style.display = 'grid';
-    overlay.style.placeItems = 'center';
+    overlay.style.display = 'block';
     overlay.style.pointerEvents = 'auto';
 
     const card = document.createElement('div');
+    card.style.position = 'fixed';
+    card.style.left = '50%';
+    card.style.top = 'calc(50% - 86px)';
+    card.style.transform = 'translateX(-50%)';
     card.style.maxWidth = '360px';
+    card.style.width = 'min(360px, calc(100vw - 32px))';
     card.style.margin = '16px';
     card.style.padding = '16px';
     card.style.borderRadius = '14px';
@@ -108,7 +112,10 @@ function showCollectOverlay(message = 'Working...') {
     const button = document.createElement('button');
     button.type = 'button';
     button.textContent = 'Stop';
-    button.style.marginTop = '12px';
+    button.style.position = 'fixed';
+    button.style.left = '50%';
+    button.style.top = '50%';
+    button.style.transform = 'translate(-50%, -50%)';
     button.style.border = '1px solid #c7cfdd';
     button.style.borderRadius = '8px';
     button.style.background = '#ffffff';
@@ -118,8 +125,8 @@ function showCollectOverlay(message = 'Working...') {
       chrome.runtime.sendMessage({ type: 'CANCEL_COLLECT_ALL' }).catch(() => {});
     });
 
-    card.append(title, text, button);
-    overlay.appendChild(card);
+    card.append(title, text);
+    overlay.append(card, button);
     document.documentElement.appendChild(overlay);
   }
 
