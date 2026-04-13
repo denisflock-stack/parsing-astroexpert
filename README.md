@@ -1,39 +1,37 @@
 # parsing-astroexpert
 
-Парсер Astro.Expert теперь подготовлен как браузерное расширение (Manifest V3) с управлением из toolbar popup.
+Astro.Expert parser is packaged in this repository as a Chrome extension based on Manifest V3.
 
-## Что умеет расширение
+## Features
 
-- Парсит данные на текущей вкладке Astro.Expert.
-- Показывает в шапке **D1** и данные пользователя (имя/дата/место).
-- Ниже показывает список всех спарсенных дробных карт (как в `finalResultTextEn` / `finalResultTextRu`).
-- Для каждой карты:
-  - слева чекбокс выбора;
-  - справа кнопка раскрытия содержания карты.
-- Есть:
-  - **Select all / Clear** (выбрать все / снять все);
-  - **Copy selected** — копирование выбранных карт в сгруппированном виде;
-  - переключатель локализации **EN/RU** (по умолчанию `EN`).
-- Список динамический по количеству пунктов, но визуальная высота ограничена максимумом в 13 строк (дальше скролл).
+- Parses supported Astro.Expert chart pages from the active browser tab
+- Shows chart header details in the popup, including chart name and available birth details
+- Lists parsed chart blocks and allows copying selected sections
+- Supports working with Vimshottari and Ashtottari dasha trees
+- Lets the user open, mark, navigate, and export visible dasha branches
+- Stores only the local EN or RU UI language preference
 
-## Структура
+## Structure
 
-- `extension/manifest.json` — манифест расширения.
-- `extension/parser-core.js` — логика парсинга страницы Astro.Expert.
-- `extension/content-script.js` — связь popup ↔ парсер на странице.
-- `extension/popup.html` / `extension/popup.css` / `extension/popup.js` — интерфейс popup в toolbar.
-- `parcing_code` — исходный standalone-скрипт для DevTools (сохранён без изменений).
+- `extension/manifest.json` - extension manifest
+- `extension/parser-core.js` - Astro.Expert page parsing logic
+- `extension/content-script.js` - message bridge between popup and page
+- `extension/popup.html`, `extension/popup.css`, `extension/popup.js` - toolbar popup UI
+- `extension/vimshottari.js` - Vimshottari and Ashtottari tree support
 
-## Как установить локально (Chrome/Chromium)
+## Local install
 
-1. Откройте `chrome://extensions`.
-2. Включите **Developer mode**.
-3. Нажмите **Load unpacked**.
-4. Выберите папку `extension` из этого репозитория.
-5. Откройте страницу карты на `astro.expert`.
-6. Нажмите иконку расширения в toolbar.
+1. Open `chrome://extensions`
+2. Enable Developer mode
+3. Click Load unpacked
+4. Select the `extension` folder from this repository
+5. Open a supported page on `https://astro.expert`
+6. Click the extension icon in the Chrome toolbar
 
-## Примечания
+## Publishing notes
 
-- Расширение работает только на доменах `*.astro.expert`.
-- Если popup открыт не на странице Astro.Expert, будет ошибка парсинга.
+- Package the contents of the `extension` folder as the release ZIP
+- Review `PRIVACY.md` before publication and replace the placeholder support contact details
+- Review `CHROME_WEB_STORE.md` for listing, privacy, and reviewer preparation notes
+- Use `RELEASE.md` and the scripts in `scripts/` for version bumps and release packaging
+- Use `PROJECT_MAP.md` when you need to quickly understand where things live
