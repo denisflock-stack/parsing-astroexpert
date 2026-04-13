@@ -477,6 +477,7 @@ async function toggleCollectAll() {
 
   setStatus(tr('collectAllStarted'));
   await syncCollectAllUi();
+  window.close();
 }
 
 function relabelSelectOptions(select, labelsByValue) {
