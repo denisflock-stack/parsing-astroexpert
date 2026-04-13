@@ -146,10 +146,10 @@ async function parseCurrentPage(tabId, language, options = {}) {
   const charts = [];
   if (localized?.dataWithHouses && !options.omitBaseChart) {
     const birthDateTime = localized.dataWithHouses.owner?.birthDateTime;
-    const dateLabel = language === 'ru' ? 'Дата' : 'Date';
+    const birthDate = birthDateTime ? String(birthDateTime).split(/\s+/)[0] : '';
+    const chartName = localized.dataWithHouses.chartName || 'D1';
     charts.push({
-      chartName: localized.dataWithHouses.chartName || 'D1',
-      meta: birthDateTime ? [`${dateLabel}: ${birthDateTime}`] : [],
+      chartName: birthDate ? `${chartName} - ${birthDate}` : chartName,
       planets: localized.dataWithHouses.planets || []
     });
   }
