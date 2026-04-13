@@ -16,11 +16,17 @@ const state = {
 
 const LANGUAGE_STORAGE_KEY = 'uiLanguage';
 const PROMPT_STORAGE_PREFIX = 'userPrompt';
+const COLLECT_STATE_KEY = 'collectAllState';
 
 // Keep this file in UTF-8 so Russian UI labels do not turn into mojibake.
 const t = {
   en: {
     parse: 'Update',
+    collectAll: 'Collect all',
+    collectAllStop: 'Stop',
+    collectAllStarted: 'Collect all started. You can close this popup.',
+    collectAllStopping: 'Stopping collect all...',
+    collectAllError: 'Collect all error:',
     copy: 'Copy selected',
     selectAll: 'Select all',
     noData: 'No cards found on this page.',
@@ -72,6 +78,11 @@ const t = {
   },
   ru: {
     parse: 'Обновить',
+    collectAll: 'Собрать всё',
+    collectAllStop: 'Остановить',
+    collectAllStarted: 'Сбор всех данных запущен. Popup можно закрыть.',
+    collectAllStopping: 'Останавливаю сбор данных...',
+    collectAllError: 'Ошибка сбора данных:',
     copy: 'Copy selected',
     selectAll: 'Select all',
     noData: 'No cards found on this page.',
@@ -160,6 +171,7 @@ const elements = {
   promptEditor: document.getElementById('promptEditor'),
   langToggle: document.getElementById('langToggle'),
   chartMode: document.getElementById('chartMode'),
+  collectAllBtn: document.getElementById('collectAllBtn'),
   refreshBtn: document.getElementById('refreshBtn'),
   copySelectedBtn: document.getElementById('copySelectedBtn'),
   chartControls: document.getElementById('chartControls'),
@@ -265,6 +277,19 @@ function persistCurrentHorizonSettings() {
 function saveLanguage(language) {
   if (!chrome?.storage?.local) return;
   chrome.storage.local.set({ [LANGUAGE_STORAGE_KEY]: language });
+}
+
+function getCollectState() {
+  return new Promise((resolve) => {
+    if (!chrome?.storage?.local) {
+      resolve({});
+      return;
+    }
+
+    chrome.storage.local.get({ [COLLECT_STATE_KEY]: {} }, (result) => {
+      resolve(result?.[COLLECT_STATE_KEY] || {});
+    });
+  });
 }
 
 function setStatus(message) {
@@ -409,6 +434,49 @@ function updateLabels() {
   elements.copyTreeBtn.textContent = tr('copyTree');
   elements.applyHorizonBtn.textContent = tr('open');
   updateHorizonOptionLabels();
+  syncCollectAllUi();
+}
+
+async function syncCollectAllUi() {
+  const collectState = await getCollectState();
+  const running = !!collectState.running;
+  elements.collectAllBtn.textContent = running ? tr('collectAllStop') : tr('collectAll');
+  elements.collectAllBtn.classList.toggle('accent', running);
+  elements.collectAllBtn.classList.toggle('secondary', !running);
+  if (running && collectState.currentStep) {
+    setStatus(collectState.currentStep);
+  }
+}
+
+async function toggleCollectAll() {
+  const collectState = await getCollectState();
+  if (collectState.running) {
+    setStatus(tr('collectAllStopping'));
+    const response = await chrome.runtime.sendMessage({ type: 'CANCEL_COLLECT_ALL' }).catch((error) => ({
+      ok: false,
+      error: error?.message || String(error)
+    }));
+    if (!response?.ok) {
+      setStatus(`${tr('collectAllError')} ${response?.error || 'unknown error'}`);
+    }
+    await syncCollectAllUi();
+    return;
+  }
+
+  setStatus(tr('working'));
+  const response = await chrome.runtime.sendMessage({ type: 'START_COLLECT_ALL' }).catch((error) => ({
+    ok: false,
+    error: error?.message || String(error)
+  }));
+
+  if (!response?.ok) {
+    setStatus(`${tr('collectAllError')} ${response?.error || 'unknown error'}`);
+    await syncCollectAllUi();
+    return;
+  }
+
+  setStatus(tr('collectAllStarted'));
+  await syncCollectAllUi();
 }
 
 function relabelSelectOptions(select, labelsByValue) {
@@ -1206,6 +1274,8 @@ async function init() {
     renderHelpPanel();
   });
 
+  elements.collectAllBtn.addEventListener('click', toggleCollectAll);
+
   elements.refreshBtn.addEventListener('click', requestParse);
   elements.copySelectedBtn.addEventListener('click', copySelected);
   elements.pinPanelBtn.addEventListener('click', pinVimshottariPanel);
@@ -1236,6 +1306,13 @@ async function init() {
   });
 
   detectModeAndLoad();
+  syncCollectAllUi();
+
+  chrome.storage?.onChanged?.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes[COLLECT_STATE_KEY]) {
+      syncCollectAllUi();
+    }
+  });
 }
 
 window.addEventListener('beforeunload', stopVimAutoRefresh);
