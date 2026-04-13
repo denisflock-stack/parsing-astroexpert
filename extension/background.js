@@ -308,13 +308,21 @@ async function loadPrompt(language) {
 }
 
 function buildResultText({ prompt, labels, collectedSections, errors }) {
+  function normalizeDivisionalTitle(title) {
+    const match = title.match(/^(.*?)\s*\((D\d+)\)\s*$/i);
+    if (!match) {
+      return title;
+    }
+    return `${match[2].toUpperCase()} (${match[1].trim()})`;
+  }
+
   function renderChartBlock(block) {
     const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
     if (!lines.length) {
       return '';
     }
     const [title, ...body] = lines;
-    return `#### ${title}\n\n${body.join('\n')}`.trim();
+    return `##### ${normalizeDivisionalTitle(title)}\n\n${body.join('\n')}`.trim();
   }
 
   function renderNestedDataBlock(block) {
@@ -336,11 +344,12 @@ function buildResultText({ prompt, labels, collectedSections, errors }) {
     }
 
     if (section.title === labels.divisional) {
-      return section.text
+      const blocks = section.text
         .split(/\n{2,}/)
         .map(renderChartBlock)
         .filter(Boolean)
         .join('\n\n');
+      return `#### ${section.title}\n\n${blocks || section.text}`.trim();
     }
 
     if (section.title === labels.ashtakavarga) {
