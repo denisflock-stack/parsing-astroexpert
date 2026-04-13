@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "Парсер карт Astro.Expert"
+  },
+  "extensionDescription": {
+    "message": "Парсит страницы Astro.Expert, копирует данные карт и помогает работать с дашами Вимшоттари и Ашоттари."
+  }
+}
