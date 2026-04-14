@@ -20,7 +20,7 @@ const SECTION_LABELS = {
     rashi: 'D1 (Раши)',
     divisional: 'Дробные карты',
     ashtakavarga: 'Аштакаварга',
-    vimshottari: 'Вимшоттари Даша: Pratyantardasha, today +5 years',
+    vimshottari: 'Вимшоттари Даша: Пратьянтардаша, сегодня +5 лет',
     notes: 'Примечания',
     systemTitle: 'SYSTEM',
     dataTitle: 'ASTRO DATA',
