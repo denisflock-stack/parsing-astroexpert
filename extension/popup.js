@@ -956,7 +956,7 @@ async function pinVimshottariPanel() {
 
 async function copyVimshottariText() {
   setStatus(tr('working'));
-  const response = await sendToActiveTab({ type: 'EXPORT_VIMSHOTTARI_TEXT' });
+  const response = await sendToActiveTab({ type: 'EXPORT_VIMSHOTTARI_TEXT', language: state.language });
 
   if (!response.ok) {
     setStatus(`${getTreeErrorPrefix()} ${response.error}`);

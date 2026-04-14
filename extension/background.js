@@ -286,7 +286,7 @@ async function collectVimshottari(context) {
   await sleep(500);
   await checkCancelled();
 
-  const exportResponse = await sendToTab(tabId, { type: 'EXPORT_VIMSHOTTARI_TEXT' });
+  const exportResponse = await sendToTab(tabId, { type: 'EXPORT_VIMSHOTTARI_TEXT', language: context.language });
   const text = exportResponse?.data?.text || '';
   if (!exportResponse?.ok || !text.trim()) {
     errors.push(`${labels.vimshottari}: ${exportResponse?.error || 'No dasha text exported'}`);

@@ -162,7 +162,7 @@ function handleVimshottariMessage(message) {
       bridge.refresh();
       return { ok: true, data: bridge.getPanelState() };
     case 'EXPORT_VIMSHOTTARI_TEXT':
-      return { ok: true, data: { text: bridge.exportText() } };
+      return { ok: true, data: { text: bridge.exportText(message.language) } };
     case 'SET_ALL_VIMSHOTTARI_MARKERS':
       return { ok: true, data: bridge.setAllMarkers(!!message.checked) };
     case 'SET_VIMSHOTTARI_MARKER':

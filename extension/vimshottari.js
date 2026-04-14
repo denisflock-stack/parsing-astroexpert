@@ -251,10 +251,11 @@
     });
   }
 
-  function buildExportText(tree) {
+  function buildExportText(tree, language = currentUiLanguage) {
     const lines = [];
     buildExportLines(tree, lines, 0);
-    return [getDashaTitle(detectDashaConfig() || getDefaultDashaConfig(), 'en'), '', ...lines].join('\n');
+    const exportLanguage = language === 'ru' ? 'ru' : 'en';
+    return [getDashaTitle(detectDashaConfig() || getDefaultDashaConfig(), exportLanguage), '', ...lines].join('\n');
   }
 
   function getOwnerData() {
@@ -1907,8 +1908,8 @@
       export: function () {
         return deepClone(state.savedTree);
       },
-      exportText: function () {
-        return buildExportText(state.savedTree);
+      exportText: function (language) {
+        return buildExportText(state.savedTree, language);
       },
       setHorizonSettings: setHorizonSettings,
       applyHorizonSelection: applyHorizonSelection,
@@ -1944,9 +1945,9 @@
     return tracker?.export?.() || parseVisibleTree();
   }
 
-  function exportText() {
+  function exportText(language) {
     const tracker = ensureTrackerStarted();
-    return tracker?.exportText?.() || buildExportText(exportTree());
+    return tracker?.exportText?.(language) || buildExportText(exportTree(), language);
   }
 
   function openPanel(settings) {
