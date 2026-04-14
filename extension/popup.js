@@ -65,6 +65,7 @@ const t = {
       'Works on Pod rukoi, Divisional charts, Ashtakavarga, Vimshottari Dasha, and Ashtottari Dasha pages.',
       'Select the chart sections you need.',
       'Click "Copy selected" to copy the data.',
+      'The "Collect all" button automatically creates a ready-to-use analysis prompt. It includes: AI instructions, Rashi (D1), all available divisional charts, Ashtakavarga, Vimshottari Dasha (Pratyantardasha, 5 years ahead), and your request (entered in a separate field or in the AI chat).',
       'Paste the data into the AI chat.'
     ],
     helpStepsVim: [
@@ -73,6 +74,7 @@ const t = {
       'Mark the periods you need with checkboxes.',
       'Click "Copy" to copy the selected data.',
       'The "Open" button automatically opens and selects dashas for the selected period.\n⚠ (Please review the result — it may miss something.)',
+      'The "Collect all" button automatically creates a ready-to-use analysis prompt. It includes: AI instructions, Rashi (D1), all available divisional charts, Ashtakavarga, Vimshottari Dasha (Pratyantardasha, 5 years ahead), and your request (entered in a separate field or in the AI chat).',
       'Paste the data into the AI chat.'
     ]
   },
@@ -119,6 +121,7 @@ const t = {
       'Работает на страницах Под рукой, Дробные карты, Аштакаварга, Вимшоттари Даша, Ашоттари Даша.',
       'Выберите нужные разделы карты.',
       'Нажмите "Копировать выбранное", чтобы скопировать данные.',
+      'Кнопка «Собрать всё» автоматически формирует готовый промт для анализа. В него входят: инструкции для ИИ, Раши (D1), все доступные дробные карты, Аштакаварга, Вимшоттари Даша (Пратьянтардаша, на 5 лет вперёд), ваш запрос (вводится в отдельном поле или в чате с ИИ).',
       'Вставьте данные в чат нейросети.'
     ],
     helpStepsVim: [
@@ -127,6 +130,7 @@ const t = {
       'Отметьте галочками нужные периоды.',
       'Нажмите "Копировать", чтобы скопировать выбранные данные.',
       'Кнопка «Открыть» автоматически раскрывает и выбирает даши за указанный период.\n⚠ (Проверьте результат — может что-то пропустить)',
+      'Кнопка «Собрать всё» автоматически формирует готовый промт для анализа. В него входят: инструкции для ИИ, Раши (D1), все доступные дробные карты, Аштакаварга, Вимшоттари Даша (Пратьянтардаша, на 5 лет вперёд), ваш запрос (вводится в отдельном поле или в чате с ИИ).',
       'Вставьте данные в чат нейросети.'
     ]
   }
